@@ -1,5 +1,7 @@
 ## 一.使用前必读
 * 请先安装Node.js环境,并保证为可用状态,关于Node.js的安装,请自行搜索相关网页,附中文网址：http://nodejs.cn/ 
+* JDK1.8版本
+* ADB环境(在CMD下输入adb即可)
 * 打开CMD窗口,执行:npm install appium@1.9.1 -g(如果Npm安装失败,请将npm镜像替换为taobao镜像 
 具体方法:https://blog.csdn.net/bbatyki/article/details/82918851) 
 * 项目测试使用的appium为1.9.1版本,其它版本不保证兼容,如果想安装其它版本,可将1.9.1替换为相应版本号即可 
