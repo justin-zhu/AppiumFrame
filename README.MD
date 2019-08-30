@@ -8,4 +8,23 @@
 ##二.如何使用
 * 1.com.meitu.domain包下的文件,均为脚本的具体实现,打个比方:WeakNetwork.java是我所对应项目的弱网功能测试脚本,脚本中所调用的 方法,均由com.meitu.service包下的WeakNetworkService.java来实现的,分层是为了维护方便,WeakNetworkService.java中持用Helper的引用,而Helper中 集成了常用的元素查找,滑动,截图等一些用常功能,具体请自己查看 所以整个脚本的实现流程就是:com.meitu.domain(业务流程的拼接执行)----调用----com.meitu.service(业务的实现)----调用----Helper(Helper与androidDriver交互 实现元素查看,点击,截图等一列表操作)
 
-## 三. 脚本执行必不可少的case.xls文件
+##三. 脚本执行必不可少的cases.xls文件
+* 参数说明(以下二个参数是必要参数,一定要指定正确)
+  * appPackage:指定要启动应用的包名
+  * appActivity:指定activity参数
+* step:任意,一般指定为执行的步骤名称
+* operation:固定,仅支持:method
+* type:这个参数需要额外说明,首先,com.meitu.domain包下的文件名,都需要在cases.xls中,有一个对应的sheet名称,如我的弱网项目叫WeakNetwork.java,那我需要将sheet名称改为:WeakNetwork(区分大小写,一定要写对)
+* arg:目前不用了
+* text:目前不用了
+* expect:true或false
+##四.代码中需要注意的地方
+* 1.com.meitu.test/TestCl.java这个文件是项目的入口
+    sheetNameList.add("WeakNetwork");		---指定你要测试的模块,支持多个模块
+		driverEntity.setPath(JustinUtil.getRootPathCase()+"\\cases.xls");----不用改,默认指向工程目录下的case文件夹
+		driverEntity.setPort("4723"); ----不用改,默认是4723
+		driverEntity.setUdid("ZS60A19404A00132");		----手机设备ID,通过adb devices查看,根据自己的参数来指定
+		driverEntity.setVersion("9.0"); ----安卓版本
+		driverEntity.setSheetNameList(sheetNameList);	----不用改
+##五.以上搞定后,可以跑起来了,如果脚本使用过程中有问题,可加我QQ:493241246或邮件给我
+
