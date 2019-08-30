@@ -46,12 +46,15 @@
   
 ```
 * 打开case目录下的cases.xls文件,添加appPackagename和activity参数
+	* 将sheetName改为:HelloWorld
 	* step:测试Hello
 	* operation:method
 	* type:clickHelloButton(说明:这个参数是HelloWorld.java中的方法,而不是service层中的方法,如果指定的方法不存在,将会执行失败,并抛异常)
 	* arg:不用指定,留空
 	* text:不用指定,留空
 	* expect:true
+* 打开com.meitu.test/TestCl.java
+	* 指定sheetNameList.add("HelloWorld");
 
 
 
