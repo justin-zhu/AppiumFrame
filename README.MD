@@ -3,7 +3,8 @@
 * 打开CMD窗口,执行:npm install appium@1.9.1 -g(如果Npm安装失败,请将npm镜像替换为taobao镜像 
 具体方法:https://blog.csdn.net/bbatyki/article/details/82918851) 
 * 项目测试使用的appium为1.9.1版本,其它版本不保证兼容,如果想安装其它版本,可将1.9.1替换为相应版本号即可 
-* 安装IDE工具,Eclipse&IDEA均可,本工程是使用的Eclipse(请搭配好maven环境,不然相关JAR包无法导入)
+* 安装IDE工具,Eclipse&IDEA均可,本工程是使用的Eclipse(请搭配好maven环境,不然相关JAR包无法导入,)
+* 安装TestNG支持
 
 ## 二.如何使用
 * domain包下的文件,均为业务执行的逻辑
@@ -55,6 +56,8 @@
 	* expect:true
 * 打开com.meitu.test/TestCl.java
 	* 指定sheetNameList.add("HelloWorld");
+	* driverEntity.setUdid("你的ID");
+	* 右键,执行TestNG
 
 
 
