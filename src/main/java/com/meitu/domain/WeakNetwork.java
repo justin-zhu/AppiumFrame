@@ -18,7 +18,7 @@ public class WeakNetwork {
 		logger.info("Helper:" + helper);
 	}
 	/**
-	 * 清理环境
+	 * 清理环 境
 	 */
 	public void clean() {
 		weakNetworkService.killAppStore();
