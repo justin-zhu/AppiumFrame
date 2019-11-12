@@ -43,22 +43,23 @@ public class HelperManager {
 	//利用反射执行此方法
 	public void method(TestCaseEntity userCase){			
 		helper.setMethodName(userCase.getType());
+		logger.info("userCase:"+userCase.getType().trim());
 		try {						
 			ReflectUtil.invoke(object, userCase.getType().trim());
 			operationResult = true;			
-		} catch (NullPointerException e) {
-			try {
-				throw new Exception("方法未指定参数:"+userCase.getType());
-			} catch (Exception e1) {				
-				e1.printStackTrace();
-			}
-		} catch (RuntimeException exception) {
+		} catch (NullPointerException e) {			
+			logger.info("NullPointerException异常信息:"+e.getMessage());
+			
+		} catch (RuntimeException e) {
+			//接收异常，不处理，让程序继续执行下一个方法
 			operationResult = false;
-			logger.info(exception.getMessage());
+			logger.info("RuntimeException异常信息:"+e.getMessage());
 		}finally {
 			//涵数执行完毕均执行清理操作-确保下面涵数的执行环境在预期状态
+			logger.info("----------Finally Start----------");
 			ReflectUtil.invoke(object, "clean");
 			addResultToList(userCase);
+			logger.info("----------Finally End----------");
 		}		
 	}
 

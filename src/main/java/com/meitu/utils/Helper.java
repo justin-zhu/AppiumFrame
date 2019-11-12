@@ -327,20 +327,21 @@ public class Helper {
 	 * @param elementName 元素名称
 	 * @return boolean 操作结果
 	 */
-	public void click(WebElement webElement, String elementName) {
+	public void click(WebElement webElement, String elementName) {		
 		sleep(1000);
 		//&& isClick(webElement)
 		if (webElement != null) {
 			webElement.click();
 			webElement = null;			
-			logger.info(elementName + ",执行成功");
+			logger.info("点击成功:"+elementName);
 			snapshot(elementName);			
 		} else {
-			logger.info(elementName + ",执行失败");
+			logger.info("点击成功:"+elementName);
 			snapshot("fail"+elementName);
 			throw new RuntimeException("元素点击失败");			
 		}
 		System.gc();
+		logger.debug("click method over");
 	}
 
 	/**
@@ -594,15 +595,25 @@ public class Helper {
 		sleep(1000);
 		//当前时间+动作名称
 		String fileName = JustinUtil.getLocalTime() + actionName;
-		File scrFile = androidDriver.getScreenshotAs(OutputType.FILE);		
+		logger.debug("----------生成文件名:"+fileName);
+		File scrFile = androidDriver.getScreenshotAs(OutputType.FILE);
+		logger.debug("----------截图文件:"+scrFile.getPath());
 		File saveLocal = new File(path,getMethodName());
-		if(!saveLocal.exists()) {
+		logger.info("saveLocal:"+saveLocal.getPath());
+		if(!saveLocal.exists()) {			
 			saveLocal.mkdirs();
+			logger.debug("----------文件夹不存在，已创建:"+saveLocal.getPath());
+		}else {
+			logger.debug("----------文件夹已存在");
 		}		
 		File picture = new File(saveLocal + "\\" + fileName +".png");		
 		try {
 			FileUtils.copyFile(scrFile, picture);
 			logger.info("----------截图保存路径:" + picture.getPath());
+			if(actionName.contains("fail")) {
+				FileUtils.copyFile(scrFile, new File(saveLocal+"\\"+"failPic"+fileName+".png"));
+				logger.debug("失败截图保存路径:"+saveLocal+"\\"+"failPic"+fileName+".png");
+			}			
 		} catch (IOException e1) {
 			logger.info("截图失败");
 		} finally {
@@ -667,7 +678,7 @@ public class Helper {
 	 */
 	public void sleep(int ms) {
 		try {
-			logger.info("----------暂停"+(ms/1000)+"秒");
+			logger.debug("----------暂停"+(ms/1000)+"秒");
 			Thread.sleep(ms);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -688,9 +699,9 @@ public class Helper {
 
 	public void printElement(boolean b, String str) {
 		if (b) {
-			logger.info("元素:" + str + "[存在]");
+			logger.debug("元素:" + str + "[存在]");
 		} else {
-			logger.info("元素:" + str + "[不存在]");			
+			logger.debug("元素:" + str + "[不存在]");			
 		}
 	}
 
@@ -733,11 +744,14 @@ public class Helper {
 
 	// 结束QNET进程
 	public void killQNET() {
+		logger.debug("kill QNET..");
 		RuntimeUtil.execForStr("adb shell am force-stop com.tencent.qnet");
+		logger.debug("QNET killed..");
 	}
 
 	// 清量应用商店数据
 	public void clearAppSroreData() {
+		logger.debug("kill appstore..");
 		String cmd = "adb shell pm clear com.tencent.southpole.appstore";
 		clearCache(cmd);
 	}

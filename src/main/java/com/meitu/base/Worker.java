@@ -20,7 +20,7 @@ public class Worker extends AbstractWorker {
 	public Worker(DriverEntity driverEntity, String sheetName) {
 		this.driverEntity = driverEntity;
 		this.sheetName = sheetName;
-		logger.info("传入Worker构造方法中的driverEntity参数：" + JSONUtil.toJsonStr(driverEntity));
+		logger.debug("传入Worker构造方法中的driverEntity参数：" + JSONUtil.toJsonStr(driverEntity));
 	}
 	/**
 	 * 实例化一个AppiumServer
@@ -78,8 +78,7 @@ public class Worker extends AbstractWorker {
 	 */
 	@Override
 	public void init() {
-		path = JustinUtil.getRootPath(driverEntity.getUdid() +"_"+sheetName+ JustinUtil.getLocalTime());
-		
+		path = JustinUtil.getRootPath(driverEntity.getUdid() +"_"+sheetName+ JustinUtil.getLocalTime());		
 		ExcelReader reader = JustinUtil.readExcel(driverEntity.getPath(), sheetName);
 		logger.info("初始化sheetName：" + sheetName);
 		driverEntity.setAppPackage(reader.getCell(1, 0).toString());		

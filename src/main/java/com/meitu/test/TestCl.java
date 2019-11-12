@@ -1,7 +1,6 @@
 package com.meitu.test;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
@@ -14,8 +13,6 @@ import com.meitu.utils.JustinUtil;
 /**
  * Test类
  * @author p_xiaogzhu
- *2019年4月1日
- *无法测试 shell pm list packages
  *
  */
 public class TestCl {

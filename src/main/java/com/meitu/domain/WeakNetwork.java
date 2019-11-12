@@ -39,6 +39,7 @@ public class WeakNetwork {
 	 * @param temp
 	 */
 	public void firstLogin() {
+		//跳过广告		
 		weakNetworkService.clearAppSroreData();
 		weakNetworkService.changeNetwork(NETWORK_CLOSE);
 		weakNetworkService.SkipAuthorizationInterface();
@@ -113,11 +114,10 @@ public class WeakNetwork {
 		weakNetworkService.changeTabToHome();
 		weakNetworkService.randomCheckAppInfo("首页");
 		weakNetworkService.sleep(10000);
-		weakNetworkService.changeTabToGame();
-		weakNetworkService.randomCheckAppInfo("游戏");
+		weakNetworkService.back();
+		weakNetworkService.changeTabToGame();		
 		weakNetworkService.sleep(15000);
-		weakNetworkService.changeTabToSoft();
-		weakNetworkService.randomCheckAppInfo("软件");
+		weakNetworkService.changeTabToSoft();		
 		weakNetworkService.sleep(15000);
 	}
 

@@ -8,8 +8,7 @@ public class WeakNetworkService {
 	Helper helper;
 	Logger logger = Logger.getLogger(this.getClass());
 
-	public WeakNetworkService(Helper helper) {
-		super();
+	public WeakNetworkService(Helper helper) {		
 		this.helper = helper;
 	}
 
@@ -84,7 +83,7 @@ public class WeakNetworkService {
 			helper.click(confireBtn, "确定权限");
 			confireBtn = null;
 		}else {
-			throw new RuntimeException("元素获取异常!");
+			throw new RuntimeException("元素未找到");
 		} 
 	}
 
@@ -357,10 +356,12 @@ public class WeakNetworkService {
 	 * 关闭广告
 	 */
 	public void closeAD() {
-
+		logger.info("关闭启动广告弹窗");
 		WebElement element = helper.find_by_id("com.tencent.southpole.appstore:id/ic_close");
 		if (element != null) {
 			helper.click(element, "关闭推广");
+		}else {
+			logger.info("广告弹窗未找到，已跳过");
 		}
 	}
 
@@ -512,5 +513,5 @@ public class WeakNetworkService {
 		helper.click(helper.find_by_uiautomator_text("我的礼包"), "我的礼包");
 	}
 	
-	
+
 }
