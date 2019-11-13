@@ -55,9 +55,5 @@ public class TestCaseEntity {
 
 	public void setExpect(String expect) {
 		this.expect = expect;
-	}
-
-
-	
-	
+	}	
 }

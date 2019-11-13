@@ -11,7 +11,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 
-public enum DriverCtrl {
+public enum AndroidDriverCtrl {
     Instance;
     static HashMap<String,AndroidDriver<WebElement>> hashMap = new HashMap<>();
     Logger logger =Logger.getLogger(this.getClass());
@@ -21,7 +21,7 @@ public enum DriverCtrl {
      * @param driverEntity
      * @throws MalformedURLException
      */
-    public DriverCtrl creatDriver(DriverEntity driverEntity)  {
+    public AndroidDriverCtrl creatDriver(DriverEntity driverEntity)  {
     	logger.info("Driver端口号："+driverEntity.getPort());
     	logger.info("Driver Activity："+driverEntity.getAppActivity());
     	logger.info("Driver Package："+driverEntity.getAppPackage());

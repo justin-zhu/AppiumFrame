@@ -5,7 +5,7 @@ import com.meitu.service.WeakNetworkService;
 import com.meitu.utils.Helper;
 
 public class WeakNetwork {	
-	private Logger logger = Logger.getLogger(this.getClass());	
+	private final Logger logger = Logger.getLogger(this.getClass());	
 	private WeakNetworkService weakNetworkService;
 	private static final String NETWORK_CLOSE = "100%丢包";
 	private static final String NETWORK_DELAY = "延迟";

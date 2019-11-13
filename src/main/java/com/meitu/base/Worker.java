@@ -3,7 +3,7 @@ import java.io.File;
 import org.apache.log4j.Logger;
 import com.meitu.base.AbstractWorker;
 import com.meitu.ctrl.AppiumServerCtrl;
-import com.meitu.ctrl.DriverCtrl;
+import com.meitu.ctrl.AndroidDriverCtrl;
 import com.meitu.entity.DriverEntity;
 import com.meitu.entity.TestCaseEntity;
 import com.meitu.utils.Helper;
@@ -50,7 +50,7 @@ public class Worker extends AbstractWorker {
 	 */
 	@Override
 	public void getDriver() {
-		androidDriver=DriverCtrl.Instance.creatDriver(driverEntity).getDriver(driverEntity.getPort());			
+		androidDriver=AndroidDriverCtrl.Instance.creatDriver(driverEntity).getDriver(driverEntity.getPort());			
 		logger.info("androidDriver：" + androidDriver);
 		helperManager = new HelperManager(new Helper(androidDriver, path), sheetName);
 		logger.info("helperManager：" + androidDriver);
@@ -93,7 +93,7 @@ public class Worker extends AbstractWorker {
 	@Override
 	public void stopServerAndDriver() {
 		AppiumServerCtrl.Instance.stopServer(driverEntity.getPort());
-		DriverCtrl.Instance.stopDriver(driverEntity.getPort());
+		AndroidDriverCtrl.Instance.stopDriver(driverEntity.getPort());
 	}
 	/**
 	 * 写入测试结果

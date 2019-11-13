@@ -76,10 +76,10 @@ public class WeakNetworkService {
 	 * 跳过授权界面及必备界面
 	 */
 	public void SkipAuthorizationInterface() {
-		WebElement agreementBtn = helper.find_by_id("com.tencent.southpole.appstore:id/dialog_right_btn");
+		WebElement agreementBtn = helper.findById("com.tencent.southpole.appstore:id/dialog_right_btn");
 		if (agreementBtn != null) {
 			helper.click(agreementBtn, "同意");
-			WebElement confireBtn = helper.find_by_id("com.android.packageinstaller:id/ok_button");
+			WebElement confireBtn = helper.findById("com.android.packageinstaller:id/ok_button");
 			helper.click(confireBtn, "确定权限");
 			confireBtn = null;
 		}else {
@@ -121,49 +121,49 @@ public class WeakNetworkService {
 	 * 点击必备
 	 */
 	public void clickNecessary() {
-		helper.click(helper.find_by_uiautomator_text("必备"), "必备");
+		helper.click(helper.findByUiautomatorText("必备"), "必备");
 	}
 
 	/**
 	 * 点击榜单
 	 */
 	public void clickList() {
-		helper.click(helper.find_by_uiautomator_text("榜单"), "榜单");
+		helper.click(helper.findByUiautomatorText("榜单"), "榜单");
 	}
 
 	/**
 	 * 点击分类
 	 */
 	public void clickClassify() {
-		helper.click(helper.find_by_uiautomator_text("分类"), "分类");
+		helper.click(helper.findByUiautomatorText("分类"), "分类");
 	}
 
 	/**
 	 * 点击福利
 	 */
 	public void clickWelfare() {
-		helper.click(helper.find_by_uiautomator_text("福利"), "福利");
+		helper.click(helper.findByUiautomatorText("福利"), "福利");
 	}
 
 	/**
 	 * 点击搜索框
 	 */
 	public void clickSearch() {
-		helper.click(helper.find_by_id("com.tencent.southpole.appstore:id/search_action_bar_content"), "搜索框");
+		helper.click(helper.findById("com.tencent.southpole.appstore:id/search_action_bar_content"), "搜索框");
 	}
 
 	/**
 	 * 搜索框输入内容
 	 */
 	public void sendText(String text) {
-		helper.send(helper.find_by_id("com.tencent.southpole.appstore:id/search_action_bar_content"), text);
+		helper.send(helper.findById("com.tencent.southpole.appstore:id/search_action_bar_content"), text);
 	}
 
 	/**
 	 * 搜索按钮
 	 */
 	public void clickSearchButton() {
-		helper.click(helper.find_by_id("com.tencent.southpole.appstore:id/search_confirm"), "搜索按钮");
+		helper.click(helper.findById("com.tencent.southpole.appstore:id/search_confirm"), "搜索按钮");
 	}
 
 	/**
@@ -175,8 +175,8 @@ public class WeakNetworkService {
 		killQNET();
 		goHome();
 		clickDeskApp("QNET");
-		helper.click(helper.find_by_uiautomator_text(netWorkValue), netWorkValue);
-		WebElement testButton = helper.find_by_id("com.tencent.qnet:id/buttonTest");
+		helper.click(helper.findByUiautomatorText(netWorkValue), netWorkValue);
+		WebElement testButton = helper.findById("com.tencent.qnet:id/buttonTest");
 		if (!testButton.getText().contains("结束")) {
 			helper.click(testButton, "开启弱网测试");
 		} else {
@@ -187,21 +187,21 @@ public class WeakNetworkService {
 	 * 关闭装机必备界面
 	 */
 	public void closeRecommendApp() {
-		helper.click(helper.find_by_id("com.tencent.southpole.appstore:id/close"), "关闭必备");
+		helper.click(helper.findById("com.tencent.southpole.appstore:id/close"), "关闭必备");
 	}
 
 	/**
 	 * 全选按钮
 	 */
 	public void selectAllButton() {
-		helper.click(helper.find_by_uiautomator_text("全选"), "全选");
+		helper.click(helper.findByUiautomatorText("全选"), "全选");
 	}
 
 	/**
 	 * 取消全选按钮
 	 */
 	public void disableAllButton() {
-		helper.click(helper.find_by_uiautomator_text("取消全选"), "取消全选");
+		helper.click(helper.findByUiautomatorText("取消全选"), "取消全选");
 	}
 
 	/**
@@ -209,11 +209,11 @@ public class WeakNetworkService {
 	 * 
 	 */
 	public void installButton_download() {
-		helper.click(helper.find_by_id("com.tencent.southpole.appstore:id/download"), "安装");
+		helper.click(helper.findById("com.tencent.southpole.appstore:id/download"), "安装");
 	}
 
 	public void installButton_download_button() {
-		helper.click(helper.find_by_id("com.tencent.southpole.appstore:id/download_button"), "安装");
+		helper.click(helper.findById("com.tencent.southpole.appstore:id/download_button"), "安装");
 	}
 
 	/**
@@ -227,28 +227,28 @@ public class WeakNetworkService {
 	 * 更改tab界面-game
 	 */
 	public void changeTabToGame() {
-		helper.click(helper.find_by_id("com.tencent.southpole.appstore:id/tab_game"), "游戏-Tab");
+		helper.click(helper.findById("com.tencent.southpole.appstore:id/tab_game"), "游戏-Tab");
 	}
 
 	/**
 	 * 更改tab界面-soft
 	 */
 	public void changeTabToSoft() {
-		helper.click(helper.find_by_id("com.tencent.southpole.appstore:id/tab_application"), "软件-Tab");
+		helper.click(helper.findById("com.tencent.southpole.appstore:id/tab_application"), "软件-Tab");
 	}
 
 	/**
 	 * 更改tab界面-Home
 	 */
 	public void changeTabToHome() {
-		helper.click(helper.find_by_id("com.tencent.southpole.appstore:id/tab_home"), "首页-Tab");
+		helper.click(helper.findById("com.tencent.southpole.appstore:id/tab_home"), "首页-Tab");
 	}
 
 	/**
 	 * 更改tab界面-Home
 	 */
 	public void changeTabToMy() {
-		helper.click(helper.find_by_id("com.tencent.southpole.appstore:id/tab_mine"), "首页-Tab");
+		helper.click(helper.findById("com.tencent.southpole.appstore:id/tab_mine"), "首页-Tab");
 	}
 
 	/**
@@ -269,23 +269,23 @@ public class WeakNetworkService {
 		// com.tencent.southpole.appstore:id/app_name //游戏分类列表
 		switch (pageName) {
 		case "首页必备":
-			helper.click(helper.find_by_id("com.tencent.southpole.appstore:id/tvCity"), pageName + "随机点击");
+			helper.click(helper.findById("com.tencent.southpole.appstore:id/tvCity"), pageName + "随机点击");
 			break;
 		case "全部游戏福利":
-			helper.click(helper.find_by_id("com.tencent.southpole.appstore:id/title"), pageName + "随机点击");
+			helper.click(helper.findById("com.tencent.southpole.appstore:id/title"), pageName + "随机点击");
 			break;
 		case "榜单":
-			helper.click(helper.find_by_id("com.tencent.southpole.appstore:id/appName"), pageName + "随机点击");
+			helper.click(helper.findById("com.tencent.southpole.appstore:id/appName"), pageName + "随机点击");
 			break;
 		case "分类":
-			helper.click(helper.find_by_id("com.tencent.southpole.appstore:id/category_name"), pageName + "随机点击");
+			helper.click(helper.findById("com.tencent.southpole.appstore:id/category_name"), pageName + "随机点击");
 			break;
 		case "游戏分类":
-			helper.click(helper.find_by_id("com.tencent.southpole.appstore:id/app_name"), pageName + "随机点击");
+			helper.click(helper.findById("com.tencent.southpole.appstore:id/app_name"), pageName + "随机点击");
 			break;
 		default:
 			//首页、游戏、软件
-			helper.click(helper.find_by_id("com.tencent.southpole.appstore:id/name"), pageName + "(default)" + "随机点击");
+			helper.click(helper.findById("com.tencent.southpole.appstore:id/name"), pageName + "(default)" + "随机点击");
 			break;
 		}
 	}
@@ -294,35 +294,35 @@ public class WeakNetworkService {
 	 * 全部游戏福利
 	 */
 	public void clickAllGameWelfare() {
-		helper.click(helper.find_by_id("com.tencent.southpole.appstore:id/button_all_game"), "全部游戏福利");
+		helper.click(helper.findById("com.tencent.southpole.appstore:id/button_all_game"), "全部游戏福利");
 	}
 
 	/**
 	 * GPASS游戏列表
 	 */
 	public void clickGpassGameList() {
-		helper.click(helper.find_by_id_text("com.tencent.southpole.appstore:id/btn_title1", "G-PASS特权"), "G-PASS特权");
+		helper.click(helper.findByIdAndText("com.tencent.southpole.appstore:id/btn_title1", "G-PASS特权"), "G-PASS特权");
 	}
 
 	/**
 	 * 购机福利界面
 	 */
 	public void clickBuyPhoneWelfare() {
-		helper.click(helper.find_by_id_text("com.tencent.southpole.appstore:id/btn_title1", "购机福利"), "购机福利");
+		helper.click(helper.findByIdAndText("com.tencent.southpole.appstore:id/btn_title1", "购机福利"), "购机福利");
 	}
 
 	/**
 	 * 福利-banner
 	 */
 	public void clickWelfareBanner() {
-		helper.click(helper.find_by_id("com.tencent.southpole.appstore:id/imageView12"), "福利banner页");
+		helper.click(helper.findById("com.tencent.southpole.appstore:id/imageView12"), "福利banner页");
 	}
 
 	/**
 	 * 游戏-分类
 	 */
 	public void clickClassifyOfGame() {
-		helper.click(helper.find_by_id("com.tencent.southpole.appstore:id/item_2"), "游戏分类");
+		helper.click(helper.findById("com.tencent.southpole.appstore:id/item_2"), "游戏分类");
 	}
 
 	/**
@@ -357,7 +357,7 @@ public class WeakNetworkService {
 	 */
 	public void closeAD() {
 		logger.info("关闭启动广告弹窗");
-		WebElement element = helper.find_by_id("com.tencent.southpole.appstore:id/ic_close");
+		WebElement element = helper.findById("com.tencent.southpole.appstore:id/ic_close");
 		if (element != null) {
 			helper.click(element, "关闭推广");
 		}else {
@@ -369,14 +369,14 @@ public class WeakNetworkService {
 	 * 游戏界面-新游
 	 */
 	public void clickGameTabNewGame() {
-		helper.click(helper.find_by_id("com.tencent.southpole.appstore:id/item_1"), "新游");
+		helper.click(helper.findById("com.tencent.southpole.appstore:id/item_1"), "新游");
 	}
 
 	/**
 	 * 登陆状态检查
 	 */
 	public boolean isLogin() {
-		WebElement element = helper.find_by_id("com.tencent.southpole.appstore:id/nick_name");
+		WebElement element = helper.findById("com.tencent.southpole.appstore:id/nick_name");
 		if (element != null) {
 			logger.info("状态：未登陆");
 			return false;
@@ -391,7 +391,7 @@ public class WeakNetworkService {
 	 */
 	public void clickLogin() {
 		if (!isLogin()) {
-			helper.find_by_id("com.tencent.southpole.appstore:id/nick_name");
+			helper.findById("com.tencent.southpole.appstore:id/nick_name");
 			otherLogin();
 			loginQQ();
 		}
@@ -402,8 +402,8 @@ public class WeakNetworkService {
 	 */
 	public void logout() {
 		if (isLogin()) {
-			helper.find_by_id_text("com.tencent.southpole.appstore:id/personal_title", "设置");
-			helper.find_by_uiautomator_text("退出登录");
+			helper.findByIdAndText("com.tencent.southpole.appstore:id/personal_title", "设置");
+			helper.findByUiautomatorText("退出登录");
 		} else {
 			logger.info("应用商店已处于未登陆状态");
 		}
@@ -413,14 +413,14 @@ public class WeakNetworkService {
 	 * 其它方式登陆
 	 */
 	public void otherLogin() {
-		helper.click(helper.find_by_id("com.tencent.southpole.appstore:id/other_login"), "其他账号登录");
+		helper.click(helper.findById("com.tencent.southpole.appstore:id/other_login"), "其他账号登录");
 	}
 
 	/**
 	 * QQ登陆
 	 */
 	public void loginQQ() {
-		helper.click(helper.find_by_uiautomator_text("QQ登录"), "QQ登录");
+		helper.click(helper.findByUiautomatorText("QQ登录"), "QQ登录");
 		helper.tap(500, 1050);
 	}
 
@@ -428,28 +428,28 @@ public class WeakNetworkService {
 	 * 一键领取
 	 */
 	public void clickOneKeyGet() {
-		helper.click(helper.find_by_id("com.tencent.southpole.appstore:id/button_receive_all"), "一键领取");
+		helper.click(helper.findById("com.tencent.southpole.appstore:id/button_receive_all"), "一键领取");
 	}
 
 	/**
 	 * 默认领取
 	 */
 	public void clickDefaultGet() {
-		helper.click(helper.find_by_id("com.tencent.southpole.appstore:id/gift_1_receive_btn"), "领取");
+		helper.click(helper.findById("com.tencent.southpole.appstore:id/gift_1_receive_btn"), "领取");
 	}
 
 	/**
 	 * 取消
 	 */
 	public void clickOneKeyGetCancel() {
-		helper.click(helper.find_by_id("com.tencent.southpole.appstore:id/dialog_left_btn"), "取消");
+		helper.click(helper.findById("com.tencent.southpole.appstore:id/dialog_left_btn"), "取消");
 	}
 
 	/**
 	 * 判断登陆界面
 	 */
 	public void checkLoginView() {
-		WebElement account = helper.find_by_uiautomator_text("帐号登录");
+		WebElement account = helper.findByUiautomatorText("帐号登录");
 		if (account != null) {
 			logger.info("登陆失败，符合预期");
 		} else {
@@ -461,7 +461,7 @@ public class WeakNetworkService {
 	 * 评论
 	 */
 	public void clickCommit() {
-		helper.click(helper.find_by_uiautomator_text("评论"), "评论");
+		helper.click(helper.findByUiautomatorText("评论"), "评论");
 	}
 
 	/**
@@ -475,7 +475,7 @@ public class WeakNetworkService {
 	 * 详情图片
 	 */
 	public void clickInformationPicture() {
-		helper.click(helper.find_by_id("com.tencent.southpole.appstore:id/app_photo"), "详情图片");
+		helper.click(helper.findById("com.tencent.southpole.appstore:id/app_photo"), "详情图片");
 	}
 
 	/**
@@ -492,25 +492,25 @@ public class WeakNetworkService {
 	 * 应用更新
 	 */
 	public void clickAppUpdate() {
-		helper.click(helper.find_by_uiautomator_text("应用更新"), "应用更新");
+		helper.click(helper.findByUiautomatorText("应用更新"), "应用更新");
 	}
 	/**
 	 * 应用卸载
 	 */
 	public void clickAppUninstall() {
-		helper.click(helper.find_by_uiautomator_text("应用卸载"), "应用卸载");
+		helper.click(helper.findByUiautomatorText("应用卸载"), "应用卸载");
 	}
 	/**
 	 * 我的预约
 	 */
 	public void clickMyReserve() {
-		helper.click(helper.find_by_uiautomator_text("我的预约"), "我的预约");
+		helper.click(helper.findByUiautomatorText("我的预约"), "我的预约");
 	}
 	/**
 	 * 我的礼包
 	 */
 	public void clickMyGift() {
-		helper.click(helper.find_by_uiautomator_text("我的礼包"), "我的礼包");
+		helper.click(helper.findByUiautomatorText("我的礼包"), "我的礼包");
 	}
 	
 
