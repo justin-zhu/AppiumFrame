@@ -21,10 +21,9 @@ public enum AppiumServerCtrl {
 		Process process=null;
 		//String session=" --session-override";
         String cmd = "cmd /k appium" + " -p " + port + " -bp " + (Integer.valueOf(port)+1)+" -U "+deviceName ;
-        logger.info("AppiumServer启动参数："+cmd);
+        logger.info("Server Init Arg:"+ cmd);
         process = Runtime.getRuntime().exec(cmd);
-        appiumMap.put(port, process);      
-        logger.info("Process："+process);
+        appiumMap.put(port, process);        
         InputStream inputStream = process.getInputStream();
         InputStream is2 = process.getErrorStream();  
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));       
@@ -35,7 +34,10 @@ public enum AppiumServerCtrl {
 		        try {   
 		            String line2 = "" ;   
 		            while ((line2 = reader2.readLine()) !=null   ) { 
-		            	logger.debug(line2);		            	
+		            	logger.debug(line2);
+		            	if(line2.contains("shell pm list packages com.tencent.southpole.appstore' exited with code 2")) {
+		            		throw new RuntimeException("adb shell pm list 运行失败");
+		            	}
 		            }   
 		          } catch (IOException e) {   
 		                e.printStackTrace();  
@@ -47,7 +49,7 @@ public enum AppiumServerCtrl {
         	logger.debug(line);
         	if(line.contains("Welcome"))
         	{
-        		logger.info("Server running.......");
+        		logger.info("Appium Init Successed!");
         	}
         }
         try {        	
@@ -55,7 +57,7 @@ public enum AppiumServerCtrl {
 		} catch (InterruptedException e) {			
 			e.printStackTrace();
 		}
-        logger.info("Stop appium server");  
+        logger.info("Stop Appium Server");  
         inputStream.close();
         reader.close();
         process.destroy();		
@@ -63,7 +65,7 @@ public enum AppiumServerCtrl {
 	private void stopServer(Process process) {
         if (process != null) {        	
             process.destroy();           
-            logger.info("pocess已销毁"+process);
+            logger.info("Appium Process Destory Successed");
         }
     }
 	/**
@@ -74,7 +76,7 @@ public enum AppiumServerCtrl {
         Process process = appiumMap.get(port);
         stopServer(process);
         appiumMap.remove(port);
-        logger.info("绑定的AppiumServer已关闭，端口号："+port);
+        logger.info("Appium Server Shutdown PortNum:"+port);
     }
 	/**
 	 * 开启appium服务前的清理
@@ -84,7 +86,7 @@ public enum AppiumServerCtrl {
 			String cmd2="taskkill /F /IM node.exe";
 			try {
 				Runtime.getRuntime().exec(cmd2);								
-				logger.info("Node.js服务已清理");
+				logger.info("Node.JS Server Killed");
 			} catch (IOException e) {			
 				e.printStackTrace();
 			}finally{					

@@ -9,6 +9,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import com.meitu.base.Worker;
 import com.meitu.entity.DriverEntity;
+import com.meitu.utils.DeviceUtils;
 import com.meitu.utils.JustinUtil;
 /**
  * Test类
@@ -22,8 +23,7 @@ public class TestCl {
 	private DriverEntity driverEntity ;	
 	
 	@BeforeSuite
-	public void BeforeSuite(){
-		logger.info("Suite前初始化");
+	public void BeforeSuite(){		
 		sheetNameList=new ArrayList<String>();
 		driverEntity = new DriverEntity();
 	}
@@ -34,14 +34,14 @@ public class TestCl {
 		sheetNameList.add("WeakNetwork");		
 		driverEntity.setPath(JustinUtil.getRootPathCase()+"\\cases.xls");
 		driverEntity.setPort("4723");
-		driverEntity.setUdid("ZS60A19404A00132");		
-		driverEntity.setVersion("9.0");
-		driverEntity.setSheetNameList(sheetNameList);		
+		//自动获取连接的设置UDID		
+		driverEntity.setUdid(DeviceUtils.getDeviceInfo().trim());		
+		driverEntity.setVersion("9.0");			
 	}
 	
 	@Test(dataProvider="moduleNameArray", invocationCount =1)
-	public void test1(String sheetName) {			
-		logger.info("模块:"+sheetName+"开始执行");
+	public void test1(String sheetName) throws InterruptedException {		
+		logger.info(sheetName+"Start Test");		
 		worker =new Worker(driverEntity,sheetName);
 		worker.start();
 	}

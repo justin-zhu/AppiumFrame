@@ -36,7 +36,7 @@ public class LogcatUtil extends Thread {
 			String cmd="adb -s  "+deviceName+"  shell logcat -v time";		
 			Process p = Runtime.getRuntime().exec(cmd);			
 			// 正确输出流
-			InputStream input = p.getInputStream();// 创建并实例化输入字节流
+			InputStream input = p.getInputStream();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(input,"UTF-8"));
 			String line = "";	
 			String logPath=filepath.getPath()+File.separator+"logcat.log";
@@ -48,12 +48,12 @@ public class LogcatUtil extends Thread {
 				}	
 			}	
 			logger.info("Logcat结束");
-			p.destroy();//结束线程			
-			reader.close();// 此处reader依赖于input，应先关闭		
+			p.destroy();	
+			reader.close();		
 			input.close();
 			writer.append("finished");			
 			// 错误输出流
-			InputStream errorInput = p.getErrorStream();// 创建并实例化输入字节流
+			InputStream errorInput = p.getErrorStream();
 			BufferedReader errorReader = new BufferedReader(new InputStreamReader(errorInput,"UTF-8"));
 			String eline = "";			
 			while (!interrupted()) {

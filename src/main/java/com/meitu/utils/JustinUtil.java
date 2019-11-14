@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 
 import org.apache.log4j.Logger;
 
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
 /**

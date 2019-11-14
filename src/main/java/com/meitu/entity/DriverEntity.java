@@ -19,15 +19,8 @@ public class DriverEntity {
 	}
 	public void setVersion(String version) {
 		this.version = version;
-	}
-	private List<String> sheetNameList;	
+	}	
 	
-	public List<String> getSheetNameList() {
-		return sheetNameList;
-	}
-	public void setSheetNameList(List<String> sheetNameList) {
-		this.sheetNameList = sheetNameList;
-	}
 	public String getPort() {
 		return port;
 	}

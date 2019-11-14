@@ -22,28 +22,25 @@ public enum AndroidDriverCtrl {
      * @throws MalformedURLException
      */
     public AndroidDriverCtrl creatDriver(DriverEntity driverEntity)  {
-    	logger.info("Driver端口号："+driverEntity.getPort());
-    	logger.info("Driver Activity："+driverEntity.getAppActivity());
-    	logger.info("Driver Package："+driverEntity.getAppPackage());
+    	
         DesiredCapabilities capabilities = new DesiredCapabilities();//设置各项参数
-        capabilities.setCapability("deviceName", driverEntity.getUdid());
-        logger.info("deviceName:"+driverEntity.getUdid());
+        capabilities.setCapability("deviceName", driverEntity.getUdid());        
         capabilities.setCapability("udid",  driverEntity.getUdid());
-        capabilities.setCapability("platformVersion", driverEntity.getVersion());
-        logger.info("platformVersion:"+driverEntity.getVersion());
+        capabilities.setCapability("platformVersion", driverEntity.getVersion());       
         capabilities.setCapability("platformName", "Android");
+        capabilities.setCapability("autoGrantPermissions", true);
         capabilities.setCapability("automationName", "Appium");
         capabilities.setCapability("noReset", true);
-        capabilities.setCapability("appPackage",  driverEntity.getAppPackage());
-        capabilities.setCapability("appActivity",  driverEntity.getAppActivity());
+        capabilities.setCapability("appPackage",  "com.tencent.southpole.appstore");
+        capabilities.setCapability("appActivity",  "com.tencent.southpole.appstore.activity.SplashActivity");
         capabilities.setCapability("unicodeKeyboard", false);// 控制系统键盘
         capabilities.setCapability("resetKeyboard", false);
-        logger.info("开始生成Driver");      
+        
 		try {
 			driver = new AndroidDriver<WebElement>(new URL("http://127.0.0.1:"+driverEntity.getPort()+"/wd/hub"), capabilities);
-			logger.info("Driver生成成功");
+			logger.info("Driver已连接");
 		} catch (Exception e) {
-			logger.info("初始化Driver失败，请核对相关参数是否正确");
+			logger.info("Driver启动失败,请核对相关参数是否正确");
 			e.printStackTrace();
 		}
         

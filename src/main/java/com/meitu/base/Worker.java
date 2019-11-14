@@ -10,7 +10,6 @@ import com.meitu.utils.Helper;
 import com.meitu.utils.JustinUtil;
 import com.meitu.utils.HelperManager;
 import com.meitu.utils.LogcatUtil;
-import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelWriter;
@@ -64,9 +63,9 @@ public class Worker extends AbstractWorker {
 		logcat.start();		
 		for (TestCaseEntity caseEntity : getCaseList()) {
 			logger.info("---------------------"+JSONUtil.toJsonStr(caseEntity)+"---------------------");
-			String operation = caseEntity.getOperation().trim();
+			
 			try {
-				ReflectUtil.invoke(helperManager, operation, caseEntity);
+				helperManager.method(caseEntity);
 			} catch (Exception e) {
 				throw new RuntimeException("方法未指定参数："+caseEntity.getType());
 			}			
