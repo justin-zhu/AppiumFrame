@@ -30,13 +30,13 @@ public class TestCl {
 	@BeforeTest
 	public void configuration()
 	{	
-		//加入List的名称，需要在domain中有相应的实体类		
+		//添加测试项目	
 		sheetNameList.add("WeakNetwork");		
 		driverEntity.setPath(JustinUtil.getRootPathCase()+"\\cases.xls");
 		driverEntity.setPort("4723");
 		//自动获取连接的设置UDID		
 		driverEntity.setUdid(DeviceUtils.getDeviceInfo().trim());		
-		driverEntity.setVersion("9.0");			
+		driverEntity.setVersion("9.0");		
 	}
 	
 	@Test(dataProvider="moduleNameArray", invocationCount =1)

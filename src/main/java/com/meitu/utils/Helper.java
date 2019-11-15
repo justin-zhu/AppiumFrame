@@ -7,18 +7,20 @@ import io.appium.java_client.android.nativekey.AndroidKey;
 import io.appium.java_client.android.nativekey.KeyEvent;
 import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.PointOption;
-
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
 import cn.hutool.core.util.RuntimeUtil;
 
 /**
@@ -76,7 +78,7 @@ public class Helper {
 	 */
 	public WebElement findByXpath(String xpath) {		
 		try {
-			WebElement element = androidDriver.findElement(By.xpath(xpath));
+			WebElement element = androidDriver.findElementByXPath(xpath);
 			return element;
 		} catch (Exception e) {
 			return null;
@@ -260,13 +262,11 @@ public class Helper {
 	 * @param text 传入元素的唯一文本值（此方法多用于元素不在当前窗口时，可自动左右滑动寻找元素）
 	 * @return WebElement
 	 */
-	public WebElement findBySlideText_h(String text) {
-		WebElement element = null;
-		sleep(3000);
+	public WebElement findBySlideText_h(String text) {		
 		String ui = "new UiScrollable(new UiSelector().scrollable(true)).setAsHorizontalList().scrollIntoView(new UiSelector().text(\""
 				+ text + "\"))";
 		try {
-			element = androidDriver.findElementByAndroidUIAutomator(ui);			
+			WebElement element = androidDriver.findElementByAndroidUIAutomator(ui);			
 			return element;
 		} catch (Exception e) {			
 			return null;
@@ -395,7 +395,7 @@ public class Helper {
 	 * @return
 	 */
 	public void swipeDirection(String direction) {
-		log.info("swipe");
+		log.info("swipe:"+direction);
 		if (direction.equals("right")) {
 			new AndroidTouchAction(androidDriver).press(PointOption.point(width / 4, height / 2))
 			.waitAction(WaitOptions.waitOptions(Duration.ofSeconds(1)))
@@ -429,11 +429,11 @@ public class Helper {
 				new AndroidTouchAction(androidDriver).press(PointOption.point(width / 2, height * 3 / 4))
 				.waitAction(WaitOptions.waitOptions(Duration.ofSeconds(1))).moveTo(PointOption.point(width / 2, height / 4))
 				.release().perform();
-				sleep(2000);
+				sleep(3000);
 				snapshot("滑动"+direction);
 				page2 = androidDriver.getPageSource();
 				count++;
-			} while (!page1.equals(page2)&&count < 7);
+			} while (!page1.equals(page2)&&count < 15);
 			snapshot("滑动" + direction);
 			
 		} else if (direction.equals("top")) {
@@ -445,11 +445,11 @@ public class Helper {
 				new AndroidTouchAction(androidDriver).press(PointOption.point(width / 2, height / 4))
 				.waitAction(WaitOptions.waitOptions(Duration.ofSeconds(1)))
 				.moveTo(PointOption.point(width / 2, height * 3 / 4)).release().perform();				
-				sleep(2000);
+				sleep(3000);
 				snapshot("滑动"+direction);
 				page2 = androidDriver.getPageSource();
 				count++;
-			} while (!page1.equals(page2)&&count < 7);
+			} while (!page1.equals(page2)&&count < 15);
 			snapshot("滑动" + direction);			
 		} 
 	}
@@ -523,6 +523,9 @@ public class Helper {
 		log.info("已切换至:NATIVE_APP");
 		sleep(2000);		
 	}
+	public void getContext() {
+		log.info("上下文:"+androidDriver.getContext());
+	}
 
 	/**
 	 * 切换于webview界面（用于H5操作）
@@ -545,7 +548,7 @@ public class Helper {
 	 */
 	public void sleep(int ms) {
 		try {
-			log.debug("Sleep:"+(ms/1000)+"秒");
+			log.info("Sleep "+ms+"ms");
 			Thread.sleep(ms);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -633,5 +636,57 @@ public class Helper {
 	public void closeNotifications() {
 		androidDriver.navigate().back();
 	}
+	/**
+	 * 元素如果存在则点击，不存在，跳过
+	 * @param element
+	 * @param elementName
+	 */
+	public void isExist(WebElement element,String elementName) {
+		if (element != null) {
+			click(element, elementName);
+		}else {
+			log.info(elementName+",未找到,已跳过");
+		}
+	}
 	
+	public void isExistToast(String key) {
+		log.info("准备捕获toast:"+key);
+		String result = getToast(key);
+		if("no".equals(result)) {
+			throw new RuntimeException("未找到Toast控件");
+		}else {
+			log.info("成功获取到Toast信息:"+result);
+		}
+	}
+	/**
+	 * 检查元素是否存在，仅做判断
+	 * @param element
+	 * @param desc
+	 */
+	public void checkElement(WebElement element,String desc) {
+		if(element==null) {
+			throw new RuntimeException("检查的元素不存在:"+desc);
+		}else {
+			log.info("检查元素成功！"+desc+"元素存在");
+			log.info("元素文本内部:"+element.getText());
+		}
+	}
+	
+	public String getToast(String key) {
+		WebDriverWait driverWait = new WebDriverWait(androidDriver, 20); 		
+		return driverWait.until(new ExpectedCondition<String>() {
+			@Override
+			public String apply(WebDriver arg0) {
+				try {
+					WebElement element =androidDriver.findElement(By.xpath("//*[contains(@text,'"+key+"')]"));
+					snapshot("toast成功");
+					return element.getText();
+				} catch (Exception e) {	
+					snapshot("toast失败");
+					return "no";
+				}
+				
+			}
+		});		
+	}
 }

@@ -21,7 +21,7 @@ public enum AppiumServerCtrl {
 		Process process=null;
 		//String session=" --session-override";
         String cmd = "cmd /k appium" + " -p " + port + " -bp " + (Integer.valueOf(port)+1)+" -U "+deviceName ;
-        logger.info("Server Init Arg:"+ cmd);
+        logger.info("AppiumServer init arg:"+ cmd);
         process = Runtime.getRuntime().exec(cmd);
         appiumMap.put(port, process);        
         InputStream inputStream = process.getInputStream();

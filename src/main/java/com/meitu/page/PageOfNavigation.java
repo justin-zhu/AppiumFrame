@@ -16,7 +16,7 @@ public class PageOfNavigation {
 	 * @return
 	 */
 	public WebElement getWiFi() {
-		return helper.findByXpath("//*[@resource-id='com.android.systemui:id/quick_qs_panel']/android.widget.LinearLayout/	android.widget.Switch[2]");
+		return helper.findByXpath("//*[@resource-id='com.android.systemui:id/quick_qs_panel']/android.widget.LinearLayout/android.widget.Switch[2]");
 	}
 	/**
 	 * 通知栏：数据按钮

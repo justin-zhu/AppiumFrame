@@ -23,8 +23,12 @@ public class PageOfHotApps {
 	 * @return
 	 */
 	public WebElement getCheckAll() {
-		return helper.findById("com.tencent.southpole.appstore:id/all");
+		return helper.findByUiautomatorText("全选");
 	}
+	public WebElement getQuitCheckAll() {
+		return helper.findByUiautomatorText("取消全选");
+	}
+	
 	/**
 	 * 无法加载界面提示
 	 * @return

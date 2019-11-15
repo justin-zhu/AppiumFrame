@@ -12,6 +12,16 @@ public class PageOfSoft {
 		this.helper = helper;
 	}
 	/**
+	 * 软件界面
+	 * @return
+	 */
+	public WebElement getIndex() {
+		return helper.findById("com.tencent.southpole.appstore:id/tab_application");
+	}
+	public WebElement getDownBtn() {
+		return helper.findById("com.tencent.southpole.appstore:id/download");
+	}
+	/**
 	 * 软件界面：榜单排行
 	 * @return
 	 */
@@ -74,5 +84,12 @@ public class PageOfSoft {
 	 */
 	public WebElement getSoftClassify() {
 		return helper.findById("com.tencent.southpole.appstore:id/tag_3");
+	}
+	/**
+	 * 流行正当时
+	 * index scope(1-5)
+	 */
+	public WebElement getFashionApp(int index) {
+		return helper.findByXpath("//*[@resource-id='com.tencent.southpole.appstore:id/recycle_view']/android.view.ViewGroup["+index+"]/android.widget.TextView[1]");
 	}
 }

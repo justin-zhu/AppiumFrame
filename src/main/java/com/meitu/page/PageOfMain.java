@@ -1,8 +1,14 @@
 package com.meitu.page;
 
+import java.time.Duration;
+
 import org.openqa.selenium.WebElement;
 
 import com.meitu.utils.Helper;
+
+import io.appium.java_client.android.AndroidTouchAction;
+import io.appium.java_client.touch.WaitOptions;
+import io.appium.java_client.touch.offset.PointOption;
 /**
  * 首页
  * @author Administrator
@@ -34,7 +40,7 @@ public class PageOfMain {
 	 * 首页广告弹窗口，关闭按钮
 	 * @return
 	 */
-	public WebElement getOpenAd() {
+	public WebElement getAdFrame() {
 		return helper.findById("com.tencent.southpole.appstore:id/ic_close");
 	}
 	/**
@@ -64,6 +70,12 @@ public class PageOfMain {
 	 */
 	public WebElement getList() {
 		return helper.findById("com.tencent.southpole.appstore:id/tag_layout_3");
+	}
+	/**
+	 * 榜单排名第一的应用
+	 */
+	public WebElement getListIndex1() {
+		return helper.findById("com.tencent.southpole.appstore:id/app_1_icon");
 	}
 	/**
 	 * 榜单界面下的：流行榜
@@ -142,5 +154,32 @@ public class PageOfMain {
 	 */
 	public WebElement getSearch() {
 		return helper.findById("com.tencent.southpole.appstore:id/search_action_bar_content");
+	}
+	/**
+	 * 本周热门应用
+	 * @param index scope(1-5)
+	 * @return
+	 */
+	public WebElement getWeekHotApps(int index) {
+		if(index<0||index>5) {
+			throw new RuntimeException("指定的下标不存在");
+		}
+		String express ="//*[@resource-id='com.tencent.southpole.appstore:id/recycle_view']/android.view.ViewGroup["+index+"]/android.widget.TextView[1]";
+		return helper.findByXpath(express);
+	}
+	/**
+	 * appium无法获取动态界面上的元素 所以需要将动态的顶部栏，滑动至不可见
+	 */
+	public void swipeHideTheBar() {
+		new AndroidTouchAction(helper.androidDriver).press(PointOption.point(500, 1550))
+		.waitAction(WaitOptions.waitOptions(Duration.ofSeconds(2)))
+		.moveTo(PointOption.point(535, 807)).release().perform();		
+	}
+	/**
+	 * 详情标签 
+	 * @return
+	 */
+	public WebElement getAppInfo() {
+		return helper.findByXpath("//androidx.appcompat.app.ActionBar.Tab[@content-desc='详情']");
 	}
 }

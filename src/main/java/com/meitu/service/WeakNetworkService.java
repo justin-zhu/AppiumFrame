@@ -3,43 +3,21 @@ import java.util.Arrays;
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebElement;
-
-import com.meitu.ctrl.ActivityCtrl;
-import com.meitu.page.PageOfGame;
-import com.meitu.page.PageOfHotApps;
-import com.meitu.page.PageOfMain;
-import com.meitu.page.PageOfNavigation;
-import com.meitu.page.PageOfSoft;
+import com.meitu.base.AbstractPage;
 import com.meitu.utils.Helper;
-public class WeakNetworkService {
-	private Helper helper;
-	private PageOfGame game;
-	private PageOfHotApps hotApps;
-	private PageOfMain main;
-	private PageOfNavigation navigation;
-	private PageOfSoft soft;
+public class WeakNetworkService extends AbstractPage{
+	public WeakNetworkService(Helper helper) {
+		super(helper);		
+	}	
 	private static final String NETWORK_CLOSE = "100%丢包";
 	private static final String NETWORK_DELAY = "延迟";
-	private static final String NETWORK_NORMAL = "正常网络";
+	private static final String NETWORK_NORMAL = "普通网络";
 	Logger logger = Logger.getLogger(this.getClass());
-	public WeakNetworkService(Helper helper) {		
-		this.helper = helper;
-		initPage(helper);
-	}	
-	private void initPage(Helper helper) {
-		game = new PageOfGame(helper);
-		hotApps = new PageOfHotApps(helper);
-		main = new PageOfMain(helper);
-		navigation = new PageOfNavigation(helper);
-		soft = new PageOfSoft(helper);		
-	}
-
-
 	public void firstLogin() {
 		//构建首次启动场景,清除应用缓存数据	
 		helper.clearAppSroreData();
 		//设置网络状态为无网
-		changeNetwork(NETWORK_CLOSE);
+		setConnectionType(NETWORK_CLOSE);
 		//首次启动 权限窗口
 		helper.click(main.getAuthor(), "同意");		
 		//进入无网状,装机必备界面处于加载中,需要等待
@@ -47,19 +25,29 @@ public class WeakNetworkService {
 		//加载完成,提示没有获取到数据,再次点击,触发二次加载
 		helper.click(main.getErrorOfGetDate(), "没有获取到数据提示");	
 		//切换至正常网络
-		changeNetwork(NETWORK_NORMAL);
-		slideUp(1);
-		selectAllButton();
-		disableAllButton();
-		selectAllButton();
-		changeNetwork(NETWORK_CLOSE);
-		installButtonByAxis(500, 2200);
-		back();
-		clearAppSroreData();
-		changeNetwork(NETWORK_NORMAL);
-		SkipAuthorizationInterface();
-		closeRecommendApp();
-		closeAD();
+		setConnectionType(NETWORK_NORMAL);
+		//上滑 触发再次加载
+		helper.swipeDirection("up");
+		//点击全选按钮
+		helper.click(hotApps.getCheckAll(), "全选");
+		//取消全选
+		helper.click(hotApps.getQuitCheckAll(), "取消全选");
+		//点击全选按钮
+		helper.click(hotApps.getCheckAll(), "全选");
+		//切换无网状态
+		setConnectionType(NETWORK_CLOSE);
+		//点击安装
+		helper.click(hotApps.getInsatllBtn(), "安装");
+		helper.back();
+		//清理应用商店,防止因下载导致的不稳定,中断脚本
+		helper.clearAppSroreData();
+		//正常网络
+		setConnectionType(NETWORK_NORMAL);		
+		helper.click(main.getAuthor(), "同意");		
+		//关闭必备界面
+		helper.click(hotApps.getClose(), "关闭");
+		//关闭广告弹窗 如果有的话
+		helper.isExist(main.getAdFrame(), "广告");
 	}
 	
 	/**
@@ -67,198 +55,270 @@ public class WeakNetworkService {
 	 * 100%
 	 */
 	public void reOpenAppStore() {
-		changeNetwork(NETWORK_NORMAL);
-		sleep(6000);		
-		closeAD();
-		changeNetwork(NETWORK_CLOSE);
-		changeTabToHome();
-		slideDown(1);
-		sleep(15000);
-		changeTabToGame();
-		slideDown(1);
-		sleep(15000);
-		changeTabToSoft();
-		slideDown(1);
-		sleep(15000);
-		changeNetwork(NETWORK_NORMAL);
-		changeTabToHome();
-		slideDown(1);
-		sleep(3000);
-		randomInstall();
-		changeTabToGame();
-		slideDown(1);
-		sleep(3000);
-		randomInstall();
-		changeTabToSoft();
-		slideDown(1);
-		sleep(3000);
-		randomInstall();
-		changeNetwork(NETWORK_DELAY);
-		changeTabToHome();
-		slideDown(1);
-		sleep(10000);
-		changeTabToGame();
-		slideDown(1);
-		sleep(10000);
-		changeTabToSoft();
-		slideDown(1);
-		sleep(10000);
-		changeNetwork(NETWORK_NORMAL);
-		changeTabToHome();		
-		slideUp(2);
-		sleep(5000);
-		changeTabToGame();		
-		slideUp(2);
-		sleep(5000);
-		changeTabToSoft();		
-		slideUp(2);
-		sleep(5000);
-		changeNetwork(NETWORK_CLOSE);
-		changeTabToHome();
-		randomCheckAppInfo("首页");
-		sleep(10000);
-		back();
-		changeTabToGame();		
-		sleep(15000);
-		changeTabToSoft();		
-		sleep(15000);
-	}
-
+		helper.killAppStore();
+		helper.killQNET();
+		//设置网络为正常网络
+		setConnectionType(NETWORK_NORMAL);
+		//跳过广告
+		helper.sleep(6000);			
+		//关闭广告弹窗 如果有的话
+		helper.isExist(main.getAdFrame(), "广告");
+		//切换无网状态
+		setConnectionType(NETWORK_CLOSE);
+		helper.click(main.getIndex(), "首页");
+		//向上滑动一次
+		helper.swipeDirection("up");
+		//捕捉Toast
+		helper.isExistToast("没有获取到数据");	
+		//切到游戏界面
+		helper.click(game.getIndex(), "游戏页");
+		//捕捉Toast
+		helper.isExistToast("没有获取到数据");		
+		//向上滑
+		helper.swipeDirection("up");		
+		//捕捉Toast
+		helper.isExistToast("没有获取到数据");		
+		//切到软件页
+		helper.click(soft.getIndex(), "软件页");
+		//捕捉Toast
+		helper.isExistToast("没有获取到数据");		
+		helper.swipeDirection("up");
+		//捕捉Toast
+		helper.isExistToast("没有获取到数据");		
+		//正常网络
+		setConnectionType(NETWORK_NORMAL);
+		//点首页
+		helper.click(main.getIndex(), "首页");
+		//下滑触发加载
+		helper.swipeDirection("down");	
+		//遮住动态的导航条区
+		main.swipeHideTheBar();		
+		//判断首页上的元素是否存在 存在即表示加载成功
+		helper.checkElement(main.getWeekHotApps(1), "检查本周热门应用是否已在首页显示");		
+		//点击安装按钮
+		helper.checkElement(main.getDownBtn(), "下载按钮");
+		//切到游戏页
+		helper.click(game.getIndex(), "游戏页");
+		//下滑触发加载
+		helper.swipeDirection("down");
+		//检查元素是否存在
+		helper.checkElement(game.getTopBanner(), "游戏推荐位");
+		//点安装
+		helper.checkElement(game.getDownBtn(), "下载按钮");
+		//切到软件页
+		helper.click(soft.getIndex(), "软件页");
+		//下滑触发加载
+		helper.swipeDirection("down");
+		//检查元素
+		helper.checkElement(soft.getFashionApp(1), "流行正当时第1个应用");
+		//点击软件界面中的下载按钮
+		helper.checkElement(soft.getDownBtn(), "下载按钮");
+		//延迟网络
+		setConnectionType(NETWORK_DELAY);
+		//首页
+		helper.click(main.getIndex(), "首页");
+		helper.swipeDirection("down");
+		//延迟网络下 等待界面加载
+		helper.sleep(10000);
+		helper.click(game.getIndex(), "游戏页");
+		helper.swipeDirection("down");
+		helper.sleep(10000);
+		helper.click(soft.getIndex(), "软件页");
+		helper.swipeDirection("down");
+		helper.sleep(10000);
+		//切换正常网络
+		setConnectionType(NETWORK_NORMAL);
+		//切到首页
+		helper.click(main.getIndex(), "首页");
+		helper.swipeDirection("up");		
+		helper.sleep(3000);
+		helper.click(game.getIndex(), "游戏页");
+		helper.swipeDirection("up");		
+		helper.sleep(2000);
+		helper.click(soft.getIndex(), "软件页");
+		helper.swipeDirection("up");
+		helper.sleep(2000);
+		//切换无网
+		setConnectionType(NETWORK_CLOSE);
+		//切到首页
+		helper.click(main.getIndex(), "首页");
+		//点击首页上的任意应用
+		helper.click(main.getWeekHotApps(1), "本周热门应用：第1个");
+		//无网状态 点击应用详情界面 需要等待
+		helper.sleep(15000);
+		//界面加载完成 显示没有获取到数据 判断元素是否存在
+		helper.checkElement(main.getErrorOfGetDate(), "没有获取到数据");
+		//返回
+		helper.back();
+		//切到游戏页
+		helper.click(game.getIndex(), "游戏页");
+		//会有Toast
+		helper.isExistToast("没有获取到数据");			
+		//点击软件页
+		helper.click(soft.getIndex(), "软件页");	
+		//会有Toast
+		helper.isExistToast("没有获取到数据");		
+	}	
+	
 	/**
-	 * pass 首页--必备
-	 * 100%
+	 * 新游
+	 * 11-15 pass
 	 */
-	public void homePageNecessary() {
-		changeNetwork(NETWORK_NORMAL);
-		sleep(6000);
-		closeAD();		
-		changeNetwork(NETWORK_CLOSE);		
-		clickNecessary();
-		sleep(15000);
-		back();
-		changeNetwork(NETWORK_NORMAL);
-		clickNecessary();
-		slideEnd();
-		slideTop();
-		randomCheckAppInfo("首页必备");
-		back();	
-		back();
-		changeNetwork(NETWORK_DELAY);
-		clickNecessary();
-		sleep(10000);
-		slideEnd();
-		slideTop();
-		back();
-		changeNetwork(NETWORK_NORMAL);
-		clickNecessary();
-		changeNetwork(NETWORK_CLOSE);
-		randomCheckAppInfo("首页必备");
-		sleep(15000);
-		randomInstall();
-		slideUp(1);
-		slideDown(1);		
+	public void newGame() {
+		helper.killAppStore();
+		helper.killQNET();
+		setConnectionType(NETWORK_NORMAL);
+		helper.sleep(6000);
+		//关闭广告弹窗 如果有的话
+		helper.isExist(main.getAdFrame(), "广告");	
+		//切到游戏页
+		helper.click(game.getIndex(), "游戏页");
+		setConnectionType(NETWORK_CLOSE);
+		helper.click(game.getNewGame(), "新游标签");
+		//捕捉Toast
+		helper.isExistToast("没有获取到数据");		
+		//正常网络
+		setConnectionType(NETWORK_NORMAL);
+		//向上滑
+		helper.swipeDirection("up");
+		helper.checkElement(game.getTopGame(), "顶部推荐游戏");
+		helper.back();
+		//延迟网络
+		setConnectionType(NETWORK_DELAY);
+		helper.click(game.getNewGame(), "新游标签");
+		helper.sleep(10000);
+		helper.checkElement(game.getTopGame(), "顶部推荐游戏");
+		helper.swipeDirection("end");
+		helper.swipeDirection("top");
+		helper.click(game.getTopGame(), "顶部推荐游戏");
+		helper.sleep(10000);
+		helper.checkElement(game.getTopGameInfo(), "游戏详情");
+		helper.back();		
 	}
-
+	
 	/**
-	 * pass
-	 *60%
+	 *11-15 pass
+	 *
 	 * 福利
 	 */
 	public void homePageWelfare() {
-		changeNetwork(NETWORK_NORMAL);
-		sleep(6000);
-		closeAD();		
-		changeNetwork(NETWORK_CLOSE);
-		clickWelfare();
-		sleep(15000);
-		back();
-		changeNetwork(NETWORK_NORMAL);
-		clickWelfare();
-		changeNetwork(NETWORK_CLOSE);		
-		clickAllGameWelfare();
-		sleep(15000);
-		back();		
-		clickGpassGameList();
-		sleep(15000);
-		back();
-		clickBuyPhoneWelfare();
-		sleep(15000);
-		back();		
-		changeNetwork(NETWORK_NORMAL);
-		clickAllGameWelfare();
-		back();
-		clickGpassGameList();
-		back();
-		clickBuyPhoneWelfare();
-		sleep(3000);
-		back();
-		back();
-		changeNetwork(NETWORK_DELAY);
-		clickWelfare();
-		sleep(10000);
-		clickAllGameWelfare();
-		sleep(10000);
-		randomCheckAppInfo("全部游戏福利");
-		sleep(10000);
-		back();
-		back();
-		clickWelfareBanner();
-		sleep(10000);
-		back();		
+		clean();
+		setConnectionType(NETWORK_NORMAL);
+		helper.sleep(6000);
+		//关闭广告弹窗 如果有的话
+		helper.isExist(main.getAdFrame(), "广告");
+		setConnectionType(NETWORK_CLOSE);
+		helper.click(main.getBoon(), "福利");		
+		helper.sleep(15000);
+		helper.checkElement(main.getErrorOfGetDate(), "没有获取到数据");
+		helper.back();
+		//内容加载出来后 断网
+		setConnectionType(NETWORK_NORMAL);
+		helper.click(main.getBoon(), "福利");
+		setConnectionType(NETWORK_CLOSE);	
+		helper.click(game.getAllGameBoon(), "全部游戏福利");		
+		helper.sleep(15000);
+		helper.checkElement(main.getErrorOfGetDate(), "没有获取到数据");
+		helper.back();
+		helper.click(game.getGpassGame(), "GPASS特权游戏");
+		helper.checkElement(game.getGpassUserInfo(), "Gpass特权界面下的用户信息面板");		
+		helper.back();
+		helper.click(game.getBuyPhoneBoon(), "购机福利");		
+		helper.sleep(15000);
+		//获取上下文信息
+		helper.getContext();
+		helper.back();		
+		setConnectionType(NETWORK_NORMAL);
+		helper.click(game.getAllGameBoon(), "全部游戏福利");
+		helper.checkElement(game.getAllGameBoonList(), "游戏福利列表第一个游戏");
+		helper.back();
+		helper.click(game.getGpassGame(), "GPASS特权游戏");
+		helper.checkElement(helper.findById("com.tencent.southpole.appstore:id/desc"), "Gpass界面描述");
+		helper.back();
+		helper.click(game.getBuyPhoneBoon(), "购机福利");
+		helper.sleep(3000);
+		//打印上下文
+		helper.getContext();
+		helper.back();
+		helper.back();
+		setConnectionType(NETWORK_DELAY);
+		helper.click(main.getBoon(), "福利");
+		helper.click(game.getAllGameBoon(), "全部游戏福利");	
+		helper.sleep(5000);	
+		helper.checkElement(game.getAllGameBoonList(), "游戏福利列表第一个游戏");
 	}
 
 	/**
-	 * pass 榜单
+	 * pass 11-15 榜单
 	 * 100%
 	 */
 	public void homePageList() {
-		changeNetwork(NETWORK_NORMAL);
-		sleep(6000);
-		closeAD();		
-		changeNetwork(NETWORK_CLOSE);
-		clickList();
-		sleep(15000);		
-		changeNetwork(NETWORK_NORMAL);
-		slideUp(1);
-		changeNetwork(NETWORK_CLOSE);
-		randomCheckAppInfo("榜单");
-		sleep(15000);
-		back();
-		back();
-		changeNetwork(NETWORK_DELAY);
-		clickList();
-		sleep(10000);
+		clean();
+		setConnectionType(NETWORK_NORMAL);
+		helper.sleep(6000);
+		//关闭广告弹窗 如果有的话
+		helper.isExist(main.getAdFrame(), "广告");	
+		setConnectionType(NETWORK_CLOSE);
+		helper.click(main.getList(), "榜单");
+		helper.checkElement(main.getErrorOfGetDate(), "没有获取到数据");		
+		setConnectionType(NETWORK_NORMAL);
+		helper.swipeDirection("up");
+		helper.click(main.getListIndex1(), "第一名应用");
+		helper.sleep(3000);
+		helper.back();
+		setConnectionType(NETWORK_CLOSE);
+		helper.click(main.getListIndex1(), "第一名应用");
+		helper.sleep(15000);
+		helper.checkElement(main.getErrorOfGetDate(), "没有获取到数据");
+		helper.back();
+		helper.back();
+		setConnectionType(NETWORK_DELAY);
+		helper.click(main.getList(), "榜单");
+		helper.sleep(15000);
+		helper.click(main.getListIndex1(), "第一名应用");
+		helper.back();
+		helper.click(main.getList_HotAppsList(), "榜单中的热销榜");
+		helper.sleep(15000);
+		helper.click(main.getListIndex1(), "第一名应用");
+		helper.back();
+		helper.click(main.getList_NewProduct(), "榜单中的新品榜");
+		helper.sleep(15000);
+		helper.click(main.getListIndex1(), "第一名应用");
+		helper.sleep(10000);
+		helper.back();
+		helper.click(main.getList_FashionList(), "榜单中的流行榜");	
+		helper.sleep(10000);
 	}
 
 	/**
 	 * 首页分类
-	 * 70%
+	 * 11-15
 	 * @return pass
 	 */
 	public void homeClassify() {
-		changeNetwork(NETWORK_NORMAL);
-		sleep(6000);
-		closeAD();		
-		changeNetwork(NETWORK_CLOSE);
-		clickClassify();
-		sleep(15000);
-		changeNetwork(NETWORK_NORMAL);
-		slideUp(1);
-		back();
-		changeNetwork(NETWORK_DELAY);
-		clickClassify();
-		sleep(10000);
-		randomCheckAppInfo("分类");
-		sleep(10000);
-		back();
-		slideEnd();
-		randomCheckAppInfo("分类");
-		back();
-		changeNetwork(NETWORK_CLOSE);
-		slideEnd();
-		randomCheckAppInfo("分类");
-		sleep(15000);
-		
+		clean();
+		setConnectionType(NETWORK_NORMAL);
+		helper.sleep(6000);
+		//关闭广告弹窗 如果有的话
+		helper.isExist(main.getAdFrame(), "广告");
+		setConnectionType(NETWORK_CLOSE);
+		helper.click(main.getClassify(), "首页分类");
+		helper.sleep(15000);
+		helper.checkElement(main.getErrorOfGetDate(), "没有获取到数据");
+		setConnectionType(NETWORK_NORMAL);
+		helper.swipeDirection("up");
+		helper.checkElement(main.getClassify_Soft_Video(), "视频分类");
+		helper.back();
+		setConnectionType(NETWORK_DELAY);
+		helper.click(main.getClassify(), "首页分类");
+		helper.click(main.getClassify_Soft_Video(), "视频分类");		
+		helper.sleep(10000);
+		helper.checkElement(helper.findById("com.tencent.southpole.appstore:id/app_name"), "视频分类第一个应用");
+		helper.swipeDirection("end");
+		helper.swipeDirection("top");
+		helper.click(helper.findById("com.tencent.southpole.appstore:id/app_name"), "视频分类第一个应用");
+		helper.checkElement(main.getAppInfo(), "详情标签");
+		helper.back();		
 	}
 
 	/**
@@ -267,11 +327,11 @@ public class WeakNetworkService {
 	 * 100%
 	 */
 	public void homeClassifyList() {
-		changeNetwork(NETWORK_NORMAL);
+		setConnectionType(NETWORK_NORMAL);
 		sleep(6000);
 		closeAD();		
 		clickClassify();	
-		changeNetwork(NETWORK_CLOSE);
+		setConnectionType(NETWORK_CLOSE);
 		randomCheckAppInfo("分类");	
 		back();
 		back();
@@ -284,7 +344,7 @@ public class WeakNetworkService {
 		changeTabToHome();
 		slideDown(1);
 		sleep(15000);
-		changeNetwork(NETWORK_DELAY);
+		setConnectionType(NETWORK_DELAY);
 		sleep(10000);
 		clickClassify();
 		sleep(10000);
@@ -292,60 +352,25 @@ public class WeakNetworkService {
 		sleep(10000);
 		back();
 		clickClassify();
-		changeNetwork(NETWORK_CLOSE);
+		setConnectionType(NETWORK_CLOSE);
 		checkList("软件", 15000);		
 	}
 
-	/**
-	 * 新游
-	 */
-	public void newGame() {
-		changeNetwork(NETWORK_NORMAL);
-		sleep(6000);
-		closeAD();		
-		changeTabToGame();
-		changeNetwork(NETWORK_CLOSE);
-		clickGameTabNewGame();
-		sleep(15000);
-		changeNetwork(NETWORK_NORMAL);
-		slideUp(1);
-		back();
-		changeNetwork(NETWORK_DELAY);
-		clickGameTabNewGame();
-		sleep(10000);
-		slideEnd();
-		slideTop();
-		randomCheckAppInfo("新游");
-		sleep(10000);
-		// 后续实现安装功能
-		randomInstall();
-		back();
-		changeNetwork(NETWORK_CLOSE);
-		slideDown(1);
-		sleep(15000);
-		slideUp(1);
-		sleep(15000);
-		randomCheckAppInfo("新游");
-		changeNetwork(NETWORK_NORMAL);
-		slideDown(1);
-		back();
-		slideDown(1);
-		randomInstall();		
-	}
+	
 
 	/**
 	 * 福利礼包
 	 * 50%
 	 */
 	public void WelfareGift() {
-		changeNetwork(NETWORK_NORMAL);
+		setConnectionType(NETWORK_NORMAL);
 		sleep(6000);
 		closeAD();
 		changeTabToMy();
 		logout();
 		changeTabToGame();
 		clickWelfare();
-		changeNetwork(NETWORK_CLOSE);
+		setConnectionType(NETWORK_CLOSE);
 		clickOneKeyGet();
 		otherLogin();
 		loginQQ();
@@ -355,7 +380,7 @@ public class WeakNetworkService {
 		clickWelfareBanner();
 		sleep(15000);
 		back();
-		changeNetwork(NETWORK_DELAY);
+		setConnectionType(NETWORK_DELAY);
 		clickOneKeyGet();
 		checkLoginView();
 		back();
@@ -368,31 +393,31 @@ public class WeakNetworkService {
 	 * 70%
 	 */
 	public void search() {
-		changeNetwork(NETWORK_NORMAL);
+		setConnectionType(NETWORK_NORMAL);
 		sleep(6000);		
 		closeAD();
-		changeNetwork(NETWORK_CLOSE);
+		setConnectionType(NETWORK_CLOSE);
 		changeTabToHome();
 		clickSearch();
 		sleep(15000);
 		back();
-		changeNetwork(NETWORK_NORMAL);
+		setConnectionType(NETWORK_NORMAL);
 		slideUp(1);
 		back();
-		changeNetwork(NETWORK_DELAY);
+		setConnectionType(NETWORK_DELAY);
 		sendText("微视");
 		sleep(10000);
 		clickSearchButton();
 		sleep(10000);
 		randomInstall();
 		back();
-		changeNetwork(NETWORK_NORMAL);
+		setConnectionType(NETWORK_NORMAL);
 		clickSearch();
-		changeNetwork(NETWORK_CLOSE);
+		setConnectionType(NETWORK_CLOSE);
 		sendText("快手");
 		clickSearchButton();
 		sleep(15000);
-		changeNetwork(NETWORK_NORMAL);
+		setConnectionType(NETWORK_NORMAL);
 		clickSearchButton();
 		randomInstall();		
 	}
@@ -401,47 +426,47 @@ public class WeakNetworkService {
 	 * 90%
 	 */
 	public void appInformation() {
-		changeNetwork(NETWORK_NORMAL);
+		setConnectionType(NETWORK_NORMAL);
 		sleep(6000);
 		closeAD();
 		changeTabToSoft();
-		changeNetwork(NETWORK_CLOSE);
+		setConnectionType(NETWORK_CLOSE);
 		randomCheckAppInfo("软件");
 		sleep(15000);		
-		changeNetwork(NETWORK_NORMAL);
+		setConnectionType(NETWORK_NORMAL);
 		slideUp(1);
 		back();
-		changeNetwork(NETWORK_DELAY);
+		setConnectionType(NETWORK_DELAY);
 		randomCheckAppInfo("软件");
 		sleep(10000);
 		clickCommit();
 		back();
-		changeNetwork(NETWORK_NORMAL);
+		setConnectionType(NETWORK_NORMAL);
 		randomCheckAppInfo("软件");
-		changeNetwork(NETWORK_CLOSE);
+		setConnectionType(NETWORK_CLOSE);
 		clickCommit();
-		changeNetwork(NETWORK_NORMAL);
+		setConnectionType(NETWORK_NORMAL);
 		randomInstall();		
 	}
 	/**
 	 * 查看游戏图片
 	 */
 	public void checkGamePicture() {
-		changeNetwork(NETWORK_NORMAL);
+		setConnectionType(NETWORK_NORMAL);
 		sleep(6000);
 		closeAD();
 		changeTabToGame();
 		clickClassifyOfGame();
 		randomCheckAppInfo("游戏分类");
-		changeNetwork(NETWORK_CLOSE);
+		setConnectionType(NETWORK_CLOSE);
 		clickInformationPicture();
 		slideLeft(5);
 		back();
-		changeNetwork(NETWORK_NORMAL);
+		setConnectionType(NETWORK_NORMAL);
 		clickInformationPicture();
 		slideLeft(5);
 		back();
-		changeNetwork(NETWORK_DELAY);
+		setConnectionType(NETWORK_DELAY);
 		clickInformationPicture();
 		slideLeft(5);
 		back();		
@@ -450,7 +475,7 @@ public class WeakNetworkService {
 	 * 我的
 	 */
 	public void my() {
-		changeNetwork(NETWORK_NORMAL);
+		setConnectionType(NETWORK_NORMAL);
 		sleep(6000);
 		closeAD();		
 		changeTabToMy();
@@ -458,7 +483,7 @@ public class WeakNetworkService {
 		otherLogin();
 		loginQQ();
 		sleep(6000);
-		changeNetwork(NETWORK_CLOSE);
+		setConnectionType(NETWORK_CLOSE);
 		clickAppUpdate();
 		back();
 		clickAppUninstall();
@@ -474,9 +499,9 @@ public class WeakNetworkService {
 	 * 清理环 境
 	 */
 	public void clean() {
-		killAppStore();
+		helper.killAppStore();
 		helper.killQNET();
-		logger.info("----------已清理应用商店、QNET进程");
+		logger.info("已清理应用商店、QNET进程");
 	}	
 	/**
 	 * 向上滑动
@@ -580,8 +605,7 @@ public class WeakNetworkService {
 	 * @param appName App名称
 	 */
 	public void clickDeskApp(String appName) {		
-		helper.click(helper.findBySlideText_h(appName), appName);
-		helper.sleep(3000);		
+		helper.click(helper.findBySlideText_h(appName), appName);			
 	}
 
 	/**
@@ -638,15 +662,17 @@ public class WeakNetworkService {
 	 * 
 	 * @param netWorkValue
 	 */
-	public void changeNetwork(String netWorkValue) {		
+	public void setConnectionType(String netWorkValue) {		
 		goHome();
 		clickDeskApp("QNET");
 		helper.click(helper.findByUiautomatorText(netWorkValue), netWorkValue);
 		WebElement testButton = helper.findById("com.tencent.qnet:id/buttonTest");
 		if (!testButton.getText().contains("结束")) {
-			helper.click(testButton, "开启弱网测试");
+			helper.click(testButton, "开启"+netWorkValue);
 		} else {
 			logger.info("弱网测试功能已开启，无需点击");
+			goHome();
+			clickDeskApp("应用市场");
 		}
 	}
 	/**
@@ -654,22 +680,9 @@ public class WeakNetworkService {
 	 */
 	public void closeRecommendApp() {
 		helper.click(helper.findById("com.tencent.southpole.appstore:id/close"), "关闭必备");
-	}
+	}	
 
-	/**
-	 * 全选按钮
-	 */
-	public void selectAllButton() {
-		helper.click(helper.findByUiautomatorText("全选"), "全选");
-	}
-
-	/**
-	 * 取消全选按钮
-	 */
-	public void disableAllButton() {
-		helper.click(helper.findByUiautomatorText("取消全选"), "取消全选");
-	}
-
+	
 	/**
 	 * 安装、更新按钮
 	 * 
@@ -682,13 +695,7 @@ public class WeakNetworkService {
 		helper.click(helper.findById("com.tencent.southpole.appstore:id/download_button"), "安装");
 	}
 
-	/**
-	 * 安装、更新按钮 使用坐标方式点击
-	 */
-	public void installButtonByAxis(int x, int y) {
-		helper.tap(x, y);
-	}
-
+	
 	/**
 	 * 更改tab界面-game
 	 */
@@ -818,16 +825,12 @@ public class WeakNetworkService {
 		}
 	}
 
-	/**
-	 * 关闭广告
-	 */
-	public void closeAD() {
-		logger.info("关闭启动广告弹窗");
-		WebElement element = helper.findById("com.tencent.southpole.appstore:id/ic_close");
+	
+	public void isExist(WebElement element,String elementName) {
 		if (element != null) {
-			helper.click(element, "关闭推广");
+			helper.click(element, elementName);
 		}else {
-			logger.info("广告弹窗未找到，已跳过");
+			logger.info(element+",未找到,已跳过");
 		}
 	}
 
@@ -987,6 +990,10 @@ public class WeakNetworkService {
 	}	
 	public void killQNET() {
 		helper.killQNET();
+	}
+	private void closeAD() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

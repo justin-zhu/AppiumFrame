@@ -21,7 +21,7 @@ public class LogcatUtil extends Thread {
     private String deviceName;
 	@Override
 	public void run() {
-		logger.info("logcat启动");
+		logger.info("Logcat server startup");
 		execlogcat();
 	}
 		
@@ -47,11 +47,11 @@ public class LogcatUtil extends Thread {
 					writer.append(line+"\n");					
 				}	
 			}	
-			logger.info("Logcat结束");
+			logger.info("Logcat server quit");
 			p.destroy();	
 			reader.close();		
 			input.close();
-			writer.append("finished");			
+			writer.append("Finished");			
 			// 错误输出流
 			InputStream errorInput = p.getErrorStream();
 			BufferedReader errorReader = new BufferedReader(new InputStreamReader(errorInput,"UTF-8"));

@@ -16,11 +16,25 @@ public class PageOfGame {
 		super();		
 	}
 	/**
+	 * 游戏页
+	 * @return
+	 */
+	public WebElement getIndex() {
+		return helper.findById("com.tencent.southpole.appstore:id/tab_game");
+	}
+	/**
 	 * 游戏界面下的：新游
 	 * @return
 	 */
 	public WebElement getNewGame() {
 		return helper.findById("com.tencent.southpole.appstore:id/item_1");
+	}
+	/**
+	 * 游戏顶部推荐部
+	 * @return
+	 */
+	public WebElement getTopBanner() {
+		return helper.findByXpath("//*[@resource-id='com.tencent.southpole.appstore:id/app_banner']/android.widget.TextView[1]");
 	}
 	/**
 	 * 游戏界面下的:福利
@@ -84,5 +98,50 @@ public class PageOfGame {
 	 */
 	public WebElement getDownBtn() {
 		return helper.findById("com.tencent.southpole.appstore:id/download");
+	}
+	/**
+	 * 新游顶部
+	 * @return
+	 */
+	public WebElement getTopGame() {
+		return helper.findByXpath("//*[@resource-id='com.tencent.southpole.appstore:id/item']/android.widget.TextView[1]");
+	}
+	/**
+	 * 顶部新游详情界面 判断是否存在元素
+	 * @return
+	 */
+	public WebElement getTopGameInfo() {
+		return helper.findById("com.tencent.southpole.appstore:id/app_name_atmosphere");
+	}
+	/**
+	 * 全部游戏福利
+	 */
+	public WebElement getAllGameBoon() {
+		return helper.findById("com.tencent.southpole.appstore:id/button_all_game");
+	}
+	/**
+	 * 全部游戏福利下的游戏列表
+	 * index 1 默认取第一个
+	 */
+	public WebElement getAllGameBoonList() {
+		return helper.findByXpath("//*[@resource-id='com.tencent.southpole.appstore:id/content_view']/android.widget.TextView[1]");
+	}
+	/**
+	 * Gpass特权
+	 */
+	public WebElement getGpassGame() {
+		return helper.findById("com.tencent.southpole.appstore:id/button3");
+	}
+	/**
+	 * Gpass特权界面-用户信息
+	 */
+	public WebElement getGpassUserInfo() {
+		return helper.findById("com.tencent.southpole.appstore:id/bg_userinfo");
+	}
+	/**
+	 * 购机福利
+	 */
+	public WebElement getBuyPhoneBoon() {
+		return helper.findById("com.tencent.southpole.appstore:id/button2");
 	}
 }

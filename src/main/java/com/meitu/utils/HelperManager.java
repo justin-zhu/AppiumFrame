@@ -47,18 +47,13 @@ public class HelperManager {
 		try {						
 			ReflectUtil.invoke(object, userCase.getType().trim());
 			operationResult = true;			
-		} catch (NullPointerException e) {			
-			logger.info("NullPointerException异常信息:"+e.getMessage());
-			
-		} catch (RuntimeException e) {
-			//接收异常，不处理，让程序继续执行下一个方法
+		}  catch (Exception e) {
+			//接收异常,不处理,
 			operationResult = false;
-			logger.info("RuntimeException异常信息:"+e.getMessage());
-		}finally {
-			//涵数执行完毕均执行清理操作-确保下面涵数的执行环境在预期状态
-			logger.info("----------Finally Start----------");
-			ReflectUtil.invoke(object, "clean");
-			addResultToList(userCase);
+			e.printStackTrace();
+		}finally {	
+			//写入单个模块的执行结果
+			addResultToList(userCase);			
 			logger.info("----------Finally End----------");
 		}		
 	}
@@ -72,8 +67,7 @@ public class HelperManager {
 		map.put("传递的参数", userCase.getArg());
 		map.put("实际结果", "" + operationResult);
 		map.put("期望结果", "" + expectboolean);		
-		resultList.add(map);
-		helper.sleep(2000);
+		resultList.add(map);		
 		try {
 			Assert.assertEquals(operationResult, expectboolean, userCase.getStep() + "--------->>执行失败");
 		} catch (AssertionError e) {

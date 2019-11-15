@@ -14,7 +14,7 @@ import cn.hutool.poi.excel.ExcelUtil;
  *
  */
 public class JustinUtil {
-	private static SimpleDateFormat sdf = new SimpleDateFormat("MM_dd_HH_mm_ss");
+	private static SimpleDateFormat sdf = new SimpleDateFormat("MM_dd_HH_mm_ss_SSS");
 	static Logger logger =Logger.getLogger(JustinUtil.class);
 	public  static String getLocalTime() {		
 		Long millis = System.currentTimeMillis();

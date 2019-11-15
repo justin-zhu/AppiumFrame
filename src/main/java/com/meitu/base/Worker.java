@@ -1,6 +1,10 @@
 package com.meitu.base;
 import java.io.File;
+import java.util.List;
+
 import org.apache.log4j.Logger;
+import org.openqa.selenium.WebElement;
+
 import com.meitu.base.AbstractWorker;
 import com.meitu.ctrl.AppiumServerCtrl;
 import com.meitu.ctrl.AndroidDriverCtrl;
@@ -13,20 +17,28 @@ import com.meitu.utils.LogcatUtil;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelWriter;
+import io.appium.java_client.android.AndroidDriver;
 
-public class Worker extends AbstractWorker {	
-	Logger logger =Logger.getLogger(this.getClass());
+public class Worker extends AbstractWorker {
+	protected LogcatUtil logcat;
+	protected AndroidDriver<WebElement> androidDriver;
+	protected HelperManager helperManager;
+	protected DriverEntity driverEntity;
+	protected List<TestCaseEntity> caseList;
+	protected String sheetName;
+	protected String path;
+	Logger log =Logger.getLogger(this.getClass());
 	public Worker(DriverEntity driverEntity, String sheetName) {
 		this.driverEntity = driverEntity;
 		this.sheetName = sheetName;
-		logger.debug("传入Worker构造方法中的driverEntity参数：" + JSONUtil.toJsonStr(driverEntity));
+		log.debug("DriverEntity:" + JSONUtil.toJsonStr(driverEntity));
 	}
 	/**
 	 * 实例化一个AppiumServer
 	 */
 	@Override
 	public void getAppiumServer() {
-		logger.info("当前设备：" + driverEntity.getUdid());		
+		log.info("Current deviceUDID:" + driverEntity.getUdid());		
 		new Thread(()->{
 			try {
 				AppiumServerCtrl.Instance.startServer(driverEntity.getPort(), driverEntity.getUdid());
@@ -35,10 +47,10 @@ public class Worker extends AbstractWorker {
 			}
 		}
 		).start();
-		logger.info("等待AppiumServer启动");
+		log.info("Waiting AppiumServer startup");
 		try {
 			Thread.sleep(15000);
-			logger.info("休眠结束");
+			log.info("Sleep end");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -50,9 +62,8 @@ public class Worker extends AbstractWorker {
 	@Override
 	public void getDriver() {
 		androidDriver=AndroidDriverCtrl.Instance.creatDriver(driverEntity).getDriver(driverEntity.getPort());			
-		logger.info("androidDriver：" + androidDriver);
-		helperManager = new HelperManager(new Helper(androidDriver, path), sheetName);
-		logger.info("helperManager：" + androidDriver);
+		log.info("GetAndroidDriver:" + androidDriver);
+		helperManager = new HelperManager(new Helper(androidDriver, path), sheetName);		
 	}
 	/**
 	 * 执行测试
@@ -61,14 +72,9 @@ public class Worker extends AbstractWorker {
 	public void execute() {			
 		logcat = new LogcatUtil(driverEntity.getUdid(), new File(path));
 		logcat.start();		
-		for (TestCaseEntity caseEntity : getCaseList()) {
-			logger.info("---------------------"+JSONUtil.toJsonStr(caseEntity)+"---------------------");
-			
-			try {
-				helperManager.method(caseEntity);
-			} catch (Exception e) {
-				throw new RuntimeException("方法未指定参数："+caseEntity.getType());
-			}			
+		for (TestCaseEntity caseEntity : caseList) {
+			log.info(JSONUtil.toJsonStr(caseEntity));			
+			helperManager.method(caseEntity);			
 		}
 		logcat.interrupt();				
 	}
@@ -79,10 +85,12 @@ public class Worker extends AbstractWorker {
 	public void init() {
 		path = JustinUtil.getRootPath(driverEntity.getUdid() +"_"+sheetName+ JustinUtil.getLocalTime());		
 		ExcelReader reader = JustinUtil.readExcel(driverEntity.getPath(), sheetName);
-		logger.info("初始化sheetName：" + sheetName);
-		driverEntity.setAppPackage(reader.getCell(1, 0).toString());		
-		driverEntity.setAppActivity(reader.getCell(1, 1).toString());	
-		setCaseList(reader.read(2, 3, TestCaseEntity.class));
+		log.info("Init sheetName：" + sheetName);
+		driverEntity.setAppPackage(reader.getCell(1, 0).toString());
+		log.info("App package name:"+driverEntity.getAppPackage());
+		driverEntity.setAppActivity(reader.getCell(1, 1).toString());
+		log.info("App activity name:"+driverEntity.getAppActivity());
+		caseList=reader.read(2, 3, TestCaseEntity.class);
 		reader.close();
 		
 	}
@@ -100,12 +108,12 @@ public class Worker extends AbstractWorker {
 	 * @param path1
 	 */	
 	public void createResult() {
-		logger.info("用例执行完成，正在生成EXCEL结果文件");
+		log.info("用例执行完成,正在生成EXCEL结果文件");
 		String path1 = path + File.separator + sheetName + "测试结果" + ".xls";
 		ExcelWriter excelWriter = new ExcelWriter(path1, sheetName);
 		excelWriter.merge(6, "测试结果");
 		excelWriter.write(helperManager.getResultList());
 		excelWriter.close();
-		logger.info("文件已生成，路径：" + path1);
+		log.info("文件已生成，路径：" + path1);
 	}
 }
