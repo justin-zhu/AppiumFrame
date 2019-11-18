@@ -1,7 +1,6 @@
 package com.meitu.base;
 import java.io.File;
 import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebElement;
 
@@ -26,7 +25,7 @@ public class Worker extends AbstractWorker {
 	protected DriverEntity driverEntity;
 	protected List<TestCaseEntity> caseList;
 	protected String sheetName;
-	protected String path;
+	protected String path;	
 	Logger log =Logger.getLogger(this.getClass());
 	public Worker(DriverEntity driverEntity, String sheetName) {
 		this.driverEntity = driverEntity;
@@ -56,8 +55,7 @@ public class Worker extends AbstractWorker {
 		}
 	}
 	/**
-	 * 实例化一个androidDriver
-	 *
+	 * 实例化androidDriver	 
 	 */
 	@Override
 	public void getDriver() {
@@ -116,4 +114,5 @@ public class Worker extends AbstractWorker {
 		excelWriter.close();
 		log.info("文件已生成，路径：" + path1);
 	}
+	
 }

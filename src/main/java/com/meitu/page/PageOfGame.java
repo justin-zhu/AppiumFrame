@@ -15,6 +15,11 @@ public class PageOfGame {
 	public PageOfGame() {
 		super();		
 	}
+	public class InnerNewGmae{
+		public WebElement getWeb() {
+			return helper.findById("");
+		}
+	}
 	/**
 	 * 游戏页
 	 * @return
@@ -85,13 +90,7 @@ public class PageOfGame {
 	public WebElement getClassify() {
 		return helper.findById("com.tencent.southpole.appstore:id/item_4");
 	}
-	/**
-	 * 分类下的游戏分类:休闲类
-	 * @return
-	 */
-	public WebElement getClassifty_Game_Relax() {
-		return helper.findByUiautomatorText("休闲益智");
-	}
+	
 	/**
 	 * 游戏界面下的：下载按钮
 	 * @return
@@ -107,7 +106,7 @@ public class PageOfGame {
 		return helper.findByXpath("//*[@resource-id='com.tencent.southpole.appstore:id/item']/android.widget.TextView[1]");
 	}
 	/**
-	 * 顶部新游详情界面 判断是否存在元素
+	 * 顶部新游推荐位详情界面 判断是否存在元素
 	 * @return
 	 */
 	public WebElement getTopGameInfo() {

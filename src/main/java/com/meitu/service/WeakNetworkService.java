@@ -11,7 +11,7 @@ public class WeakNetworkService extends AbstractPage{
 	}	
 	private static final String NETWORK_CLOSE = "100%丢包";
 	private static final String NETWORK_DELAY = "延迟";
-	private static final String NETWORK_NORMAL = "普通网络";
+	private static final String NETWORK_NORMAL = "正常网络";
 	Logger logger = Logger.getLogger(this.getClass());
 	public void firstLogin() {
 		//构建首次启动场景,清除应用缓存数据	
@@ -19,11 +19,11 @@ public class WeakNetworkService extends AbstractPage{
 		//设置网络状态为无网
 		setConnectionType(NETWORK_CLOSE);
 		//首次启动 权限窗口
-		helper.click(main.getAuthor(), "同意");		
+		helper.click(pub.getAuthor(), "同意");		
 		//进入无网状,装机必备界面处于加载中,需要等待
 		helper.sleep(15000);
 		//加载完成,提示没有获取到数据,再次点击,触发二次加载
-		helper.click(main.getErrorOfGetDate(), "没有获取到数据提示");	
+		helper.click(pub.getErrorOfGetDate(), "没有获取到数据提示");	
 		//切换至正常网络
 		setConnectionType(NETWORK_NORMAL);
 		//上滑 触发再次加载
@@ -43,11 +43,11 @@ public class WeakNetworkService extends AbstractPage{
 		helper.clearAppSroreData();
 		//正常网络
 		setConnectionType(NETWORK_NORMAL);		
-		helper.click(main.getAuthor(), "同意");		
+		helper.click(pub.getAuthor(), "同意");		
 		//关闭必备界面
 		helper.click(hotApps.getClose(), "关闭");
 		//关闭广告弹窗 如果有的话
-		helper.isExist(main.getAdFrame(), "广告");
+		helper.isExist(pub.getAdFrame(), "广告");		
 	}
 	
 	/**
@@ -55,14 +55,14 @@ public class WeakNetworkService extends AbstractPage{
 	 * 100%
 	 */
 	public void reOpenAppStore() {
-		helper.killAppStore();
-		helper.killQNET();
+		
+		this.clean();
 		//设置网络为正常网络
 		setConnectionType(NETWORK_NORMAL);
 		//跳过广告
 		helper.sleep(6000);			
 		//关闭广告弹窗 如果有的话
-		helper.isExist(main.getAdFrame(), "广告");
+		helper.isExist(pub.getAdFrame(), "广告");
 		//切换无网状态
 		setConnectionType(NETWORK_CLOSE);
 		helper.click(main.getIndex(), "首页");
@@ -147,7 +147,7 @@ public class WeakNetworkService extends AbstractPage{
 		//无网状态 点击应用详情界面 需要等待
 		helper.sleep(15000);
 		//界面加载完成 显示没有获取到数据 判断元素是否存在
-		helper.checkElement(main.getErrorOfGetDate(), "没有获取到数据");
+		helper.checkElement(pub.getErrorOfGetDate(), "没有获取到数据");
 		//返回
 		helper.back();
 		//切到游戏页
@@ -165,12 +165,11 @@ public class WeakNetworkService extends AbstractPage{
 	 * 11-15 pass
 	 */
 	public void newGame() {
-		helper.killAppStore();
-		helper.killQNET();
+		this.clean();
 		setConnectionType(NETWORK_NORMAL);
 		helper.sleep(6000);
 		//关闭广告弹窗 如果有的话
-		helper.isExist(main.getAdFrame(), "广告");	
+		helper.isExist(pub.getAdFrame(), "广告");	
 		//切到游戏页
 		helper.click(game.getIndex(), "游戏页");
 		setConnectionType(NETWORK_CLOSE);
@@ -202,15 +201,15 @@ public class WeakNetworkService extends AbstractPage{
 	 * 福利
 	 */
 	public void homePageWelfare() {
-		clean();
+		this.clean();
 		setConnectionType(NETWORK_NORMAL);
 		helper.sleep(6000);
 		//关闭广告弹窗 如果有的话
-		helper.isExist(main.getAdFrame(), "广告");
+		helper.isExist(pub.getAdFrame(), "广告");
 		setConnectionType(NETWORK_CLOSE);
 		helper.click(main.getBoon(), "福利");		
 		helper.sleep(15000);
-		helper.checkElement(main.getErrorOfGetDate(), "没有获取到数据");
+		helper.checkElement(pub.getErrorOfGetDate(), "没有获取到数据");
 		helper.back();
 		//内容加载出来后 断网
 		setConnectionType(NETWORK_NORMAL);
@@ -218,7 +217,7 @@ public class WeakNetworkService extends AbstractPage{
 		setConnectionType(NETWORK_CLOSE);	
 		helper.click(game.getAllGameBoon(), "全部游戏福利");		
 		helper.sleep(15000);
-		helper.checkElement(main.getErrorOfGetDate(), "没有获取到数据");
+		helper.checkElement(pub.getErrorOfGetDate(), "没有获取到数据");
 		helper.back();
 		helper.click(game.getGpassGame(), "GPASS特权游戏");
 		helper.checkElement(game.getGpassUserInfo(), "Gpass特权界面下的用户信息面板");		
@@ -253,14 +252,14 @@ public class WeakNetworkService extends AbstractPage{
 	 * 100%
 	 */
 	public void homePageList() {
-		clean();
+		this.clean();
 		setConnectionType(NETWORK_NORMAL);
 		helper.sleep(6000);
 		//关闭广告弹窗 如果有的话
-		helper.isExist(main.getAdFrame(), "广告");	
+		helper.isExist(pub.getAdFrame(), "广告");	
 		setConnectionType(NETWORK_CLOSE);
 		helper.click(main.getList(), "榜单");
-		helper.checkElement(main.getErrorOfGetDate(), "没有获取到数据");		
+		helper.checkElement(pub.getErrorOfGetDate(), "没有获取到数据");		
 		setConnectionType(NETWORK_NORMAL);
 		helper.swipeDirection("up");
 		helper.click(main.getListIndex1(), "第一名应用");
@@ -269,7 +268,7 @@ public class WeakNetworkService extends AbstractPage{
 		setConnectionType(NETWORK_CLOSE);
 		helper.click(main.getListIndex1(), "第一名应用");
 		helper.sleep(15000);
-		helper.checkElement(main.getErrorOfGetDate(), "没有获取到数据");
+		helper.checkElement(pub.getErrorOfGetDate(), "没有获取到数据");
 		helper.back();
 		helper.back();
 		setConnectionType(NETWORK_DELAY);
@@ -296,87 +295,101 @@ public class WeakNetworkService extends AbstractPage{
 	 * @return pass
 	 */
 	public void homeClassify() {
-		clean();
+		this.clean();
 		setConnectionType(NETWORK_NORMAL);
 		helper.sleep(6000);
 		//关闭广告弹窗 如果有的话
-		helper.isExist(main.getAdFrame(), "广告");
+		helper.isExist(pub.getAdFrame(), "广告");
 		setConnectionType(NETWORK_CLOSE);
 		helper.click(main.getClassify(), "首页分类");
 		helper.sleep(15000);
-		helper.checkElement(main.getErrorOfGetDate(), "没有获取到数据");
+		helper.checkElement(pub.getErrorOfGetDate(), "没有获取到数据");
 		setConnectionType(NETWORK_NORMAL);
 		helper.swipeDirection("up");
-		helper.checkElement(main.getClassify_Soft_Video(), "视频分类");
+		helper.checkElement(pub.getClassify_Soft_Video(), "视频分类");
 		helper.back();
 		setConnectionType(NETWORK_DELAY);
 		helper.click(main.getClassify(), "首页分类");
-		helper.click(main.getClassify_Soft_Video(), "视频分类");		
+		helper.click(pub.getClassify_Soft_Video(), "视频分类");		
 		helper.sleep(10000);
-		helper.checkElement(helper.findById("com.tencent.southpole.appstore:id/app_name"), "视频分类第一个应用");
+		helper.checkElement(pub.getClassify_SubClassApp(), "视频分类第一个应用");
 		helper.swipeDirection("end");
 		helper.swipeDirection("top");
-		helper.click(helper.findById("com.tencent.southpole.appstore:id/app_name"), "视频分类第一个应用");
+		helper.click(pub.getClassify_SubClassApp(), "视频分类第一个应用");
 		helper.checkElement(main.getAppInfo(), "详情标签");
 		helper.back();		
 	}
 
 	/**
 	 * 首页分类-任意分类下的列表 
-	 * pass
-	 * 100%
+	 * 
 	 */
 	public void homeClassifyList() {
+		this.clean();
 		setConnectionType(NETWORK_NORMAL);
-		sleep(6000);
-		closeAD();		
-		clickClassify();	
+		helper.sleep(6000);
+		helper.click(pub.getAdFrame(), "广告");
+		helper.click(main.getClassify(), "首页分类");
 		setConnectionType(NETWORK_CLOSE);
-		randomCheckAppInfo("分类");	
-		back();
-		back();
-		changeTabToGame();
-		slideDown(1);
-		sleep(15000);
-		changeTabToSoft();
-		slideDown(1);
-		sleep(15000);
-		changeTabToHome();
-		slideDown(1);
-		sleep(15000);
+		helper.click(pub.getClassify_Soft_Video(), "视频分类");	
+		helper.sleep(15000);
+		helper.checkElement(pub.getErrorOfGetDate(), "没有获取到数据");
+		helper.back();
 		setConnectionType(NETWORK_DELAY);
-		sleep(10000);
-		clickClassify();
-		sleep(10000);
-		randomCheckAppInfo("分类");
-		sleep(10000);
-		back();
-		clickClassify();
+		helper.click(pub.getClassify_Soft_Video(), "视频分类");
+		helper.sleep(15000);
+		helper.checkElement(pub.getClassify_SubClassApp(), "检查视频分类应用");
+		helper.swipeDirection("up");
+		helper.checkElement(pub.getClassify_SubClassApp(), "检查视频分类应用");
+		helper.back();
 		setConnectionType(NETWORK_CLOSE);
-		checkList("软件", 15000);		
+		helper.click(pub.getClassify_Soft_Life(), "生活分类");
+		helper.sleep(15000);
+		helper.checkElement(pub.getErrorOfGetDate(), "没有获取到数据");
+		setConnectionType(NETWORK_NORMAL);
+		helper.swipeDirection("up");
+		helper.checkElement(pub.getClassify_SubClassApp(), "检查生活分类应用");	
+		helper.back();
+		helper.click(pub.getClassify_Game(), "游戏分类");		
+		setConnectionType(NETWORK_CLOSE);
+		helper.click(pub.getClassifty_Game_Relax(), "休闲益智");	
+		helper.sleep(15000);
+		helper.checkElement(pub.getErrorOfGetDate(), "没有获取到数据");
+		helper.back();
+		setConnectionType(NETWORK_DELAY);
+		helper.click(pub.getClassifty_Game_Relax(), "休闲益智");
+		helper.sleep(15000);
+		helper.checkElement(pub.getClassify_SubClassApp(), "检查休闲益智分类应用");
+		helper.swipeDirection("up");
+		helper.checkElement(pub.getClassify_SubClassApp(), "检查休闲益智分类应用");
+		helper.back();
+		setConnectionType(NETWORK_CLOSE);
+		helper.click(pub.getClassify_Game_OnLineGame(), "网络游戏分类");
+		helper.sleep(15000);
+		helper.checkElement(pub.getErrorOfGetDate(), "没有获取到数据");
+		setConnectionType(NETWORK_NORMAL);
+		helper.swipeDirection("up");
+		helper.checkElement(pub.getClassify_SubClassApp(), "检查网络游戏分类应用");		
 	}
-
-	
 
 	/**
 	 * 福利礼包
 	 * 50%
 	 */
 	public void WelfareGift() {
+		this.clean();
 		setConnectionType(NETWORK_NORMAL);
-		sleep(6000);
-		closeAD();
-		changeTabToMy();
-		logout();
-		changeTabToGame();
-		clickWelfare();
+		helper.sleep(6000);
+		helper.click(pub.getAdFrame(), "广告");
+		helper.click(center.getIndex(), "个人中心");		
+		center.logout();
+		helper.click(main.getIndex(), "首页");
+		helper.click(main.getBoon(), "福利");		
 		setConnectionType(NETWORK_CLOSE);
-		clickOneKeyGet();
-		otherLogin();
-		loginQQ();
-		sleep(7000);
-		checkLoginView();
-		back();
+		//测试前需要安装游戏 否则将不会出现此元素
+		helper.click(main.getBoonOnekeyGet(), "一键领取");
+		helper.checkElement(center.getSystemLogin(), "检查快捷登陆按钮");		
+		//无网提示toast		
 		clickWelfareBanner();
 		sleep(15000);
 		back();
@@ -721,7 +734,7 @@ public class WeakNetworkService extends AbstractPage{
 	 * 更改tab界面-Home
 	 */
 	public void changeTabToMy() {
-		helper.click(helper.findById("com.tencent.southpole.appstore:id/tab_mine"), "首页-Tab");
+		helper.click(helper.findById("com.tencent.southpole.appstore:id/tab_mine"), "我的");
 	}
 
 	/**
@@ -843,15 +856,16 @@ public class WeakNetworkService extends AbstractPage{
 
 	/**
 	 * 登陆状态检查
+	 * 已登陆返回true,未登陆返回false
 	 */
 	public boolean isLogin() {
-		WebElement element = helper.findById("com.tencent.southpole.appstore:id/nick_name");
+		WebElement element = center.getUserName();
 		if (element != null) {
-			logger.info("状态：未登陆");
-			return false;
-		} else {
-			logger.info("状态：已登陆");
+			logger.info("用户已登陆,用户名"+element.getText());
 			return true;
+		} else {
+			logger.info("未登陆");
+			return false;
 		}
 	}
 

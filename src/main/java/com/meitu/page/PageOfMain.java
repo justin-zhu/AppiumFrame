@@ -23,26 +23,9 @@ public class PageOfMain {
 	
 	public PageOfMain() {
 		super();
-	}
-	/**
-	 * 启动时，弹出的权限窗口，同意元素
-	 * @return
-	 */
-	public WebElement getAuthor() {
-		return helper.findById("com.tencent.southpole.appstore:id/dialog_right_btn");
-	}
-	public WebElement getErrorOfGetDate() {
-		return helper.findById("com.tencent.southpole.appstore:id/tv_net_error_desc");
-	}
+	}	
 	
 	
-	/**
-	 * 首页广告弹窗口，关闭按钮
-	 * @return
-	 */
-	public WebElement getAdFrame() {
-		return helper.findById("com.tencent.southpole.appstore:id/ic_close");
-	}
 	/**
 	 * 底部导航区的首页元素
 	 * @return
@@ -63,6 +46,12 @@ public class PageOfMain {
 	 */
 	public WebElement getBoon() {
 		return helper.findById("com.tencent.southpole.appstore:id/tag_layout_2");
+	}
+	/**
+	 * 福利界面-一键领取按钮
+	 */
+	public WebElement getBoonOnekeyGet() {		
+		return helper.findById("com.tencent.southpole.appstore:id/button_receive_all");
 	}
 	/**
 	 * 首页顶部:榜单
@@ -119,28 +108,7 @@ public class PageOfMain {
 	public WebElement getClassify_Soft() {
 		return helper.findByXpath("//androidx.appcompat.app.ActionBar.Tab[@content-desc=\"软件\"]");
 	}
-	/**
-	 * 分类下的软件分类:视频类
-	 * @return
-	 */
-	public WebElement getClassify_Soft_Video() {
-		return helper.findByUiautomatorText("视频");
-	}
-	/**
-	 * 分类界面下的游戏分类
-	 * @return
-	 */
-	public WebElement getClassify_Game() {
-		return helper.findByXpath("//androidx.appcompat.app.ActionBar.Tab[@content-desc=\"游戏\"]");
-	}
-	/**
-	 * 分类下的游戏分类:休闲类
-	 * @return
-	 */
-	public WebElement getClassifty_Game_Relax() {
-		return helper.findByUiautomatorText("休闲益智");
-	}	
-	
+		
 	/**
 	 * 首页下载按钮
 	 * @return
