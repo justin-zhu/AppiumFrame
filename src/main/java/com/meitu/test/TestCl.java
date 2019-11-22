@@ -36,12 +36,14 @@ public class TestCl {
 		driverEntity.setPort("4723");
 		//自动获取连接的设置UDID		
 		driverEntity.setUdid(DeviceUtils.getDeviceInfo().trim());		
-		driverEntity.setVersion("9.0");		
+		driverEntity.setVersion("9.0");			
 	}
 	
 	@Test(dataProvider="moduleNameArray", invocationCount =1)
-	public void test1(String sheetName) throws InterruptedException {		
-		logger.info(sheetName+"Start Test");		
+	public void test1(String sheetName) throws InterruptedException {
+		logger.info("*****************************************");
+		logger.info("Test start");	
+		logger.info("*****************************************");
 		worker =new Worker(driverEntity,sheetName);
 		worker.start();
 	}

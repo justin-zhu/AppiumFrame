@@ -46,8 +46,7 @@ public class DeviceUtils {
 				UDID =  str;
 				break;
 			}
-		}
-		System.out.println("设备UDID:"+UDID);
+		}		
 		return UDID;
 	}
 }

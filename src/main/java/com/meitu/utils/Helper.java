@@ -1,6 +1,7 @@
 package com.meitu.utils;
 
 import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.android.AndroidTouchAction;
 import io.appium.java_client.android.connection.ConnectionState;
 import io.appium.java_client.android.nativekey.AndroidKey;
@@ -32,23 +33,31 @@ public class Helper {
 	private int height;
 	private String methodName;
 	private AndroidTouchAction action;
-	public AndroidDriver<WebElement> androidDriver;		
+	private AndroidDriver<AndroidElement> androidDriver;		
 	private Logger log = Logger.getLogger(this.getClass());
 	/**
 	 * 构造函数
 	 * 
 	 * @param driver
 	 */
-	public Helper(AndroidDriver<WebElement> driver, String path) {
+	public Helper(AndroidDriver<AndroidElement> driver, String path) {
 		this.path = path;
 		this.androidDriver = driver;	
 		this.action = new AndroidTouchAction(androidDriver);
-		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);		
 		log.info("Active Stack info:"+action);		
 		width = androidDriver.manage().window().getSize().width;
 		height = androidDriver.manage().window().getSize().height;		
 	}
 	
+	public AndroidDriver<AndroidElement> getAndroidDriver() {
+		return androidDriver;
+	}
+
+	public void setAndroidDriver(AndroidDriver<AndroidElement> androidDriver) {
+		this.androidDriver = androidDriver;
+	}
+
 	public String getMethodName() {
 		return methodName;
 	}
@@ -201,8 +210,7 @@ public class Helper {
 			log.info("点击失败:"+elementName);
 			snapshot("fail"+elementName);
 			throw new RuntimeException("元素点击失败");			
-		}
-		System.gc();		
+		}			
 	}
 
 	/**
@@ -212,14 +220,14 @@ public class Helper {
 	 */
 	public void send(WebElement element, String text) {
 		if (element == null) {
-			log.info("输入内容失败，元素未找到");
-			snapshot("输入失败");			
+			log.info("输入内容失败,元素未找到");
+			snapshot("输入失败");	
+			throw new RuntimeException("元素未找到,输入失败");
 		} else {
 			element.sendKeys(text);
 			element = null;
 			log.info("输入内容成功:" + text);
-			snapshot("输入"+text+"成功");
-			throw new RuntimeException("元素为空,输入失败");
+			snapshot("输入"+text+"成功");			
 		}
 	}
 
@@ -240,7 +248,7 @@ public class Helper {
 		}
 	}
 	
-
+	
 	/**
 	 * 自动上下滑动寻找元素 text
 	 * @param text 传入元素的唯一文本值（此方法多用于元素不在当前窗口时）
@@ -256,13 +264,22 @@ public class Helper {
 		return null;
 
 	}
-
+	public WebElement findByaccessibilityid(String accessi) {
+		try {
+			WebElement element = androidDriver.findElementByAccessibilityId(accessi);
+			return element;
+		} catch (Exception e) {			
+			return null;
+		}
+		
+	}
 	/**
 	 *
 	 * @param text 传入元素的唯一文本值（此方法多用于元素不在当前窗口时，可自动左右滑动寻找元素）
 	 * @return WebElement
 	 */
-	public WebElement findBySlideText_h(String text) {		
+	public WebElement findBySlideTextHorizontal(String text) {	
+		
 		String ui = "new UiScrollable(new UiSelector().scrollable(true)).setAsHorizontalList().scrollIntoView(new UiSelector().text(\""
 				+ text + "\"))";
 		try {
@@ -277,7 +294,7 @@ public class Helper {
 	 * @param text 传入元素的唯一id值（此方法多用于元素不在当前窗口时，可自动上下滑动寻找元素）
 	 * @return WebElement
 	 */
-	public WebElement find_by_slide_id(String id) {
+	public WebElement findBySlideId(String id) {
 		WebElement element = null;
 		sleep(3000);
 		String uiautoExp = "new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId(\""
@@ -342,7 +359,7 @@ public class Helper {
 		new AndroidTouchAction(androidDriver).press(PointOption.point(x, y))
 		.waitAction(WaitOptions.waitOptions(Duration.ofSeconds(1)))
 		.moveTo(PointOption.point(x, y/2)).release().perform();		
-		log.info("向上滑动------------>执行成功");
+		log.info("上滑成功");
 				
 	}
 
@@ -357,7 +374,7 @@ public class Helper {
 		new AndroidTouchAction(androidDriver).press(PointOption.point(x, y))
 		.waitAction(WaitOptions.waitOptions(Duration.ofSeconds(1)))
 		.moveTo(PointOption.point(x, y + (height - y) / 2)).release().perform();		
-		log.info("向下滑动------------>执行成功");		
+		log.info("下滑成功");		
 	}
 
 	/**
@@ -371,7 +388,7 @@ public class Helper {
 		new AndroidTouchAction(androidDriver).press(PointOption.point(x, y))
 		.waitAction(WaitOptions.waitOptions(Duration.ofSeconds(1)))
 		.moveTo(PointOption.point(3 % 2, y)).release().perform();		
-		log.info("向左滑动------------>执行成功");			
+		log.info("左滑成功");			
 	}
 
 
@@ -394,31 +411,34 @@ public class Helper {
 	 * @param direction 传进来一个up down left right
 	 * @return
 	 */
-	public void swipeDirection(String direction) {
-		log.info("swipe:"+direction);
+	public void swipeDirection(String direction) {		
 		if (direction.equals("right")) {
 			new AndroidTouchAction(androidDriver).press(PointOption.point(width / 4, height / 2))
 			.waitAction(WaitOptions.waitOptions(Duration.ofSeconds(1)))
 			.moveTo(PointOption.point(width * 3 / 4, height / 2)).release().perform();			
 			snapshot("右滑" + direction);
+			log.info("右滑成功");
 			
 		} else if (direction.equals("left")) {
 			new AndroidTouchAction(androidDriver).press(PointOption.point(width * 3 / 4, height / 2))
 			.waitAction(WaitOptions.waitOptions(Duration.ofSeconds(1)))
 			.moveTo(PointOption.point(width / 4, height / 2)).release().perform();			
 			snapshot("左滑" + direction);
+			log.info("左滑成功");
 			
 		} else if (direction.equals("down")) {
 			new AndroidTouchAction(androidDriver).press(PointOption.point(width / 2, height / 4))
 			.waitAction(WaitOptions.waitOptions(Duration.ofSeconds(1)))
 			.moveTo(PointOption.point( width / 2, height * 3 / 4)).release().perform();			
 			snapshot("下滑" + direction);
+			log.info("下滑成功");
 			
 		} else if (direction.equals("up")) {
 			new AndroidTouchAction(androidDriver).press(PointOption.point(width / 2, height * 3 / 4))
 			.waitAction(WaitOptions.waitOptions(Duration.ofSeconds(1)))
 			.moveTo(PointOption.point(width / 2, height / 4)).release().perform();			
 			snapshot("上滑" + direction);
+			log.info("上滑成功");
 			
 		} else if (direction.equals("end")) {
 			String page1;
@@ -430,7 +450,7 @@ public class Helper {
 				.waitAction(WaitOptions.waitOptions(Duration.ofSeconds(1))).moveTo(PointOption.point(width / 2, height / 4))
 				.release().perform();
 				sleep(3000);
-				snapshot("滑动"+direction);
+				snapshot("滑动至底部");
 				page2 = androidDriver.getPageSource();
 				count++;
 			} while (!page1.equals(page2)&&count < 15);
@@ -446,7 +466,7 @@ public class Helper {
 				.waitAction(WaitOptions.waitOptions(Duration.ofSeconds(1)))
 				.moveTo(PointOption.point(width / 2, height * 3 / 4)).release().perform();				
 				sleep(3000);
-				snapshot("滑动"+direction);
+				snapshot("滑动至顶部");
 				page2 = androidDriver.getPageSource();
 				count++;
 			} while (!page1.equals(page2)&&count < 15);
@@ -469,20 +489,20 @@ public class Helper {
 		log.debug("saveLocal:"+saveLocal.getPath());
 		if(!saveLocal.exists()) {			
 			saveLocal.mkdirs();
-			log.debug("文件夹不存在，已创建:"+saveLocal.getPath());
+			log.debug("文件夹不存在,已创建:"+saveLocal.getPath());
 		}else {
 			log.debug("Folder already exists");
 		}		
 		File picture = new File(saveLocal + "\\" + fileName +".png");		
 		try {
 			FileUtils.copyFile(scrFile, picture);
-			log.info("Screenshot save path:" + picture.getPath());
+			log.info("screenshot save path:" + picture.getPath());
 			if(actionName.contains("fail")) {
 				FileUtils.copyFile(scrFile, new File(saveLocal+"\\"+"failPic"+fileName+".png"));
-				log.debug("Fail operation :"+saveLocal+"\\"+"failPic"+fileName+".png");
+				log.debug("fail operation :"+saveLocal+"\\"+"failPic"+fileName+".png");
 			}			
 		} catch (IOException e1) {
-			log.info("Screenshot Failed");
+			log.info("screenshot failed");
 		} finally {
 			saveLocal = null;
 			actionName = null;
@@ -495,7 +515,7 @@ public class Helper {
 	public void H5pause(WebElement element) {
 		androidDriver.executeScript("arguments[0].pause()", element);
 		String url = (String) androidDriver.executeScript("return arguments[0].currentSrc;", element);
-		log.info("已暂停，URL地址为:" + url);		
+		log.info("已暂停,URL地址为:" + url);		
 	}
 
 	/**
@@ -504,7 +524,7 @@ public class Helper {
 	public void H5player(WebElement element) {
 		androidDriver.executeScript("arguments[0].play()", element);
 		String url = (String) androidDriver.executeScript("return arguments[0].currentSrc;", element);
-		log.info("开始播放，URL地址为:" + url);		
+		log.info("开始播放,URL地址为:" + url);		
 	}
 
 	/**
@@ -548,7 +568,7 @@ public class Helper {
 	 */
 	public void sleep(int ms) {
 		try {
-			log.info("Sleep "+ms+"ms");
+			log.info("sleep "+ms+"ms");
 			Thread.sleep(ms);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -562,8 +582,7 @@ public class Helper {
 	 * @return
 	 */
 	@SuppressWarnings("deprecation")
-	public void pressKeyCode(int code) {
-		log.info("KeyEvent:[" + code+"]");
+	public void pressKeyCode(int code) {		
 		androidDriver.pressKeyCode(code);
 		snapshot("KeyEvent" + code);		
 	}
@@ -571,6 +590,7 @@ public class Helper {
 	 * 回到桌面
 	 */
 	public void pressKeyCodeToHome() {
+		log.info("返回桌面");
 		pressKeyCode(3);
 	}
 	// 清理数据
@@ -667,8 +687,8 @@ public class Helper {
 		if(element==null) {
 			throw new RuntimeException("检查的元素不存在:"+desc);
 		}else {
-			log.info("检查元素成功！"+desc+"元素存在");
-			log.info("元素文本内部:"+element.getText());
+			log.info("检查元素成功!"+desc+"元素存在");
+			log.info("界面提示文本:"+element.getText());
 		}
 	}
 	
@@ -688,5 +708,12 @@ public class Helper {
 				
 			}
 		});		
+	}
+	/**
+	 * 隐藏键盘
+	 */
+	public void hideKeyBoard() {
+		androidDriver.hideKeyboard();
+		log.info("隐藏键盘");		
 	}
 }

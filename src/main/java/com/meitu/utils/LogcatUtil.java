@@ -21,7 +21,7 @@ public class LogcatUtil extends Thread {
     private String deviceName;
 	@Override
 	public void run() {
-		logger.info("Logcat server startup");
+		logger.info("logcat server startup");
 		execlogcat();
 	}
 		
@@ -47,7 +47,7 @@ public class LogcatUtil extends Thread {
 					writer.append(line+"\n");					
 				}	
 			}	
-			logger.info("Logcat server quit");
+			logger.info("logcat server quit successed");
 			p.destroy();	
 			reader.close();		
 			input.close();
@@ -63,7 +63,7 @@ public class LogcatUtil extends Thread {
 				}	
 			}				
 			p.destroy();			
-			errorReader.close();// 此处有依赖关系，先关闭errorReader			
+			errorReader.close();		
 			errorInput.close();			
 			writer.append("finished");
 			} catch (IOException e) {	

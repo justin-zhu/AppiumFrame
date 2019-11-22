@@ -8,17 +8,20 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import cn.hutool.core.util.RuntimeUtil;
+import io.appium.java_client.android.Activity;
 import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.android.AndroidTouchAction;
-import io.appium.java_client.touch.WaitOptions;
-import io.appium.java_client.touch.offset.PointOption;
+import io.appium.java_client.android.AndroidElement;
+import io.appium.java_client.android.nativekey.AndroidKey;
+import io.appium.java_client.android.nativekey.KeyEvent;
 public class Test01 {
-	AndroidDriver<WebElement>	driver ;
-	@BeforeMethod
+	AndroidDriver<AndroidElement>	driver ;
+	
 	public void afterMethod() throws InterruptedException {		
 		 DesiredCapabilities capabilities = new DesiredCapabilities();//设置各项参数
-	        capabilities.setCapability("deviceName", "ZS62C19408A00067");        
-	        capabilities.setCapability("udid",  "ZS62C19408A00067");
+	        capabilities.setCapability("deviceName", "K6AIKNN51219P99");        
+	        capabilities.setCapability("udid",  "K6AIKNN51219P99");
 	        capabilities.setCapability("platformVersion", "9.0");       
 	        capabilities.setCapability("platformName", "Android");
 	        capabilities.setCapability("autoGrantPermissions", true);
@@ -29,30 +32,35 @@ public class Test01 {
 	        capabilities.setCapability("unicodeKeyboard", false);// 控制系统键盘
 	        capabilities.setCapability("resetKeyboard", false);	        
 			try {
-				driver = new AndroidDriver<WebElement>(new URL("http://127.0.0.1:"+"4725"+"/wd/hub"), capabilities);
+				driver = new AndroidDriver<AndroidElement>(new URL("http://127.0.0.1:"+"4725"+"/wd/hub"), capabilities);
 				System.out.println("Driver已连接");
 				driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
 			} catch (Exception e) {				
 				e.printStackTrace();
-			}
-			System.out.println("开始休眠");
-			Thread.sleep(10000);
-			String express ="//*[@resource-id='com.tencent.southpole.appstore:id/recycle_view']/android.view.ViewGroup["+1+"]";
-			new AndroidTouchAction(driver).press(PointOption.point(500, 300))
-			.waitAction(WaitOptions.waitOptions(Duration.ofSeconds(1)))
-			.moveTo(PointOption.point( 500, 1000)).release().perform();	
+			}	
+			System.out.println("休息10秒");
 			Thread.sleep(5000);
-			new AndroidTouchAction(driver).press(PointOption.point(500, 1550))
-			.waitAction(WaitOptions.waitOptions(Duration.ofSeconds(2)))
-			.moveTo(PointOption.point(535, 807)).release().perform();
-			WebElement element = driver.findElementByXPath(express);
-			element.click();
-			System.out.println("成功点击");
+			System.out.println("打开另外一个应用");	
+			//com.tencent.qnet.ui.login.LoginActivity
+			//com.tencent.qnet.ui.MainActivity
+			Activity activity = new Activity("com.tencent.qnet", "com.tencent.qnet.ui.MainActivity");
+			activity.setAppWaitActivity("com.tencent.qnet.ui.MainActivity");
+			activity.setAppWaitPackage("com.tencent.qnet");			
+			driver.startActivity(activity);				
+			Thread.sleep(5000);			
+			driver.findElementById("com.tencent.qnet:id/btnAddProfile").click();
+			Thread.sleep(5000);	
+			driver.pressKey(new KeyEvent(AndroidKey.HOME));
+			
 			Thread.sleep(10000);
 			
 	}
 	@Test
 	public void test1() {		
-		
+		String str = RuntimeUtil.execForStr("adb shell pm list packages");
+		System.out.println(str);
+		if(str.contains("weibo")) {
+			System.out.println("已安装新浪微博");
+		}
 	}
 }

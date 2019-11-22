@@ -5,6 +5,8 @@ import org.openqa.selenium.WebElement;
 
 import com.meitu.utils.Helper;
 
+import cn.hutool.core.util.RuntimeUtil;
+
 public class PageOfCenter {
 	Helper helper;
 	Logger logger = Logger.getLogger(getClass());
@@ -42,6 +44,12 @@ public class PageOfCenter {
 	 */
 	public WebElement getLogoutBtn() {
 		return helper.findByUiautomatorText("退出登录");
+	}
+	/**
+	 * 确定按钮
+	 */
+	public WebElement getConfirmBtn() {
+		return helper.findById("com.tencent.southpole.appstore:id/dialog_right_btn");
 	}
 	/**
 	 * 微信登陆按钮
@@ -92,6 +100,80 @@ public class PageOfCenter {
 		if (isLogin()) {
 			helper.click(getSettingBtn(), "设置");
 			helper.click(getLogoutBtn(), "退出登陆");
+			helper.click(getConfirmBtn(), "确定");
 		} 
-	}	
+	}
+	/**
+	 * 应用卸载
+	 * @return
+	 */
+	public WebElement getAppRemove() {
+		return helper.findByIdAndText("com.tencent.southpole.appstore:id/personal_title", "应用卸载");
+	}
+	/**
+	 * 应用更新
+	 * @return
+	 */
+	public WebElement getAppUpdate() {
+		return helper.findByIdAndText("com.tencent.southpole.appstore:id/personal_title", "应用更新");
+	}
+	/**
+	 * 我的预约
+	 */
+	public WebElement getMyOrder() {
+		return helper.findByIdAndText("com.tencent.southpole.appstore:id/personal_title", "我的预约");
+	}
+	/**
+	 * 我的礼包
+	 */
+	public WebElement getMyGiftBag() {
+		return helper.findByIdAndText("com.tencent.southpole.appstore:id/personal_title", "我的礼包");
+	}
+	/**
+	 * 更新历史
+	 */
+	public WebElement getUpdateHistory() {
+		return helper.findById("com.tencent.southpole.appstore:id/update_history_recyclerview");
+	}
+	/**
+	 * 一键卸载按钮
+	 * @return
+	 */
+	public WebElement getOneKeyUninstall() {
+		return helper.findById("com.tencent.southpole.appstore:id/uninstall_btn");
+	}
+	public String getAppList() {
+		return RuntimeUtil.execForStr("adb shell pm list packages");
+	}
+	/**
+	 * 固定删除新浪微博
+	 */
+	public void removeApp() {
+		String installResult = getAppList();
+		if(installResult.contains("com.sina.weibo")) {
+			helper.click(helper.findBySlideText("微博"), "微博");
+			helper.click(getOneKeyUninstall(), "一键卸载");
+			helper.click(getConfirmBtn(), "确定");
+			logger.info("卸载成功");
+		}
+	}
+	/**
+	 * 即将上线元素
+	 */
+	public WebElement getComingsoon() {
+		return helper.findById("com.tencent.southpole.appstore:id/title");
+	}
+	/**
+	 * 已领取礼包面板
+	 * @return
+	 */
+	public WebElement getGiftList() {
+		return helper.findById("com.tencent.southpole.appstore:id/content");
+	}
+	/**
+	 * 全部应用标签
+	 */
+	public WebElement getAllAppList() {
+		return helper.findById("com.tencent.southpole.appstore:id/common_head_title");
+	}
 }

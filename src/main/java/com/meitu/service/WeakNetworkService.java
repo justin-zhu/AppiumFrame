@@ -1,10 +1,11 @@
 package com.meitu.service;
-import java.util.Arrays;
-import java.util.List;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebElement;
 import com.meitu.base.AbstractPage;
 import com.meitu.utils.Helper;
+
+import cn.hutool.core.util.RuntimeUtil;
+import io.appium.java_client.android.Activity;
 public class WeakNetworkService extends AbstractPage{
 	public WeakNetworkService(Helper helper) {
 		super(helper);		
@@ -14,16 +15,14 @@ public class WeakNetworkService extends AbstractPage{
 	private static final String NETWORK_NORMAL = "正常网络";
 	Logger logger = Logger.getLogger(this.getClass());
 	public void firstLogin() {
-		//构建首次启动场景,清除应用缓存数据	
-		helper.clearAppSroreData();
+		clearAppSroreData();		
 		//设置网络状态为无网
 		setConnectionType(NETWORK_CLOSE);
 		//首次启动 权限窗口
 		helper.click(pub.getAuthor(), "同意");		
-		//进入无网状,装机必备界面处于加载中,需要等待
-		helper.sleep(15000);
-		//加载完成,提示没有获取到数据,再次点击,触发二次加载
-		helper.click(pub.getErrorOfGetDate(), "没有获取到数据提示");	
+		//加载完成,提示没有获取到数据
+		//捕捉Toast
+		helper.isExistToast("没有获取到数据");		
 		//切换至正常网络
 		setConnectionType(NETWORK_NORMAL);
 		//上滑 触发再次加载
@@ -46,8 +45,7 @@ public class WeakNetworkService extends AbstractPage{
 		helper.click(pub.getAuthor(), "同意");		
 		//关闭必备界面
 		helper.click(hotApps.getClose(), "关闭");
-		//关闭广告弹窗 如果有的话
-		helper.isExist(pub.getAdFrame(), "广告");		
+		
 	}
 	
 	/**
@@ -67,7 +65,7 @@ public class WeakNetworkService extends AbstractPage{
 		setConnectionType(NETWORK_CLOSE);
 		helper.click(main.getIndex(), "首页");
 		//向上滑动一次
-		helper.swipeDirection("up");
+		helper.swipeDirection("down");
 		//捕捉Toast
 		helper.isExistToast("没有获取到数据");	
 		//切到游戏界面
@@ -316,7 +314,7 @@ public class WeakNetworkService extends AbstractPage{
 		helper.swipeDirection("end");
 		helper.swipeDirection("top");
 		helper.click(pub.getClassify_SubClassApp(), "视频分类第一个应用");
-		helper.checkElement(main.getAppInfo(), "详情标签");
+		helper.checkElement(pub.getAppInfo(), "详情标签");
 		helper.back();		
 	}
 
@@ -374,7 +372,7 @@ public class WeakNetworkService extends AbstractPage{
 
 	/**
 	 * 福利礼包
-	 * 50%
+	 * 11-19
 	 */
 	public void WelfareGift() {
 		this.clean();
@@ -388,125 +386,141 @@ public class WeakNetworkService extends AbstractPage{
 		setConnectionType(NETWORK_CLOSE);
 		//测试前需要安装游戏 否则将不会出现此元素
 		helper.click(main.getBoonOnekeyGet(), "一键领取");
-		helper.checkElement(center.getSystemLogin(), "检查快捷登陆按钮");		
-		//无网提示toast		
-		clickWelfareBanner();
-		sleep(15000);
-		back();
+		helper.click(center.getSystemLogin(), "快捷登陆按钮");		
+		helper.sleep(10000);
+		helper.checkElement(pub.getErrorOfGetDate(), "没有获取到数据");
+		helper.back();
 		setConnectionType(NETWORK_DELAY);
-		clickOneKeyGet();
-		checkLoginView();
-		back();
-		clickDefaultGet();
-		checkLoginView();
-		back();
+		helper.click(center.getIndex(), "个人中心");
+		center.logout();
+		helper.click(main.getIndex(), "首页");
+		helper.click(main.getBoon(), "福利");
+		helper.sleep(10000);
+		helper.click(center.getSystemLogin(), "快捷登录");
+		//领取礼包暂不实现		
 	}
 	/**
 	 * 搜索
-	 * 70%
+	 * pass 11-20
 	 */
-	public void search() {
+	public void search() {		
+		this.clean();		
 		setConnectionType(NETWORK_NORMAL);
-		sleep(6000);		
-		closeAD();
+		helper.sleep(6000);		
+		helper.isExist(pub.getAdFrame(), "广告");
 		setConnectionType(NETWORK_CLOSE);
-		changeTabToHome();
-		clickSearch();
-		sleep(15000);
-		back();
+		helper.click(main.getSearchContext(), "搜索框");		
+		helper.sleep(15000);
+		helper.hideKeyBoard();	
+		helper.checkElement(pub.getErrorOfGetDateOfSearch(), "没有获取到数据");		
 		setConnectionType(NETWORK_NORMAL);
-		slideUp(1);
-		back();
+		helper.swipeDirection("up");
+		helper.sleep(10000);
+		helper.checkElement(main.getHotSearchLabel(), "热搜标签");
+		helper.back();
 		setConnectionType(NETWORK_DELAY);
-		sendText("微视");
-		sleep(10000);
-		clickSearchButton();
-		sleep(10000);
-		randomInstall();
-		back();
-		setConnectionType(NETWORK_NORMAL);
-		clickSearch();
+		helper.click(main.getSearchContext(), "搜索框");
+		helper.send(main.getSearchContext(), "微信");
+		helper.hideKeyBoard();		
+		helper.click(main.getSearchBtn(), "开始搜索");		
+		helper.sleep(10000);
+		helper.checkElement(main.getSerachResultFirstApp(), "搜索结果第一个应用");
+		helper.click(main.getSerachResultFirstApp(), "搜索结果第一个应用");
+		helper.sleep(10000);
+		helper.checkElement(pub.getAppInfo(), "检查详情标签");
+		//下载操作暂不实现
+		helper.back();
+		helper.back();		
+		helper.click(main.getSearchContext(), "搜索框");
 		setConnectionType(NETWORK_CLOSE);
-		sendText("快手");
-		clickSearchButton();
-		sleep(15000);
-		setConnectionType(NETWORK_NORMAL);
-		clickSearchButton();
-		randomInstall();		
+		helper.send(main.getSearchContext(), "微信");
+		helper.click(main.getSearchBtn(), "开始搜索");
+		helper.sleep(15000);
+		helper.checkElement(pub.getErrorOfGetDateOfSearch(), "没有获取到数据");
+				
 	}
 	/**
 	 * 应用详情
 	 * 90%
 	 */
 	public void appInformation() {
+		this.clean();
 		setConnectionType(NETWORK_NORMAL);
-		sleep(6000);
-		closeAD();
-		changeTabToSoft();
+		helper.sleep(6000);
+		helper.isExist(pub.getAdFrame(), "广告");
 		setConnectionType(NETWORK_CLOSE);
-		randomCheckAppInfo("软件");
-		sleep(15000);		
+		helper.click(main.getWeekHotApps(1), "本周热门应用第一个");
+		helper.sleep(15000);	
+		helper.checkElement(pub.getErrorOfGetDate(), "没有获取到数据");
+		helper.click(pub.getErrorOfGetDate(), "没有获取到数据");
+		helper.sleep(15000);
 		setConnectionType(NETWORK_NORMAL);
-		slideUp(1);
-		back();
+		helper.click(pub.getErrorOfGetDate(), "没有获取到数据");
+		helper.checkElement(pub.getAppInfo(), "详情标签");
+		helper.swipeDirection("up");
+		helper.back();
 		setConnectionType(NETWORK_DELAY);
-		randomCheckAppInfo("软件");
-		sleep(10000);
-		clickCommit();
-		back();
-		setConnectionType(NETWORK_NORMAL);
-		randomCheckAppInfo("软件");
+		helper.click(main.getWeekHotApps(2), "本击热门应用第二个");
+		helper.sleep(10000);
+		helper.checkElement(pub.getAppInfo(), "详情标签");
+		helper.click(pub.getAppComment(), "切至评论");
+		helper.checkElement(pub.getAppScope(), "评分");
 		setConnectionType(NETWORK_CLOSE);
-		clickCommit();
-		setConnectionType(NETWORK_NORMAL);
-		randomInstall();		
+		helper.click(pub.getAppInfo(), "切至详情");
+		helper.checkElement(pub.getAppState(), "检查应用介绍");
+		
+			
 	}
-	/**
-	 * 查看游戏图片
-	 */
-	public void checkGamePicture() {
-		setConnectionType(NETWORK_NORMAL);
-		sleep(6000);
-		closeAD();
-		changeTabToGame();
-		clickClassifyOfGame();
-		randomCheckAppInfo("游戏分类");
-		setConnectionType(NETWORK_CLOSE);
-		clickInformationPicture();
-		slideLeft(5);
-		back();
-		setConnectionType(NETWORK_NORMAL);
-		clickInformationPicture();
-		slideLeft(5);
-		back();
-		setConnectionType(NETWORK_DELAY);
-		clickInformationPicture();
-		slideLeft(5);
-		back();		
-	}
+	
 	/**
 	 * 我的
+	 * 11-20 pass
 	 */
-	public void my() {
+	public void center() {
+		this.clean();
 		setConnectionType(NETWORK_NORMAL);
-		sleep(6000);
-		closeAD();		
-		changeTabToMy();
-		clickLogin();
-		otherLogin();
-		loginQQ();
-		sleep(6000);
+		helper.sleep(6000);
+		helper.isExist(pub.getAdFrame(), "广告");
+		helper.click(center.getIndex(), "个人中心");
+		center.login();
 		setConnectionType(NETWORK_CLOSE);
-		clickAppUpdate();
-		back();
-		clickAppUninstall();
-		back();
-		clickMyReserve();
-		sleep(15000);
-		back();
-		clickMyGift();
-		sleep(15000);
-		back();		
+		helper.click(center.getAppUpdate(), "应用更新");
+		helper.isExist(center.getUpdateHistory(), "更新历史");
+		helper.back();
+		helper.click(center.getAppRemove(), "应用卸载");
+		center.removeApp();
+		helper.back();		
+		helper.click(center.getMyOrder(), "我的预约");
+		helper.sleep(15000);
+		helper.checkElement(pub.getErrorOfGetDate(), "没有获取到数据");
+		setConnectionType(NETWORK_NORMAL);
+		helper.click(pub.getErrorOfGetDate(), "没有获取到元素");
+		helper.checkElement(center.getComingsoon(), "即将上线");
+		helper.back();
+		setConnectionType(NETWORK_CLOSE);
+		helper.click(center.getMyGiftBag(), "我的礼包");
+		helper.sleep(15000);
+		helper.checkElement(pub.getErrorOfGetDate(), "没有获取到数据");
+		setConnectionType(NETWORK_NORMAL);
+		helper.click(pub.getErrorOfGetDate(), "没有获取到元素");
+		helper.checkElement(center.getGiftList(), "已领取礼包界面");
+		helper.swipeDirection("up");
+		helper.back();
+		setConnectionType(NETWORK_DELAY);
+		helper.click(center.getAppUpdate(), "应用更新");
+		helper.isExist(center.getUpdateHistory(), "更新历史");
+		helper.back();
+		helper.click(center.getAppRemove(), "应用卸载");
+		helper.checkElement(center.getAllAppList(), "全部应用标签");
+		helper.back();
+		helper.click(center.getMyOrder(), "我的预约");
+		helper.sleep(10000);
+		helper.checkElement(center.getComingsoon(), "即将上线");
+		helper.back();
+		helper.click(center.getMyGiftBag(), "我的礼包");
+		helper.sleep(10000);
+		helper.checkElement(center.getGiftList(), "已领取礼包界面");
+		helper.back();
 	}
 	/**
 	 * 清理环 境
@@ -514,500 +528,53 @@ public class WeakNetworkService extends AbstractPage{
 	public void clean() {
 		helper.killAppStore();
 		helper.killQNET();
-		logger.info("已清理应用商店、QNET进程");
+		logger.info("结束QNET进程");
+		
 	}	
-	/**
-	 * 向上滑动
-	 * @param num 次数
-	 */
-	public void slideUp(int num) {
-		for (int i = 0; i < num; i++) {
-			helper.swipeDirection("up");
-			// 考虑到弱网的加载速度 此处休眠后再滑动
-			helper.sleep(6000);
-		}
-	}
-
-	/**
-	 * 向上滑动
-	 * @param num 滑动次数
-	 */
-	public void slideDown(int num) {
-		for (int i = 0; i < num; i++) {
-			helper.swipeDirection("down");
-			// 考虑到弱网的加载速度 此处休眠后再滑动
-			helper.sleep(6000);
-		}
-	}
-
-	/**
-	 * 返回桌面
-	 */
-	public void goHome() {
-		helper.pressKeyCode(3);
-	}
 	
-	public void tap(int x,int y) {
-		helper.tap(x, y);
-	}
-	
-
-	/**
-	 * 返回上层界面
-	 */
-	public void back() {
-		helper.back();
-	}
-
-	/**
-	 * 滑动至底部
-	 */
-	public void slideEnd() {
-		logger.info("向下滑动");
-		helper.swipeDirection("end");
-	}
-
-	/**
-	 * 滑动至底部
-	 */
-	public void slideTop() {
-		helper.swipeDirection("top");
-	}
-
-	/**
-	 * 休眠
-	 * @param ms
-	 */
-	public void sleep(int ms) {
-		helper.sleep(ms);
-	}
-
-	/**
-	 * 跳过授权界面及必备界面
-	 */
-	public void SkipAuthorizationInterface() {
-		WebElement agreementBtn = helper.findById("com.tencent.southpole.appstore:id/dialog_right_btn");
-		if (agreementBtn != null) {
-			helper.click(agreementBtn, "同意");
-			//WebElement confireBtn = helper.findById("com.android.packageinstaller:id/ok_button");
-			//helper.click(confireBtn, "确定权限");
-			//confireBtn = null;
-		}else {
-			throw new RuntimeException("元素未找到");
-		} 
-	}
-
-	/**
-	 * 结束应用商店进程
-	 */
-	public void killAppStore() {
-		helper.killAppStore();
-	}
-
-	
-
-	/**
-	 * 清量应用商店数据
-	 */
-	public void clearAppSroreData() {
-		helper.clearAppSroreData();
-	}
-
 	/**
 	 * 点击桌面的应用
 	 * @param appName App名称
 	 */
 	public void clickDeskApp(String appName) {		
-		helper.click(helper.findBySlideText_h(appName), appName);			
-	}
-
-	/**
-	 * 点击必备
-	 */
-	public void clickNecessary() {
-		helper.click(helper.findByUiautomatorText("必备"), "必备");
-	}
-
-	/**
-	 * 点击榜单
-	 */
-	public void clickList() {
-		helper.click(helper.findByUiautomatorText("榜单"), "榜单");
-	}
-
-	/**
-	 * 点击分类
-	 */
-	public void clickClassify() {
-		helper.click(helper.findByUiautomatorText("分类"), "分类");
-	}
-
-	/**
-	 * 点击福利
-	 */
-	public void clickWelfare() {
-		helper.click(helper.findByUiautomatorText("福利"), "福利");
-	}
-
-	/**
-	 * 点击搜索框
-	 */
-	public void clickSearch() {
-		helper.click(helper.findById("com.tencent.southpole.appstore:id/search_action_bar_content"), "搜索框");
-	}
-
-	/**
-	 * 搜索框输入内容
-	 */
-	public void sendText(String text) {
-		helper.send(helper.findById("com.tencent.southpole.appstore:id/search_action_bar_content"), text);
-	}
-
-	/**
-	 * 搜索按钮
-	 */
-	public void clickSearchButton() {
-		helper.click(helper.findById("com.tencent.southpole.appstore:id/search_confirm"), "搜索按钮");
-	}
-
+		helper.click(helper.findByaccessibilityid(appName), appName);			
+	}	
 	/**
 	 * 仅支持输入：正常网络、延迟（延迟是自定义的，上下行延迟1000）、100%丢包
 	 * 
 	 * @param netWorkValue
 	 */
 	public void setConnectionType(String netWorkValue) {		
-		goHome();
+		helper.pressKeyCode(3);
 		clickDeskApp("QNET");
-		helper.click(helper.findByUiautomatorText(netWorkValue), netWorkValue);
+		//helper.getAndroidDriver().startActivity(getQnetActivity());
 		WebElement testButton = helper.findById("com.tencent.qnet:id/buttonTest");
-		if (!testButton.getText().contains("结束")) {
-			helper.click(testButton, "开启"+netWorkValue);
-		} else {
-			logger.info("弱网测试功能已开启，无需点击");
-			goHome();
-			clickDeskApp("应用市场");
-		}
-	}
-	/**
-	 * 关闭装机必备界面
-	 */
-	public void closeRecommendApp() {
-		helper.click(helper.findById("com.tencent.southpole.appstore:id/close"), "关闭必备");
-	}	
-
-	
-	/**
-	 * 安装、更新按钮
-	 * 
-	 */
-	public void installButton_download() {
-		helper.click(helper.findById("com.tencent.southpole.appstore:id/download"), "安装");
-	}
-
-	public void installButton_download_button() {
-		helper.click(helper.findById("com.tencent.southpole.appstore:id/download_button"), "安装");
-	}
-
-	
-	/**
-	 * 更改tab界面-game
-	 */
-	public void changeTabToGame() {
-		helper.click(helper.findById("com.tencent.southpole.appstore:id/tab_game"), "游戏-Tab");
-	}
-
-	/**
-	 * 更改tab界面-soft
-	 */
-	public void changeTabToSoft() {
-		helper.click(helper.findById("com.tencent.southpole.appstore:id/tab_application"), "软件-Tab");
-	}
-
-	/**
-	 * 更改tab界面-Home
-	 */
-	public void changeTabToHome() {
-		helper.click(helper.findById("com.tencent.southpole.appstore:id/tab_home"), "首页-Tab");
-	}
-
-	/**
-	 * 更改tab界面-Home
-	 */
-	public void changeTabToMy() {
-		helper.click(helper.findById("com.tencent.southpole.appstore:id/tab_mine"), "我的");
-	}
-
-	/**
-	 * 随机安装，后续实现
-	 */
-	public void randomInstall() {
-		// helper.click(helper.findBySlideText("安装"), "随机安装");
-		// 因下载、安装、更新、三种状态的按钮及ID均相同，无法判断应用的状态，暂不实现
-		logger.info("需要开发增加按钮状态的text值，此功能暂不实现");
-	}
-
-	/**
-	 * 随机查看应用详情 支持的参数：首页必备、首页、软件、全部游戏福利、分类
-	 */
-	public void randomCheckAppInfo(String pageName) {
-		// com.tencent.southpole.appstore:id/info
-		// com.tencent.southpole.appstore:id/name 新游
-		// com.tencent.southpole.appstore:id/app_name //游戏分类列表
-		switch (pageName) {
-		case "首页必备":
-			helper.click(helper.findById("com.tencent.southpole.appstore:id/tvCity"), pageName + "随机点击");
-			break;
-		case "全部游戏福利":
-			helper.click(helper.findById("com.tencent.southpole.appstore:id/title"), pageName + "随机点击");
-			break;
-		case "榜单":
-			helper.click(helper.findById("com.tencent.southpole.appstore:id/appName"), pageName + "随机点击");
-			break;
-		case "分类":
-			helper.click(helper.findById("com.tencent.southpole.appstore:id/category_name"), pageName + "随机点击");
-			break;
-		case "游戏分类":
-			helper.click(helper.findById("com.tencent.southpole.appstore:id/app_name"), pageName + "随机点击");
-			break;
-		default:
-			//首页、游戏、软件
-			helper.click(helper.findById("com.tencent.southpole.appstore:id/name"), pageName + "(default)" + "随机点击");
-			break;
-		}
-	}
-
-	/**
-	 * 全部游戏福利
-	 */
-	public void clickAllGameWelfare() {
-		helper.click(helper.findById("com.tencent.southpole.appstore:id/button_all_game"), "全部游戏福利");
-	}
-
-	/**
-	 * GPASS游戏列表
-	 */
-	public void clickGpassGameList() {
-		helper.click(helper.findByIdAndText("com.tencent.southpole.appstore:id/btn_title1", "G-PASS特权"), "G-PASS特权");
-	}
-
-	/**
-	 * 购机福利界面
-	 */
-	public void clickBuyPhoneWelfare() {
-		helper.click(helper.findByIdAndText("com.tencent.southpole.appstore:id/btn_title1", "购机福利"), "购机福利");
-	}
-
-	/**
-	 * 福利-banner
-	 */
-	public void clickWelfareBanner() {
-		helper.click(helper.findById("com.tencent.southpole.appstore:id/imageView12"), "福利banner页");
-	}
-
-	/**
-	 * 游戏-分类
-	 */
-	public void clickClassifyOfGame() {
-		helper.click(helper.findById("com.tencent.southpole.appstore:id/item_2"), "游戏分类");
-	}
-
-	/**
-	 * 遍历游戏分类下的所有列表
-	 * 
-	 * @param type        软件、游戏
-	 * @param sleepTimeMs 弱网状态下请指定休眠时间，正常状态可指定为2000ms
-	 */
-	public void checkList(String type, int sleepTimeMs) {
-		if (!type.equals("软件") && !type.equals("游戏")) {
-			logger.info("传入的参数错误");
-			throw new RuntimeException("参数错误");
-		}
-		List<String> list;
-		String[] gameArr = { "休闲益智", "网络游戏", "军事战争", "动作冒险", "体育竞速", "棋牌中心", "经营策略", "角色扮演", "电子竞技", "特色分类" };
-		String[] softArr = { "视频", "生活", "购物", "工具", "理财", "摄影", "音乐", "阅读", "社交", "旅游", "办公", "健康", "系统", "美化", "出行",
-				"教育" };
-		if (type.equals("软件")) {
-			list = Arrays.asList(softArr);
-		} else {
-			list = Arrays.asList(gameArr);
-		}
-		for (String string : list) {
-			helper.click(helper.findBySlideText(string), string);
-			helper.sleep(sleepTimeMs);
-			helper.back();
-		}
-	}
-
-	
-	public void isExist(WebElement element,String elementName) {
-		if (element != null) {
-			helper.click(element, elementName);
+		if("正常网络".equals(netWorkValue)) {
+			if(testButton.getText().contains("结束")) {
+				helper.click(testButton, "结束QNET");
+				logger.info("网络状态已切换至:"+netWorkValue);				
+			}
 		}else {
-			logger.info(element+",未找到,已跳过");
+			helper.click(helper.findByUiautomatorText(netWorkValue), netWorkValue);		
+			if (!testButton.getText().contains("结束")) {
+				helper.click(testButton, "开启"+netWorkValue);
+				return;
+			} else {
+				logger.info("网络状态已切换至:"+netWorkValue);				
+			}
 		}
+		helper.pressKeyCode(3);
+		clickDeskApp("应用市场");
 	}
-
-	/**
-	 * 游戏界面-新游
-	 */
-	public void clickGameTabNewGame() {
-		helper.click(helper.findById("com.tencent.southpole.appstore:id/item_1"), "新游");
+	public  Activity getQnetActivity() {
+		Activity activity = new Activity("com.tencent.qnet", "com.tencent.qnet.ui.login.LoginActivity");
+		activity.setAppWaitActivity("com.tencent.qnet.ui.MainActivity");
+		activity.setAppWaitPackage("com.tencent.qnet");	
+		return activity;
 	}
-
-	/**
-	 * 登陆状态检查
-	 * 已登陆返回true,未登陆返回false
-	 */
-	public boolean isLogin() {
-		WebElement element = center.getUserName();
-		if (element != null) {
-			logger.info("用户已登陆,用户名"+element.getText());
-			return true;
-		} else {
-			logger.info("未登陆");
-			return false;
-		}
+	// 清量应用商店数据
+	public void clearAppSroreData() {			
+		String cmd = "adb shell pm clear com.tencent.southpole.appstore";
+		RuntimeUtil.execForStr(cmd);
 	}
-
-	/**
-	 * 登陆
-	 */
-	public void clickLogin() {
-		if (!isLogin()) {
-			helper.findById("com.tencent.southpole.appstore:id/nick_name");
-			otherLogin();
-			loginQQ();
-		}
-	}
-
-	/**
-	 * 退出登陆
-	 */
-	public void logout() {
-		if (isLogin()) {
-			helper.findByIdAndText("com.tencent.southpole.appstore:id/personal_title", "设置");
-			helper.findByUiautomatorText("退出登录");
-		} else {
-			logger.info("应用商店已处于未登陆状态");
-		}
-	}
-
-	/**
-	 * 其它方式登陆
-	 */
-	public void otherLogin() {
-		helper.click(helper.findById("com.tencent.southpole.appstore:id/other_login"), "其他账号登录");
-	}
-
-	/**
-	 * QQ登陆
-	 */
-	public void loginQQ() {
-		helper.click(helper.findByUiautomatorText("QQ登录"), "QQ登录");
-		helper.tap(500, 1050);
-	}
-
-	/**
-	 * 一键领取
-	 */
-	public void clickOneKeyGet() {
-		helper.click(helper.findById("com.tencent.southpole.appstore:id/button_receive_all"), "一键领取");
-	}
-
-	/**
-	 * 默认领取
-	 */
-	public void clickDefaultGet() {
-		helper.click(helper.findById("com.tencent.southpole.appstore:id/gift_1_receive_btn"), "领取");
-	}
-
-	/**
-	 * 取消
-	 */
-	public void clickOneKeyGetCancel() {
-		helper.click(helper.findById("com.tencent.southpole.appstore:id/dialog_left_btn"), "取消");
-	}
-
-	/**
-	 * 判断登陆界面
-	 */
-	public void checkLoginView() {
-		WebElement account = helper.findByUiautomatorText("帐号登录");
-		if (account != null) {
-			logger.info("登陆失败，符合预期");
-		} else {
-			throw new RuntimeException("界面异常");
-		}
-	}
-
-	/**
-	 * 评论
-	 */
-	public void clickCommit() {
-		helper.click(helper.findByUiautomatorText("评论"), "评论");
-	}
-
-	/**
-	 * 滑动查找元素
-	 */
-	public void slideFindElement(String text) {
-		helper.click(helper.findBySlideText(text), text);
-	}
-
-	/**
-	 * 详情图片
-	 */
-	public void clickInformationPicture() {
-		helper.click(helper.findById("com.tencent.southpole.appstore:id/app_photo"), "详情图片");
-	}
-
-	/**
-	 * 向左滑
-	 */
-	public void slideLeft(int num) {
-
-		for (int i = 0; i < num; i++) {
-			helper.swipeDirection("left");
-			helper.sleep(2000);
-		}
-	}
-	
-	public void slideRight(int num) {
-		for (int i = 0; i < num; i++) {
-			helper.swipeDirection("right");
-			helper.sleep(2000);
-		}
-	}
-	/**
-	 * 应用更新
-	 */
-	public void clickAppUpdate() {
-		helper.click(helper.findByUiautomatorText("应用更新"), "应用更新");
-	}
-	/**
-	 * 应用卸载
-	 */
-	public void clickAppUninstall() {
-		helper.click(helper.findByUiautomatorText("应用卸载"), "应用卸载");
-	}
-	/**
-	 * 我的预约
-	 */
-	public void clickMyReserve() {
-		helper.click(helper.findByUiautomatorText("我的预约"), "我的预约");
-	}
-	/**
-	 * 我的礼包
-	 */
-	public void clickMyGift() {
-		helper.click(helper.findByUiautomatorText("我的礼包"), "我的礼包");
-	}	
-	public void killQNET() {
-		helper.killQNET();
-	}
-	private void closeAD() {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

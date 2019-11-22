@@ -1,9 +1,9 @@
 package com.meitu.ctrl;
 
 import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.AndroidElement;
 
 import org.apache.log4j.Logger;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import com.meitu.entity.DriverEntity;
@@ -17,9 +17,9 @@ import java.util.HashMap;
  */
 public enum AndroidDriverCtrl {
     Instance;
-    private static HashMap<String,AndroidDriver<WebElement>> hashMap = new HashMap<>();
+    private static HashMap<String,AndroidDriver<AndroidElement>> hashMap = new HashMap<>();
     private Logger logger =Logger.getLogger(this.getClass());
-    private AndroidDriver<WebElement> driver;
+    private AndroidDriver<AndroidElement> driver;
     /**
      * 创建Driver
      * @param driverEntity
@@ -39,10 +39,11 @@ public enum AndroidDriverCtrl {
         capabilities.setCapability("unicodeKeyboard", false);// 控制系统键盘
         capabilities.setCapability("resetKeyboard", false);       
 		try {
-			driver = new AndroidDriver<WebElement>(new URL("http://127.0.0.1:"+driverEntity.getPort()+"/wd/hub"), capabilities);
-			logger.info("Driver init successed!");
+			driver = new AndroidDriver<AndroidElement>(new URL("http://127.0.0.1:"+driverEntity.getPort()+"/wd/hub"), capabilities);
+			logger.info("driver init successed");
+			driver.unlockDevice();
 		} catch (Exception e) {
-			logger.info("Driver init failed!");
+			logger.info("driver init failure");
 			e.printStackTrace();
 		}       
         hashMap.put(driverEntity.getPort(),driver);
@@ -53,8 +54,8 @@ public enum AndroidDriverCtrl {
      * @param port
      * @return
      */
-    public AndroidDriver<WebElement> getDriver(String port){
-        AndroidDriver<WebElement> androidDriver = hashMap.get(port);
+    public AndroidDriver<AndroidElement> getDriver(String port){
+        AndroidDriver<AndroidElement> androidDriver = hashMap.get(port);
         return androidDriver;
     }
     /**
@@ -62,8 +63,8 @@ public enum AndroidDriverCtrl {
      * @param port
      */
     public  void stopDriver(String port) {
-		AndroidDriver<WebElement> androidDriver = hashMap.get(port);
+		AndroidDriver<AndroidElement> androidDriver = hashMap.get(port);
 		androidDriver.quit();	
-		logger.info("Driver quit successed!");
+		logger.info("driver quit successed");
 	}
 }

@@ -120,8 +120,20 @@ public class PageOfMain {
 	 * 首页:搜索
 	 * @return
 	 */
-	public WebElement getSearch() {
-		return helper.findById("com.tencent.southpole.appstore:id/search_action_bar_content");
+	public WebElement getSearchContext() {
+		return helper.findById("com.tencent.southpole.appstore:id/search_input");
+	}
+	/**
+	 * 搜索按钮
+	 */
+	public WebElement getSearchBtn() {
+		return helper.findById("com.tencent.southpole.appstore:id/search_confirm");
+	}
+	/**
+	 * 搜索结果 首个元素
+	 */
+	public WebElement getSerachResultFirstApp() {
+		return helper.findByXpath("//*[@resource-id='com.tencent.southpole.appstore:id/search_result_appname']");
 	}
 	/**
 	 * 本周热门应用
@@ -139,15 +151,15 @@ public class PageOfMain {
 	 * appium无法获取动态界面上的元素 所以需要将动态的顶部栏，滑动至不可见
 	 */
 	public void swipeHideTheBar() {
-		new AndroidTouchAction(helper.androidDriver).press(PointOption.point(500, 1550))
+		new AndroidTouchAction(helper.getAndroidDriver()).press(PointOption.point(500, 1550))
 		.waitAction(WaitOptions.waitOptions(Duration.ofSeconds(2)))
 		.moveTo(PointOption.point(535, 807)).release().perform();		
 	}
+	
 	/**
-	 * 详情标签 
-	 * @return
+	 * 热搜标签
 	 */
-	public WebElement getAppInfo() {
-		return helper.findByXpath("//androidx.appcompat.app.ActionBar.Tab[@content-desc='详情']");
+	public WebElement getHotSearchLabel() {
+		return helper.findById("com.tencent.southpole.appstore:id/search_hot_title");
 	}
 }

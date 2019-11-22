@@ -20,9 +20,21 @@ public class PageOfPublic {
 	public WebElement getAuthor() {
 		return helper.findById("com.tencent.southpole.appstore:id/dialog_right_btn");
 	}
+	/**
+	 *  没有获取到数据，轻触界面尝试
+	 * @return
+	 */
 	public WebElement getErrorOfGetDate() {
 		return helper.findById("com.tencent.southpole.appstore:id/tv_net_error_desc");
-	}	
+	}
+	/**
+	 *  没有获取到数据，轻触界面尝试-搜索界面
+	 * @return
+	 */
+	public WebElement getErrorOfGetDateOfSearch() {
+		return helper.findById("com.tencent.southpole.appstore:id/tv_nothing_tip");
+	}
+	
 	/**
 	 * 首页广告弹窗口，关闭按钮
 	 * @return
@@ -50,6 +62,31 @@ public class PageOfPublic {
 	 */
 	public WebElement getClassify_Game() {
 		return helper.findByXpath("//androidx.appcompat.app.ActionBar.Tab[@content-desc=\"游戏\"]");
+	}
+	/**
+	 * 详情标签 
+	 * @return
+	 */
+	public WebElement getAppInfo() {
+		return helper.getAndroidDriver().findElementByAccessibilityId("详情");
+	}
+	/**
+	 * 评论
+	 */
+	public WebElement getAppComment() {
+		return helper.findByXpath("//*[contains(@text,\"评论\")]");
+	}
+	/**
+	 * 评分
+	 */
+	public WebElement getAppScope() {
+		return helper.findById("com.tencent.southpole.appstore:id/score");
+	}
+	/**
+	 * 应用介绍
+	 */
+	public WebElement getAppState() {
+		return helper.findById("com.tencent.southpole.appstore:id/short_text");
 	}
 	/**
 	 * 分类下的软件分类:生活类

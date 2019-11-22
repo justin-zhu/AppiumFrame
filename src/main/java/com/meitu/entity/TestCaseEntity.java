@@ -6,7 +6,7 @@ package com.meitu.entity;
  *
  */
 public class TestCaseEntity {
-	String step,type,arg,text,operation,expect;
+	String step,type,arg,text,expect;
 
 	public String getStep() {
 		return step;
@@ -23,11 +23,7 @@ public class TestCaseEntity {
 	public String getText() {
 		return text;
 	}
-
-	public String getOperation() {
-		return operation;
-	}
-
+	
 	public void setStep(String step) {
 		this.step = step;
 	}
@@ -42,12 +38,7 @@ public class TestCaseEntity {
 
 	public void setText(String text) {
 		this.text = text;
-	}
-
-	public void setOperation(String operation) {
-		this.operation = operation;
-	}
-	
+	}	
 
 	public String getExpect() {
 		return expect;
