@@ -21,8 +21,9 @@ public class WeakNetworkService extends AbstractPage{
 		//首次启动 权限窗口
 		helper.click(pub.getAuthor(), "同意");		
 		//加载完成,提示没有获取到数据
-		//捕捉Toast
-		helper.isExistToast("没有获取到数据");		
+		helper.sleep(15000);
+		//检查界面元素
+		helper.checkElement(pub.getErrorOfGetDate(), "没有获取到数据");
 		//切换至正常网络
 		setConnectionType(NETWORK_NORMAL);
 		//上滑 触发再次加载
@@ -140,6 +141,7 @@ public class WeakNetworkService extends AbstractPage{
 		setConnectionType(NETWORK_CLOSE);
 		//切到首页
 		helper.click(main.getIndex(), "首页");
+		helper.swipeDirection("down");
 		//点击首页上的任意应用
 		helper.click(main.getWeekHotApps(1), "本周热门应用：第1个");
 		//无网状态 点击应用详情界面 需要等待
@@ -374,7 +376,7 @@ public class WeakNetworkService extends AbstractPage{
 	 * 福利礼包
 	 * 11-19
 	 */
-	public void WelfareGift() {
+	public void welfareGift() {
 		this.clean();
 		setConnectionType(NETWORK_NORMAL);
 		helper.sleep(6000);
@@ -537,7 +539,7 @@ public class WeakNetworkService extends AbstractPage{
 	 * @param appName App名称
 	 */
 	public void clickDeskApp(String appName) {		
-		helper.click(helper.findByaccessibilityid(appName), appName);			
+		helper.click(helper.findBySlideTextHorizontal(appName), appName);			
 	}	
 	/**
 	 * 仅支持输入：正常网络、延迟（延迟是自定义的，上下行延迟1000）、100%丢包
@@ -551,17 +553,17 @@ public class WeakNetworkService extends AbstractPage{
 		WebElement testButton = helper.findById("com.tencent.qnet:id/buttonTest");
 		if("正常网络".equals(netWorkValue)) {
 			if(testButton.getText().contains("结束")) {
-				helper.click(testButton, "结束QNET");
-				logger.info("网络状态已切换至:"+netWorkValue);				
+				helper.click(testButton, "结束QNET");						
 			}
+			logger.info("网络状态:"+netWorkValue);		
 		}else {
 			helper.click(helper.findByUiautomatorText(netWorkValue), netWorkValue);		
 			if (!testButton.getText().contains("结束")) {
 				helper.click(testButton, "开启"+netWorkValue);
 				return;
 			} else {
-				logger.info("网络状态已切换至:"+netWorkValue);				
-			}
+				logger.info("网络状态:"+netWorkValue);				
+			}			
 		}
 		helper.pressKeyCode(3);
 		clickDeskApp("应用市场");

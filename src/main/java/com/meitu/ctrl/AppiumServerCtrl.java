@@ -37,20 +37,20 @@ public enum AppiumServerCtrl {
 			@Override
 			public void run() {
 		        try {
-		        	logger.info("errorInputStream 已连接");
+		        	logger.debug("errorInputStream 已连接");
 		            String line2 = "" ;   
 		            while ((line2 = reader2.readLine()) !=null   ) { 
-		            	logger.debug(line2);		            	
+		            		logger.debug(line2);           	
 		            }   
 		          } catch (IOException e) {   
 		                e.printStackTrace();  
 		          }  
 			}
 		}).start();       
-        Thread.sleep(3000);
+       
         String line="";
         while ((line = reader.readLine()) != null) {        	
-        	logger.info(line);        	
+        	logger.debug(line);        	
         }
         try {         	
 			process.waitFor();

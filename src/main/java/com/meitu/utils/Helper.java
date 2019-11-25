@@ -210,7 +210,8 @@ public class Helper {
 			log.info("点击失败:"+elementName);
 			snapshot("fail"+elementName);
 			throw new RuntimeException("元素点击失败");			
-		}			
+		}
+		System.gc();
 	}
 
 	/**

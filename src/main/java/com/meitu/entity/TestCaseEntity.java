@@ -46,5 +46,12 @@ public class TestCaseEntity {
 
 	public void setExpect(String expect) {
 		this.expect = expect;
+	}
+
+	@Override
+	public String toString() {
+		return "TestCaseEntity [step=" + step + ", type=" + type + ", arg=" + arg + ", text=" + text + ", expect="
+				+ expect + "]";
 	}	
+	
 }

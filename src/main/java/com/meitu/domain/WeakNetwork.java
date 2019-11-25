@@ -12,27 +12,46 @@ public class WeakNetwork{
 	//执行首次使用应用市场
 	public void firstLogin() {	
 		//首次打开应用商店
-		weakNetworkService.firstLogin();
-		//非首次打开应用商店
-		weakNetworkService.reOpenAppStore();
-		//首页新游标签
-		weakNetworkService.newGame();
-		//福利
-		weakNetworkService.homePageWelfare();
-		//榜单
-		weakNetworkService.homePageList();
-		//分类
-		weakNetworkService.homeClassify();
-		//分类列表下的子类
-		weakNetworkService.homeClassifyList();
-		//福利礼包
-		weakNetworkService.WelfareGift();
-		//搜索
-		weakNetworkService.search();
-		//应用详情
-		weakNetworkService.appInformation();
+		weakNetworkService.firstLogin();	
+	}
+	public void center() {
 		//个人中心
 		weakNetworkService.center();
-		
+	}
+	public void appInformation() {
+		//应用详情
+		weakNetworkService.appInformation();
+	}
+	public void search() {
+		//搜索
+		weakNetworkService.search();
+	}
+	public void welfareGift() {
+		//福利礼包
+		weakNetworkService.welfareGift();
+	}
+	public void homeClassifyList() {
+		//分类列表下的子类
+		weakNetworkService.homeClassifyList();
+	}
+	public void homeClassify() {
+		//分类
+		weakNetworkService.homeClassify();
+	}
+	public void homePageList() {
+		//榜单
+		weakNetworkService.homePageList();
+	}
+	public void homePageWelfare() {
+		//福利
+		weakNetworkService.homePageWelfare();
+	}
+	public void newGame() {
+		//首页新游标签
+		weakNetworkService.newGame();
+	}
+	public void reOpenAppStore() {
+		//非首次打开应用商店
+		weakNetworkService.reOpenAppStore();
 	}	
 }

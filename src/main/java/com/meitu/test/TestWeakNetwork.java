@@ -16,7 +16,7 @@ import com.meitu.utils.JustinUtil;
  * @author p_xiaogzhu
  *
  */
-public class TestCl {
+public class TestWeakNetwork {
 	private Logger logger =Logger.getLogger(this.getClass());
 	private Worker worker;
     private List<String> sheetNameList;
