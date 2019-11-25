@@ -3,6 +3,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.HashMap;
 
 import org.apache.log4j.Logger;
@@ -17,41 +18,18 @@ public enum AppiumServerCtrl {
 	static Logger logger =Logger.getLogger(AppiumServerCtrl.class);
 	HashMap<String, Process> appiumMap = new HashMap<String, Process>();
 	public void startServer(String port,String deviceName) throws Exception {
-		killServer();
-		Process process=null;
+		this.killServer();		
 		//String session=" --session-override";
         String cmd = "cmd /k appium" + " -p " + port + " -bp " + (Integer.valueOf(port)+1);
         logger.info("appiumServer init arg:"+ cmd);
-        process = Runtime.getRuntime().exec(cmd);
+        Process process = Runtime.getRuntime().exec(cmd);
         logger.info("Process:"+process);
         appiumMap.put(port, process);        
-        InputStream inputStream = process.getInputStream();
-        logger.info("inputStream:"+inputStream);
-        InputStream errorStream = process.getErrorStream();  
-        logger.info("errorStream:"+errorStream);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));  
-        logger.info("inputStream reader:"+errorStream);
-        BufferedReader reader2 = new  BufferedReader(new  InputStreamReader(errorStream));  
-        logger.info("errorStream reader:"+errorStream);
-        new Thread(new Runnable() {			
-			@Override
-			public void run() {
-		        try {
-		        	logger.debug("errorInputStream 已连接");
-		            String line2 = "" ;   
-		            while ((line2 = reader2.readLine()) !=null   ) { 
-		            		logger.debug(line2);           	
-		            }   
-		          } catch (IOException e) {   
-		                e.printStackTrace();  
-		          }  
-			}
-		}).start();       
-       
-        String line="";
-        while ((line = reader.readLine()) != null) {        	
-        	logger.debug(line);        	
-        }
+        InputStream inputStream = process.getInputStream();       
+        InputStream errorStream = process.getErrorStream();        
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));         
+        printMessage(errorStream);
+        printMessage(inputStream);
         try {         	
 			process.waitFor();
 		} catch (InterruptedException e) {			
@@ -91,8 +69,30 @@ public enum AppiumServerCtrl {
 				e.printStackTrace();
 			}finally{					
 				Thread.sleep(4000);				
+			}		
+	}
+
+	private  void printMessage(InputStream input) {
+		new Thread(new Runnable() {
+			public void run() {
+				Reader reader = new InputStreamReader(input);
+				BufferedReader bf = new BufferedReader(reader);
+				String line = null;
+				try {
+					while ((line = bf.readLine()) != null) {
+						logger.debug(line);
+					}
+				} catch (IOException e) {					
+				}finally {
+					try {
+						reader.close();
+						bf.close();
+					} catch (IOException e) {						
+						e.printStackTrace();
+					}					
+				}
 			}
-		
+		}).start();
 	}
 
 }

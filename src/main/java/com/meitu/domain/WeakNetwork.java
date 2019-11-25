@@ -4,8 +4,7 @@ import com.meitu.service.WeakNetworkService;
 import com.meitu.utils.Helper;
 public class WeakNetwork{	
 	
-	private WeakNetworkService weakNetworkService;	
-	public WeakNetwork() {}
+	private WeakNetworkService weakNetworkService;		
 	public WeakNetwork(Helper helper) {
 		weakNetworkService = new WeakNetworkService(helper);
 	}

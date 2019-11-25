@@ -1,11 +1,9 @@
 package com.meitu.test;
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.log4j.Logger;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import com.meitu.base.Worker;
 import com.meitu.entity.DriverEntity;
@@ -17,54 +15,92 @@ import com.meitu.utils.JustinUtil;
  *
  */
 public class TestWeakNetwork {
-	private Logger logger =Logger.getLogger(this.getClass());
-	private Worker worker;
-    private List<String> sheetNameList;
-	private DriverEntity driverEntity ;	
-	
-	@BeforeSuite
-	public void BeforeSuite(){		
-		sheetNameList=new ArrayList<String>();
-		driverEntity = new DriverEntity();
-	}
+	private Logger logger =Logger.getLogger(this.getClass());	
+	private Worker worker;   
+    private DriverEntity driverEntity;
 	@BeforeTest
-	public void configuration()
-	{	
-		//添加测试项目	
-		sheetNameList.add("WeakNetwork");		
+    public void initParameters() {
+		driverEntity = new DriverEntity();			
 		driverEntity.setPath(JustinUtil.getRootPathCase()+"\\cases.xls");
-		driverEntity.setPort("4723");
-		//自动获取连接的设置UDID		
+		driverEntity.setPort("4723");		
 		driverEntity.setUdid(DeviceUtils.getDeviceInfo().trim());		
-		driverEntity.setVersion("9.0");			
+		driverEntity.setVersion("9.0");
+		logger.info(driverEntity);
+		worker =new Worker(driverEntity,"WeakNetwork");	
+		worker.startAppiumServer();			
+    }    
+	@BeforeClass
+	public void connectDriver()
+	{	
+		worker.startAndroidDriver();
 	}
-	
-	@Test(dataProvider="moduleNameArray", invocationCount =1)
-	public void test1(String sheetName) throws InterruptedException {
-		logger.info("*****************************************");
-		logger.info("Test start");	
-		logger.info("*****************************************");
-		worker =new Worker(driverEntity,sheetName);
-		worker.start();
+	@AfterClass
+	public void stopServer() {
+		worker.stopAndroidDriver();
 	}
-	
-	@DataProvider(name = "moduleNameArray")
-	public  Object[][] primeNumbers() {		
-		String[][] arr = new String[sheetNameList.size()][1];
-	    for (int i = 0; i < arr.length; i++) {
-	    	for (int j = 0; j < arr[i].length; j++) {
-	    		arr[i][j]=sheetNameList.get(i);
-			}			
-		}
-	    return arr;
-	}
-	@AfterSuite
+	@AfterTest
 	public void tearDown() {
-		logger.info("测试结束，导出结果");
+		worker.stopServer();
+		logger.info("测试结束,导出结果");
 		if(worker != null) {
 			worker.createResult();
-		}else {
-			logger.info("测试未能启动，无法输出结果");
-		}		
+		}	
 	}	
+	
+	@Test(priority = 1)
+	public void testFirstLogin() {		
+		logger.info("首次登陆应用商店");			
+		worker.execute("firstLogin");
+	}	
+	@Test(priority = 2)
+	public void testReOpenAppStore() {		
+		logger.info("非首次登陆应用商店");			
+		worker.execute("reOpenAppStore");
+	}
+	@Test(priority = 3)
+	public void testNewGame() {		
+		logger.info("新游");			
+		worker.execute("newGame");
+	}
+	@Test(priority = 4)
+	public void testHomePageWelfare() {		
+		logger.info("福利");			
+		worker.execute("homePageWelfare");
+	}
+	@Test(priority = 5)
+	public void testHomePageList() {		
+		logger.info("榜单");			
+		worker.execute("homePageList");
+	}
+	@Test(priority = 6)
+	public void testHomeClassify() {		
+		logger.info("分类");			
+		worker.execute("homeClassify");
+	}
+	@Test(priority = 7)
+	public void testHomeClassifyList() {		
+		logger.info("分类");			
+		worker.execute("homeClassifyList");
+	}
+	@Test(priority = 8)
+	public void testWelfareGift() {		
+		logger.info("福利礼包");			
+		worker.execute("welfareGift");
+	}
+	@Test(priority = 9)
+	public void testSearch() {		
+		logger.info("搜索");			
+		worker.execute("search");
+	}
+	@Test(priority = 10)
+	public void testAppInformation() {		
+		logger.info("应用详情界面");			
+		worker.execute("appInformation");
+	}
+	@Test(priority = 11)
+	public void testCenter() {		
+		logger.info("个人中心");			
+		worker.execute("center");
+	}
+	
 }

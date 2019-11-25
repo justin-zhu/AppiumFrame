@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
-import com.meitu.base.AbstractWorker;
 import com.meitu.ctrl.AppiumServerCtrl;
 import com.meitu.ctrl.AndroidDriverCtrl;
 import com.meitu.entity.DriverEntity;
@@ -16,15 +15,12 @@ import com.meitu.entity.TestCaseEntity;
 import com.meitu.utils.Helper;
 import com.meitu.utils.JustinUtil;
 import com.meitu.utils.LogcatUtil;
-
 import cn.hutool.core.util.ReflectUtil;
-import cn.hutool.json.JSONUtil;
-import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelWriter;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 
-public class Worker extends AbstractWorker {
+public class Worker {
 	boolean operationResult = false;
 	private  LogcatUtil logcat;
 	private Helper helper;
@@ -39,15 +35,13 @@ public class Worker extends AbstractWorker {
 
 	public Worker(DriverEntity driverEntity, String sheetName) {
 		this.driverEntity = driverEntity;
-		this.sheetName = sheetName;
-		log.debug("driverEntity:" + JSONUtil.toJsonStr(driverEntity));		
+		this.sheetName = sheetName;			
 	}
 
 	/**
 	 * 实例化一个AppiumServer
-	 */
-	@Override
-	public void getAppiumServer() {
+	 */	
+	public void startAppiumServer() {
 		log.info("current deviceUDID:" + driverEntity.getUdid());
 		new Thread(() -> {
 			try {
@@ -65,53 +59,37 @@ public class Worker extends AbstractWorker {
 	}
 
 	/**
-	 * 实例化androidDriver
-	 */
-	@Override
-	public void getDriver() {
+	 * 实例化androidDriver logcat
+	 */	
+	public void startAndroidDriver() {
 		androidDriver = AndroidDriverCtrl.Instance.creatDriver(driverEntity).getDriver(driverEntity.getPort());
 		log.info("getAndroidDriver:" + androidDriver);
 		helper = new Helper(androidDriver, path);
+		initDaomainObject();	
+		path = JustinUtil.getRootPath(driverEntity.getUdid() + "_" + sheetName + JustinUtil.getLocalTime());
+		logcat = new LogcatUtil(driverEntity.getUdid(), new File(path));
+		logcat.start();
 	}
 
 	/**
 	 * 执行测试
-	 */
-	@Override
-	public void execute() {
-		initDaomainObject();
-		logcat = new LogcatUtil(driverEntity.getUdid(), new File(path));
-		logcat.start();
-		for (TestCaseEntity caseEntity : caseList) {
-			log.info(JSONUtil.toJsonStr(caseEntity));
-			this.method(caseEntity);
-		}
-		logcat.interrupt();
-	}
-
-	/**
-	 * 被构造函数调用，初始化测试前的必要参数
-	 */
-	@Override
-	public void init() {
-		path = JustinUtil.getRootPath(driverEntity.getUdid() + "_" + sheetName + JustinUtil.getLocalTime());
-		ExcelReader reader = JustinUtil.readExcel(driverEntity.getPath(), sheetName);
-		log.info("init sheetName：" + sheetName);
-		driverEntity.setAppPackage(reader.getCell(1, 0).toString());
-		log.info("app package name:" + driverEntity.getAppPackage());
-		driverEntity.setAppActivity(reader.getCell(1, 1).toString());
-		log.info("app activity name:" + driverEntity.getAppActivity());
-		caseList = reader.read(2, 3, TestCaseEntity.class);
-		reader.close();
+	 */	
+	public void execute(String methodName) {			
+		this.method(methodName);	
 	}
 
 	/**
 	 * 停止Appium服务
+	 */	
+	public void stopServer() {
+		AppiumServerCtrl.Instance.stopServer(driverEntity.getPort());		
+	}
+	/**
+	 * 停止Driver logcat
 	 */
-	@Override
-	public void stopServerAndDriver() {
-		AppiumServerCtrl.Instance.stopServer(driverEntity.getPort());
+	public void stopAndroidDriver() {
 		AndroidDriverCtrl.Instance.stopDriver(driverEntity.getPort());
+		logcat.interrupt();
 	}
 
 	/**
@@ -124,16 +102,16 @@ public class Worker extends AbstractWorker {
 		log.info("用例执行完成,正在生成Excel文件");
 		String path1 = path + File.separator + sheetName + "测试结果" + ".xls";
 		ExcelWriter excelWriter = new ExcelWriter(path1, sheetName);
-		excelWriter.merge(5, "测试结果");
+		excelWriter.merge(4, "测试结果");
 		excelWriter.write(getResultList());
 		excelWriter.close();
-		log.info("文件已生成,路径：" + path1);
+		log.info("文件已生成,路径:" + path1);
 	}
 
 	/**
 	 * 获取要测试模块名称domain
 	 */
-	public void initDaomainObject() {
+	private void initDaomainObject() {
 		resultList = new ArrayList<Map<String, Object>>();
 		try {
 			// 获取表格中对应的域对象
@@ -145,11 +123,11 @@ public class Worker extends AbstractWorker {
 		}
 	}
 
-	public void method(TestCaseEntity userCase) {
-		helper.setMethodName(userCase.getType());
-		log.info("userCase:" + userCase.getType().trim());
+	public void method(String methodName) {
+		helper.setMethodName(methodName);
+		log.info("userCase:"+methodName);
 		try {
-			ReflectUtil.invoke(domainObject, userCase.getType().trim());
+			ReflectUtil.invoke(domainObject,methodName);
 			operationResult = true;
 		} catch (Exception e) {
 			// 接收异常,不处理,
@@ -158,29 +136,36 @@ public class Worker extends AbstractWorker {
 			e.printStackTrace();
 		} finally {
 			// 写入单个模块的执行结果
-			addResultToList(userCase);
-			log.info(userCase+" Test end");
+			addResultToList(methodName);
+			log.info(methodName+" Test end");
 		}
 	}
 
-	public void addResultToList(TestCaseEntity userCase) {
-		Map<String, Object> map = new LinkedHashMap<String, Object>();
-		boolean expectboolean = new Boolean(userCase.getExpect());
-		map.put("步骤名称", userCase.getStep());		
-		map.put("操作类型", userCase.getType());
-		map.put("传递的参数", userCase.getArg());
+	public void addResultToList(String userCase) {
+		Map<String, Object> map = new LinkedHashMap<String, Object>();		
+		map.put("步骤名称", sheetName);		
+		map.put("操作类型", "method");
+		map.put("传递的参数", userCase);
 		map.put("实际结果", "" + operationResult);
-		map.put("期望结果", "" + expectboolean);
+		map.put("期望结果", "" + true);
 		resultList.add(map);
 		try {
-			Assert.assertEquals(operationResult, expectboolean, userCase.getStep() + "--------->>执行失败");
+			Assert.assertEquals(operationResult, true, userCase + "--------->>Failure");
 		} catch (AssertionError e) {
-			helper.snapshot(userCase.getStep());
-			log.info("实际执行结果:" + operationResult + ",期望结果:" + expectboolean);
+			helper.snapshot(userCase);
+			log.info("Actual result:" + operationResult + ",Expected results:" + true);
+			throw e;
 		}
 	}
 
 	public List<Map<String, Object>> getResultList() {
 		return resultList;
+	}
+	public Helper getHelper() {
+		return helper;
+	}
+
+	public void setHelper(Helper helper) {
+		this.helper = helper;
 	}
 }

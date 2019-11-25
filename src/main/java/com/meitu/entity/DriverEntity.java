@@ -1,6 +1,4 @@
 package com.meitu.entity;
-
-import java.util.List;
 /**
  * 交由DriverCtrl调用
  * @author p_xiaogzhu
@@ -51,6 +49,11 @@ public class DriverEntity {
 	public void setAppActivity(String appActivity) {
 		this.appActivity = appActivity;
 	}
-
+	@Override
+	public String toString() {
+		return "DriverEntity [port=" + port + ", udid=" + udid + ", path=" + path + ", appPackage=" + appPackage
+				+ ", appActivity=" + appActivity + ", version=" + version + "]";
+	}
+	
 	
 }

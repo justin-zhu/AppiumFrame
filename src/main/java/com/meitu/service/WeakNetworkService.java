@@ -152,10 +152,14 @@ public class WeakNetworkService extends AbstractPage{
 		helper.back();
 		//切到游戏页
 		helper.click(game.getIndex(), "游戏页");
+		helper.swipeDirection("down");
+		helper.swipeDirection("down");
 		//会有Toast
 		helper.isExistToast("没有获取到数据");			
 		//点击软件页
 		helper.click(soft.getIndex(), "软件页");	
+		helper.swipeDirection("down");
+		helper.swipeDirection("down");
 		//会有Toast
 		helper.isExistToast("没有获取到数据");		
 	}	
@@ -548,8 +552,8 @@ public class WeakNetworkService extends AbstractPage{
 	 */
 	public void setConnectionType(String netWorkValue) {		
 		helper.pressKeyCode(3);
-		clickDeskApp("QNET");
-		//helper.getAndroidDriver().startActivity(getQnetActivity());
+		//clickDeskApp("QNET");
+		helper.getAndroidDriver().startActivity(getQnetActivity());
 		WebElement testButton = helper.findById("com.tencent.qnet:id/buttonTest");
 		if("正常网络".equals(netWorkValue)) {
 			if(testButton.getText().contains("结束")) {
