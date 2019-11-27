@@ -332,7 +332,7 @@ public class WeakNetworkService extends AbstractPage{
 		this.clean();
 		setConnectionType(NETWORK_NORMAL);
 		helper.sleep(6000);
-		helper.click(pub.getAdFrame(), "广告");
+		helper.isExist(pub.getAdFrame(), "广告");
 		helper.click(main.getClassify(), "首页分类");
 		setConnectionType(NETWORK_CLOSE);
 		helper.click(pub.getClassify_Soft_Video(), "视频分类");	
@@ -384,7 +384,7 @@ public class WeakNetworkService extends AbstractPage{
 		this.clean();
 		setConnectionType(NETWORK_NORMAL);
 		helper.sleep(6000);
-		helper.click(pub.getAdFrame(), "广告");
+		helper.isExist(pub.getAdFrame(), "广告");
 		helper.click(center.getIndex(), "个人中心");		
 		center.logout();
 		helper.click(main.getIndex(), "首页");
@@ -534,8 +534,7 @@ public class WeakNetworkService extends AbstractPage{
 	public void clean() {
 		helper.killAppStore();
 		helper.killQNET();
-		logger.info("结束QNET进程");
-		
+		logger.info("结束QNET进程");		
 	}	
 	
 	/**

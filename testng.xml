@@ -5,14 +5,13 @@
 	<test name="appium">
 		<classes>
 			<class name="com.meitu.test.TestWeakNetwork">
-			<!-- 可指定测试的方法 不指定将执行所有 
+			<!-- 可指定测试的方法 不指定将执行所有--> 
 			<methods>
-          		<include name = "testReOpenAppStore"/>          		        		
+          		<include name = "testWelfareGift"/>          		        		
        		</methods>	
-       		-->
+       		
        		</class>		
-		</classes>
-	
+		</classes>	
 	</test>
 	<listeners>
 		<listener

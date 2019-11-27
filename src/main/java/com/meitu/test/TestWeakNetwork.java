@@ -4,6 +4,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import com.meitu.base.Worker;
 import com.meitu.entity.DriverEntity;
@@ -14,6 +15,7 @@ import com.meitu.utils.JustinUtil;
  * @author p_xiaogzhu
  *
  */
+@Listeners
 public class TestWeakNetwork {
 	private Logger logger =Logger.getLogger(this.getClass());	
 	private Worker worker;   
@@ -48,7 +50,7 @@ public class TestWeakNetwork {
 	}	
 	
 	@Test(priority = 1)
-	public void testFirstLogin() {		
+	public void testFirstLogin() {			
 		logger.info("首次登陆应用商店");			
 		worker.execute("firstLogin");
 	}	

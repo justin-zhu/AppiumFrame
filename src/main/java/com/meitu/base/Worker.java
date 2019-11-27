@@ -64,9 +64,9 @@ public class Worker {
 	public void startAndroidDriver() {
 		androidDriver = AndroidDriverCtrl.Instance.creatDriver(driverEntity).getDriver(driverEntity.getPort());
 		log.info("getAndroidDriver:" + androidDriver);
-		helper = new Helper(androidDriver, path);
-		initDaomainObject();	
 		path = JustinUtil.getRootPath(driverEntity.getUdid() + "_" + sheetName + JustinUtil.getLocalTime());
+		helper = new Helper(androidDriver, path);
+		initDaomainObject();		
 		logcat = new LogcatUtil(driverEntity.getUdid(), new File(path));
 		logcat.start();
 	}
