@@ -209,7 +209,7 @@ public class Helper {
 		} else {
 			log.info("点击失败:"+elementName);
 			snapshot("fail"+elementName);
-			throw new RuntimeException("元素点击失败");			
+			throw new RuntimeException("元素点击失败:"+elementName);			
 		}
 		System.gc();
 	}
@@ -257,7 +257,8 @@ public class Helper {
 	 */
 	public WebElement findBySlideText(String text) {
 		WebElement element = null;
-		if (isExist(text)) {
+		boolean b = isExist(text);
+		if (b) {
 			String uiautoExp = "new UiSelector().textContains(\"" + text + "\")";
 			element = androidDriver.findElementByAndroidUIAutomator(uiautoExp);			
 			return element;
@@ -319,21 +320,19 @@ public class Helper {
 	 * 滚动搜索15次
 	 * @param str 从源文件中查找是否存在某个名为str的元素信息
 	 */
-	public boolean isExist(String str) {
-		
-		
+	public boolean isExist(String str) {		
 		int count = 0;
 		String page1;
 		String page2;
 		do {
-			page1 = getPageSource();
+			page1 = this.getPageSource();
+			sleep(2000);
 			if (page1.contains(str)) {
+				log.info("元素已找到");
 				return true;
 			}
-			new AndroidTouchAction(androidDriver).press(PointOption.point(width / 2, height * 3 / 4))
-			.waitAction(WaitOptions.waitOptions(Duration.ofSeconds(2))).
-			moveTo(PointOption.point(width / 2, height / 4)).release().perform();				
-			sleep(2000);
+			this.swipeDirection("up");
+			sleep(1500);
 			page2 = getPageSource();
 			count++;
 		} while (!page1.equals(page2) && count < 15);
@@ -412,7 +411,8 @@ public class Helper {
 	 * @param direction 传进来一个up down left right
 	 * @return
 	 */
-	public void swipeDirection(String direction) {		
+	public void swipeDirection(String direction) {
+		log.info("滑动方向:"+direction);
 		if (direction.equals("right")) {
 			new AndroidTouchAction(androidDriver).press(PointOption.point(width / 4, height / 2))
 			.waitAction(WaitOptions.waitOptions(Duration.ofSeconds(1)))
@@ -480,7 +480,7 @@ public class Helper {
 	 * @throws InterruptedException 截图失败时，抛出异常
 	 */
 	public void snapshot(String actionName) {
-		sleep(1000);
+		sleep(150);
 		//当前时间+动作名称
 		String fileName = JustinUtil.getLocalTime() + actionName;
 		log.debug("fileName:"+fileName);
@@ -545,7 +545,7 @@ public class Helper {
 		sleep(2000);		
 	}
 	public void getContext() {
-		log.info("上下文:"+androidDriver.getContext());
+		log.info("上下文:"+androidDriver.getContextHandles());
 	}
 
 	/**
@@ -698,7 +698,7 @@ public class Helper {
 		return driverWait.until(new ExpectedCondition<String>() {
 			@Override
 			public String apply(WebDriver arg0) {
-				try {
+				try {					
 					WebElement element =androidDriver.findElement(By.xpath("//*[contains(@text,'"+key+"')]"));
 					snapshot("toast成功");
 					return element.getText();
@@ -715,6 +715,7 @@ public class Helper {
 	 */
 	public void hideKeyBoard() {
 		androidDriver.hideKeyboard();
-		log.info("隐藏键盘");		
+		log.info("隐藏键盘");	
+		this.sleep(2000);
 	}
 }

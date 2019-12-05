@@ -129,7 +129,7 @@ public class PageOfGame {
 	 * Gpass特权
 	 */
 	public WebElement getGpassGame() {
-		return helper.findById("com.tencent.southpole.appstore:id/button3");
+		return helper.findById("com.tencent.southpole.appstore:id/button2");
 	}
 	/**
 	 * Gpass特权界面-用户信息
@@ -141,6 +141,20 @@ public class PageOfGame {
 	 * 购机福利
 	 */
 	public WebElement getBuyPhoneBoon() {
-		return helper.findById("com.tencent.southpole.appstore:id/button2");
+		return helper.findById("com.tencent.southpole.appstore:id/button1");
+	}
+	/**
+	 * 福利界面banner
+	 * @return
+	 */
+	public WebElement getBanner() {
+		return helper.findById("com.tencent.southpole.appstore:id/image_view");
+	}
+	/**
+	 * 无网状态，点击福利banner界面 提示网页找不到
+	 * @return
+	 */
+	public WebElement getErrorPage() {
+		return helper.findById("com.tencent.southpole.appstore:id/back_btn");
 	}
 }

@@ -11,12 +11,32 @@ public class PageOfNavigation {
 		super();
 		this.helper = helper;
 	}
+	public void getnetworkState() {		
+		System.out.println(helper.getAndroidDriver().getConnection().isWiFiEnabled());
+	}
 	/**
 	 * 通知栏：WiFi按钮
 	 * @return
 	 */
 	public WebElement getWiFi() {
+		this.getnetworkState();
 		return helper.findByXpath("//*[@resource-id='com.android.systemui:id/quick_qs_panel']/android.widget.LinearLayout/android.widget.Switch[2]");
+	}
+	public void closeWiFi() {
+		boolean state = helper.getAndroidDriver().getConnection().isWiFiEnabled();
+		if(state) {
+			helper.getAndroidDriver().openNotifications();
+			helper.click(this.getWiFi(), "关闭WiFi");
+			helper.back();
+		}
+	}
+	public void openWiFi() {
+		boolean state = helper.getAndroidDriver().getConnection().isWiFiEnabled();
+		if(!state) {
+			helper.getAndroidDriver().openNotifications();
+			helper.click(this.getWiFi(), "关闭WiFi");
+			helper.back();
+		}
 	}
 	/**
 	 * 通知栏：数据按钮

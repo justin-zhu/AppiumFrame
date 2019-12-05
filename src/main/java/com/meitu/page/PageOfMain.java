@@ -54,6 +54,13 @@ public class PageOfMain {
 		return helper.findById("com.tencent.southpole.appstore:id/button_receive_all");
 	}
 	/**
+	 * 领取按钮
+	 * @return
+	 */
+	public WebElement getReceiveOfOne() {
+		return helper.findById("com.tencent.southpole.appstore:id/receive_button");
+	}
+	/**
 	 * 首页顶部:榜单
 	 * @return
 	 */

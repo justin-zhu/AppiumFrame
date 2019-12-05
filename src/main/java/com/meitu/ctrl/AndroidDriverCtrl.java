@@ -25,7 +25,7 @@ public enum AndroidDriverCtrl {
      * @param driverEntity
      * @throws MalformedURLException
      */
-    public AndroidDriverCtrl creatDriver(DriverEntity driverEntity)  {    	
+    public synchronized AndroidDriverCtrl  creatDriver(DriverEntity driverEntity,URL url)  {    	
         DesiredCapabilities capabilities = new DesiredCapabilities();//设置各项参数
         capabilities.setCapability("deviceName", driverEntity.getUdid());        
         capabilities.setCapability("udid",  driverEntity.getUdid());
@@ -39,14 +39,14 @@ public enum AndroidDriverCtrl {
         capabilities.setCapability("unicodeKeyboard", false);// 控制系统键盘
         capabilities.setCapability("resetKeyboard", false);       
 		try {
-			driver = new AndroidDriver<AndroidElement>(new URL("http://127.0.0.1:"+driverEntity.getPort()+"/wd/hub"), capabilities);
+			driver = new AndroidDriver<AndroidElement>(url, capabilities);
 			logger.info("driver init successed");
-			driver.unlockDevice();
+			driver.unlockDevice();			
 		} catch (Exception e) {
 			logger.info("driver init failure");
 			e.printStackTrace();
 		}       
-        hashMap.put(driverEntity.getPort(),driver);
+        hashMap.put(String.valueOf(url.getPort()),driver);
         return this;
     }
     /**
@@ -54,16 +54,16 @@ public enum AndroidDriverCtrl {
      * @param port
      * @return
      */
-    public AndroidDriver<AndroidElement> getDriver(String port){
-        AndroidDriver<AndroidElement> androidDriver = hashMap.get(port);
+    public synchronized AndroidDriver<AndroidElement> getDriver(int port){
+        AndroidDriver<AndroidElement> androidDriver = hashMap.get(String.valueOf(port));
         return androidDriver;
     }
     /**
            * 停止Driver
      * @param port
      */
-    public  void stopDriver(String port) {
-		AndroidDriver<AndroidElement> androidDriver = hashMap.get(port);
+    public  synchronized void stopDriver(int port) {
+		AndroidDriver<AndroidElement> androidDriver = hashMap.get(String.valueOf(port));
 		androidDriver.quit();	
 		logger.info("driver quit successed");
 	}

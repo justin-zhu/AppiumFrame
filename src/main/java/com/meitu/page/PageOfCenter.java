@@ -2,6 +2,7 @@ package com.meitu.page;
 
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebElement;
+
 import com.meitu.utils.Helper;
 
 import cn.hutool.core.util.RuntimeUtil;
@@ -21,7 +22,7 @@ public class PageOfCenter {
 		return helper.findById("com.tencent.southpole.appstore:id/tab_mine");
 	}
 	/**
-	 * 用户名元素
+	 * 点击登陆
 	 */
 	public WebElement getUserName() {
 		return helper.findById("com.tencent.southpole.appstore:id/nick_name");
@@ -74,8 +75,9 @@ public class PageOfCenter {
 	 */
 	public boolean isLogin() {
 		WebElement element = getUserName();
-		if (element != null) {
-			logger.info("用户已登陆,用户名:"+element.getText());
+		String elementName = element.getText();
+		if (!"点击登录".equals(elementName)) {
+			logger.info("用户已登陆,用户名:"+elementName);
 			return true;
 		} else {
 			logger.info("未登陆");
@@ -157,6 +159,19 @@ public class PageOfCenter {
 		}
 	}
 	/**
+	 * 安装新浪微博
+	 */
+	public void installWeiBo(String deviceName) {
+		logger.info("安装至设备:"+deviceName);
+		String installResult = getAppList();
+		if(installResult.contains("com.sina.weibo")) {
+			return;
+		}else {
+			String path = PageOfCenter.class.getResource("/weibo.apk").getPath();
+			RuntimeUtil.execForStr("adb -s "+deviceName+" install "+path);
+		}
+	}
+	/**
 	 * 即将上线元素
 	 */
 	public WebElement getComingsoon() {
@@ -174,5 +189,11 @@ public class PageOfCenter {
 	 */
 	public WebElement getAllAppList() {
 		return helper.findById("com.tencent.southpole.appstore:id/common_head_title");
+	}
+	/**
+	 * 正在安装卡片中，删除按钮
+	 */
+	public WebElement getDelBtn() {
+		return helper.findById("com.tencent.southpole.appstore:id/download_app_delete");
 	}
 }

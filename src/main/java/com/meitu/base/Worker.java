@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
-import com.meitu.ctrl.AppiumServerCtrl;
 import com.meitu.ctrl.AndroidDriverCtrl;
+import com.meitu.ctrl.AppiumServer;
 import com.meitu.entity.DriverEntity;
 import com.meitu.entity.TestCaseEntity;
 import com.meitu.utils.Helper;
@@ -19,6 +19,7 @@ import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
+import io.appium.java_client.service.local.AppiumDriverLocalService;
 
 public class Worker {
 	boolean operationResult = false;
@@ -31,6 +32,7 @@ public class Worker {
 	public String path;
 	private List<Map<String, Object>> resultList;
 	private Object domainObject;
+	private AppiumDriverLocalService appiumDriver;
 	Logger log = Logger.getLogger(this.getClass());
 
 	public Worker(DriverEntity driverEntity, String sheetName) {
@@ -42,28 +44,17 @@ public class Worker {
 	 * 实例化一个AppiumServer
 	 */	
 	public void startAppiumServer() {
-		log.info("current deviceUDID:" + driverEntity.getUdid());
-		new Thread(() -> {
-			try {
-				AppiumServerCtrl.Instance.startServer(driverEntity.getPort(), driverEntity.getUdid());
-			} catch (Exception e1) {
-				throw new RuntimeException("appium server failure");
-			}
-		}).start();
-		log.info("waiting appiumServer startup");
-		try {
-			Thread.sleep(18000);
-			log.info("appium thread sleep end");
-		} catch (InterruptedException e) {			
-		}
+		log.info("current device:" + driverEntity.getUdid());
+		appiumDriver = AppiumServer.getAppiumDriver();
+		appiumDriver.start();
+		log.info("appium server running");
 	}
 
 	/**
 	 * 实例化androidDriver logcat
 	 */	
 	public void startAndroidDriver() {
-		androidDriver = AndroidDriverCtrl.Instance.creatDriver(driverEntity).getDriver(driverEntity.getPort());
-		log.info("getAndroidDriver:" + androidDriver);
+		androidDriver = AndroidDriverCtrl.Instance.creatDriver(driverEntity,appiumDriver.getUrl()).getDriver(appiumDriver.getUrl().getPort());
 		path = JustinUtil.getRootPath(driverEntity.getUdid() + "_" + sheetName + JustinUtil.getLocalTime());
 		helper = new Helper(androidDriver, path);
 		initDaomainObject();		
@@ -81,14 +72,15 @@ public class Worker {
 	/**
 	 * 停止Appium服务
 	 */	
-	public void stopServer() {
-		AppiumServerCtrl.Instance.stopServer(driverEntity.getPort());		
+	public void stopAppiumServer() {
+		appiumDriver.stop();
+		log.info("appium server is destoryed");
 	}
 	/**
 	 * 停止Driver logcat
 	 */
 	public void stopAndroidDriver() {
-		AndroidDriverCtrl.Instance.stopDriver(driverEntity.getPort());
+		AndroidDriverCtrl.Instance.stopDriver(appiumDriver.getUrl().getPort());
 		logcat.interrupt();
 	}
 
@@ -129,8 +121,7 @@ public class Worker {
 		try {
 			ReflectUtil.invoke(domainObject,methodName);
 			operationResult = true;
-		} catch (Exception e) {
-			// 接收异常,不处理,
+		} catch (Exception e) {			
 			operationResult = false;
 			log.info(e.getMessage());
 			e.printStackTrace();

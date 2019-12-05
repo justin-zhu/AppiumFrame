@@ -1,12 +1,15 @@
 package com.meitu.page;
 
+import org.apache.log4j.Logger;
 import org.openqa.selenium.WebElement;
 
 import com.meitu.utils.Helper;
 
+import cn.hutool.core.util.RuntimeUtil;
+
 public class PageOfPublic {
 	Helper helper;
-
+	private Logger log = Logger.getLogger(this.getClass());
 	public PageOfPublic(Helper helper) {		
 		this.helper = helper;
 	}
@@ -14,11 +17,18 @@ public class PageOfPublic {
 	public PageOfPublic() {		
 	}
 	/**
-	 * 启动时，弹出的权限窗口，同意元素
+	 * 确定和同意按钮
 	 * @return
 	 */
 	public WebElement getAuthor() {
 		return helper.findById("com.tencent.southpole.appstore:id/dialog_right_btn");
+	}
+	/**
+	 * 启动时，弹出的权限窗口，同意元素
+	 * @return
+	 */
+	public WebElement getAuthorOfSystem() {
+		return helper.findById("com.android.packageinstaller:id/ok_button");
 	}
 	/**
 	 *  没有获取到数据，轻触界面尝试
@@ -109,6 +119,43 @@ public class PageOfPublic {
 	public WebElement getClassify_Soft_Video() {
 		return helper.findByUiautomatorText("视频");
 	}
-	
+	/**
+	 * 安装按钮
+	 * @return
+	 */
+	public WebElement getInstalBtn() {
+		return helper.findById("com.tencent.southpole.appstore:id/app_detail_download");
+	}
+	/**
+	 * 卸载指定的包
+	 * @param packageName
+	 */
+	public void removeApp(String packageName) {
+		helper.getAndroidDriver().removeApp(packageName);
+	}
+	/**
+	 * 获取第三方包名
+	 */
+	public String getAppList_3() {
+		String deviceName = helper.getAndroidDriver().getCapabilities().getCapability("deviceName").toString();
+		return RuntimeUtil.execForStr("adb -s "+deviceName+" shell pm list packages -3");
+	}
+	/**
+	 * 检查应用是否已经安装在本机
+	 * @param packageName
+	 */
+	public void checkAppIsInstall(String packageName) {
+		for (int i = 0; i < 20; i++) {
+			if(getAppList_3().contains(packageName)) {
+				log.info(packageName+"已安装完成");
+				return;
+			}else {
+				log.info("等待应用安装完成");
+				helper.sleep(5000);				
+			}
+		}
+		log.info(packageName+"未能在指定时间内安装完成");
+		throw new RuntimeException("应用未能在指定时间内安装完成");
+	}
 	
 }

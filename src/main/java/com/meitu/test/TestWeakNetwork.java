@@ -9,7 +9,6 @@ import org.testng.annotations.Test;
 import com.meitu.base.Worker;
 import com.meitu.entity.DriverEntity;
 import com.meitu.utils.DeviceUtils;
-import com.meitu.utils.JustinUtil;
 /**
  * Test类
  * @author p_xiaogzhu
@@ -22,9 +21,7 @@ public class TestWeakNetwork {
     private DriverEntity driverEntity;
 	@BeforeTest
     public void initParameters() {
-		driverEntity = new DriverEntity();			
-		driverEntity.setPath(JustinUtil.getRootPathCase()+"\\cases.xls");
-		driverEntity.setPort("4723");		
+		driverEntity = new DriverEntity();					
 		driverEntity.setUdid(DeviceUtils.getDeviceInfo().trim());		
 		driverEntity.setVersion("9.0");
 		logger.info(driverEntity);
@@ -42,24 +39,24 @@ public class TestWeakNetwork {
 	}
 	@AfterTest
 	public void tearDown() {
-		worker.stopServer();
+		worker.stopAppiumServer();
 		logger.info("测试结束,导出结果");
 		if(worker != null) {
 			worker.createResult();
 		}	
 	}	
 	
-	@Test(priority = 1)
+	@Test(priority = 1,enabled = false)
 	public void testFirstLogin() {			
 		logger.info("首次登陆应用商店");			
 		worker.execute("firstLogin");
 	}	
-	@Test(priority = 2)
+	@Test(priority = 2,enabled = false)
 	public void testReOpenAppStore() {		
 		logger.info("非首次登陆应用商店");			
 		worker.execute("reOpenAppStore");
 	}
-	@Test(priority = 3)
+	@Test(priority = 3,enabled = false)
 	public void testNewGame() {		
 		logger.info("新游");			
 		worker.execute("newGame");
@@ -103,6 +100,11 @@ public class TestWeakNetwork {
 	public void testCenter() {		
 		logger.info("个人中心");			
 		worker.execute("center");
+	}
+	@Test(priority = 12)
+	public void testInstall() {		
+		logger.info("安装");			
+		worker.execute("installApp");
 	}
 	
 }

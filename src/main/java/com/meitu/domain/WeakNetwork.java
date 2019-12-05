@@ -53,4 +53,7 @@ public class WeakNetwork{
 		//非首次打开应用商店
 		weakNetworkService.reOpenAppStore();
 	}	
+	public void installApp() {
+		weakNetworkService.installApp();
+	}
 }
