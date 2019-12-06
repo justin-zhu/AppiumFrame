@@ -758,8 +758,7 @@ public class Helper {
 		return list;
 	}
 	public void checkDownloading() {
-		openNotifications();
-		sleep(1000);
+		openNotifications();		
 		String str = "应用正在下载";
 		if(getPageSource().contains(str)) {
 			log.info("应用正在下载");

@@ -487,29 +487,29 @@ public class WeakNetworkService extends AbstractPage{
 //		helper.isExistClickElseSkip(centerPage.getDelBtn(), "删除").isExistClickElseSkip(centerPage.getConfirmBtn(), "确定删除");
 //		navigation.openWiFi();		
 		//首页无网恢复至正常网络下载
-		helper.click(mainPage.getIndex(), "首页");
-		this.setConnectionType(NETWORK_CLOSE);
-		helper.click(pubPage.getWeekHotApps(3), "本周热门应用第3个").sleep(15000);
-		helper.checkElement(pubPage.getErrorOfGetDate(), "没有获取到数据");
-		this.setConnectionType(NETWORK_NORMAL);
-		helper.swipeDirection("up").sleep(2000);
-		helper.click(pubPage.getInstalBtn(), "安装").back();
-		helper.checkDownloading();
-		navigation.closeWiFi();
-		helper.click(centerPage.getIndex(), "个人中心");
-		helper.isExistClickElseSkip(centerPage.getDelBtn(), "删除").isExistClickElseSkip(centerPage.getConfirmBtn(), "确定删除");
-		navigation.openWiFi();
-		//首页延迟网络下载
-		helper.click(mainPage.getIndex(), "首页");
-		this.setConnectionType(NETWORK_DELAY);
-		helper.click(pubPage.getWeekHotApps(1), "本周热门应用第1个").sleep(10000);	
-		helper.click(pubPage.getInstalBtn(), "安装").back();
-		helper.checkDownloading();
-		navigation.closeWiFi();
-		helper.click(centerPage.getIndex(), "个人中心");
-		helper.isExistClickElseSkip(centerPage.getDelBtn(), "删除").isExistClickElseSkip(centerPage.getConfirmBtn(), "确定删除");
-		navigation.openWiFi();	
-		this.setConnectionType(NETWORK_NORMAL);
+//		helper.click(mainPage.getIndex(), "首页");
+//		this.setConnectionType(NETWORK_CLOSE);
+//		helper.click(pubPage.getWeekHotApps(3), "本周热门应用第3个").sleep(15000);
+//		helper.checkElement(pubPage.getErrorOfGetDate(), "没有获取到数据");
+//		this.setConnectionType(NETWORK_NORMAL);
+//		helper.swipeDirection("up").sleep(2000);
+//		helper.click(pubPage.getInstalBtn(), "安装").back();
+//		helper.checkDownloading();
+//		navigation.closeWiFi();
+//		helper.click(centerPage.getIndex(), "个人中心");
+//		helper.isExistClickElseSkip(centerPage.getDelBtn(), "删除").isExistClickElseSkip(centerPage.getConfirmBtn(), "确定删除");
+//		navigation.openWiFi();
+//		//首页延迟网络下载
+//		helper.click(mainPage.getIndex(), "首页");
+//		this.setConnectionType(NETWORK_DELAY);
+//		helper.click(pubPage.getWeekHotApps(1), "本周热门应用第1个").sleep(10000);	
+//		helper.click(pubPage.getInstalBtn(), "安装").back();
+//		helper.checkDownloading();
+//		navigation.closeWiFi();
+//		helper.click(centerPage.getIndex(), "个人中心");
+//		helper.isExistClickElseSkip(centerPage.getDelBtn(), "删除").isExistClickElseSkip(centerPage.getConfirmBtn(), "确定删除");
+//		navigation.openWiFi();	
+//		this.setConnectionType(NETWORK_NORMAL);
 		//软件页无网恢复正常网络下载
 		helper.click(softPage.getIndex(), "软件页");
 		this.setConnectionType(NETWORK_CLOSE);
@@ -517,14 +517,13 @@ public class WeakNetworkService extends AbstractPage{
 		helper.checkElement(pubPage.getErrorOfGetDate(), "没有获取到数据");
 		this.setConnectionType(NETWORK_NORMAL);
 		helper.swipeDirection("up").sleep(2000);
-		helper.click(pubPage.getInstalBtn(), "安装").back();
-		helper.checkDownloading();
+		helper.click(pubPage.getInstalBtn(), "安装").checkDownloading();
 		navigation.closeWiFi();
-		helper.click(centerPage.getIndex(), "个人中心");
+		helper.back().click(centerPage.getIndex(), "个人中心");
 		helper.isExistClickElseSkip(centerPage.getDelBtn(), "删除").isExistClickElseSkip(centerPage.getConfirmBtn(), "确定删除");
 		navigation.openWiFi();	
 		//软件页 延迟网络下载
-		this.setConnectionType(NETWORK_DELAY);
+		this.setConnectionType(NETWORK_DELAY);		
 		helper.click(pubPage.getWeekHotApps(1), "流行正当时第1个应用").sleep(10000);
 		helper.click(pubPage.getInstalBtn(), "安装").back();
 		helper.checkDownloading();
