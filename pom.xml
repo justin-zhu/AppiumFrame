@@ -46,10 +46,10 @@
 			<version>6.1.0</version>
 		</dependency>
 		<dependency>
-   <groupId>com.aventstack</groupId>
-  <artifactId>extentreports</artifactId>
-  <version>3.0.3</version>
-</dependency>
+   			<groupId>com.aventstack</groupId>
+  			<artifactId>extentreports</artifactId>
+  			<version>3.0.3</version>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.testng/testng -->
 		<dependency>
 			<groupId>org.testng</groupId>

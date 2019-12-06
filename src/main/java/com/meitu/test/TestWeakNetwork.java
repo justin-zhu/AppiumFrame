@@ -46,18 +46,18 @@ public class TestWeakNetwork {
 		}	
 	}	
 	
-	@Test(priority = 1,enabled = false)
+	@Test(priority = 1)
 	public void testFirstLogin() {			
 		logger.info("首次登陆应用商店");			
 		worker.execute("firstLogin");
 	}	
-	@Test(priority = 2,enabled = false)
+	@Test(priority = 2)
 	public void testReOpenAppStore() {		
 		logger.info("非首次登陆应用商店");			
 		worker.execute("reOpenAppStore");
 	}
-	@Test(priority = 3,enabled = false)
-	public void testNewGame() {		
+	@Test(priority = 3)
+	public void testNewGame() {
 		logger.info("新游");			
 		worker.execute("newGame");
 	}
@@ -105,6 +105,16 @@ public class TestWeakNetwork {
 	public void testInstall() {		
 		logger.info("安装");			
 		worker.execute("installApp");
+	}
+	@Test(priority = 13)
+	public void testDownApp() {		
+		logger.info("网络恢复后的下载");			
+		worker.execute("downApp");
+	}
+	@Test(priority = 15,enabled = false)
+	public void techCheckAllPage() {
+		logger.info("全部应用模块");
+		worker.execute("checkAllPage");
 	}
 	
 }

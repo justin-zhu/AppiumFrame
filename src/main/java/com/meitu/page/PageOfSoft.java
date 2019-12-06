@@ -84,12 +84,12 @@ public class PageOfSoft {
 	 */
 	public WebElement getSoftClassify() {
 		return helper.findById("com.tencent.southpole.appstore:id/tag_3");
-	}
+	}	
 	/**
-	 * 流行正当时
-	 * index scope(1-5)
+	 * 查看全部标签
+	 * @return
 	 */
-	public WebElement getFashionApp(int index) {
-		return helper.findByXpath("//*[@resource-id='com.tencent.southpole.appstore:id/recycle_view']/android.view.ViewGroup["+index+"]/android.widget.TextView[1]");
+	public WebElement getCheckAllLabel() {
+		return helper.findBySlideId("com.tencent.southpole.appstore:id/more_info");
 	}
 }

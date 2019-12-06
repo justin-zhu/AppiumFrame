@@ -11,6 +11,9 @@ import io.appium.java_client.touch.offset.PointOption;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -200,7 +203,7 @@ public class Helper {
 	 * @param elementName 元素名称
 	 * @return boolean 操作结果
 	 */
-	public void click(WebElement webElement, String elementName) {			
+	public Helper click(WebElement webElement, String elementName) {			
 		if (webElement != null) {
 			webElement.click();
 			webElement = null;			
@@ -212,6 +215,7 @@ public class Helper {
 			throw new RuntimeException("元素点击失败:"+elementName);			
 		}
 		System.gc();
+		return this;
 	}
 
 	/**
@@ -236,7 +240,7 @@ public class Helper {
 	 * @param webElement 元素
 	 * @return boolean 操作结果
 	 */
-	public void clearText(WebElement webElement) {
+	public Helper clearText(WebElement webElement) {
 		if (webElement == null) {
 			log.info("清除失败,元素不存在");
 			snapshot("清除失败");			
@@ -247,6 +251,7 @@ public class Helper {
 			log.info("清除完成");
 			snapshot("清除完成");			
 		}
+		return this;
 	}
 	
 	
@@ -342,10 +347,11 @@ public class Helper {
 	/**
 	 * @return 返回上一步
 	 */
-	public void back() {
+	public Helper back() {
 		androidDriver.navigate().back();
 		log.info("返回操作执行成功");
-		snapshot("返回");		
+		snapshot("返回");	
+		return this;
 	}
 
 	/**
@@ -411,7 +417,7 @@ public class Helper {
 	 * @param direction 传进来一个up down left right
 	 * @return
 	 */
-	public void swipeDirection(String direction) {
+	public Helper swipeDirection(String direction) {
 		log.info("滑动方向:"+direction);
 		if (direction.equals("right")) {
 			new AndroidTouchAction(androidDriver).press(PointOption.point(width / 4, height / 2))
@@ -473,6 +479,7 @@ public class Helper {
 			} while (!page1.equals(page2)&&count < 15);
 			snapshot("滑动" + direction);			
 		} 
+		return this;
 	}
 
 	/**
@@ -567,13 +574,14 @@ public class Helper {
 	 * 
 	 * @param ms 毫秒（1秒=1000ms）
 	 */
-	public void sleep(int ms) {
+	public Helper sleep(int ms) {
 		try {
 			log.info("sleep "+ms+"ms");
 			Thread.sleep(ms);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		return this;
 	}
 
 	/**
@@ -662,12 +670,13 @@ public class Helper {
 	 * @param element
 	 * @param elementName
 	 */
-	public void isExist(WebElement element,String elementName) {
+	public Helper isExistClickElseSkip(WebElement element,String elementName) {
 		if (element != null) {
 			click(element, elementName);
 		}else {
 			log.info(elementName+",未找到,已跳过");
 		}
+		return this;
 	}
 	
 	public void isExistToast(String key) {
@@ -684,13 +693,14 @@ public class Helper {
 	 * @param element
 	 * @param desc
 	 */
-	public void checkElement(WebElement element,String desc) {
+	public Helper checkElement(WebElement element,String desc) {
 		if(element==null) {
 			throw new RuntimeException("检查的元素不存在:"+desc);
 		}else {
 			log.info("检查元素成功!"+desc+"元素存在");
 			log.info("界面提示文本:"+element.getText());
 		}
+		return this;
 	}
 	
 	public String getToast(String key) {
@@ -717,5 +727,45 @@ public class Helper {
 		androidDriver.hideKeyboard();
 		log.info("隐藏键盘");	
 		this.sleep(2000);
+	}
+	public void removeApp() {
+		ConcurrentHashMap<String, String> map = new ConcurrentHashMap<String, String>();
+		map.put("io.appium.settings", "0");
+		map.put("com.tencent.tmgp.sgame", "0");
+		map.put("io.appium.uiautomator2.server", "0");
+		map.put("io.appium.uiautomator2.server.test", "0");
+		map.put("com.tencent.qnet", "0");
+		List<String> list = getLocalAppList();
+		for (String name : list) {
+			log.info("应用名称:"+name);
+			if(map.get(name.trim())==null) {
+				androidDriver.removeApp(name);
+				log.info("已清除应用:"+name);
+			}
+		}
+	}
+	public List<String> getLocalAppList(){
+		List<String> list = new ArrayList<String>();
+		String cmd = "adb shell pm list packages -3";		
+		String str = RuntimeUtil.execForStr(cmd);
+		String[] packagesArray = str.split("package:");		
+		for (String name : packagesArray) {
+			if(name.length()>2) {
+				list.add(name.replace("\r\n", ""));					
+			}			
+		}
+		log.info(list.toString());
+		return list;
+	}
+	public void checkDownloading() {
+		openNotifications();
+		sleep(1000);
+		String str = "应用正在下载";
+		if(getPageSource().contains(str)) {
+			log.info("应用正在下载");
+			back();			
+		}else {
+			throw new RuntimeException("未能触发下载");
+		}
 	}
 }

@@ -143,18 +143,6 @@ public class PageOfMain {
 		return helper.findByXpath("//*[@resource-id='com.tencent.southpole.appstore:id/search_result_appname']");
 	}
 	/**
-	 * 本周热门应用
-	 * @param index scope(1-5)
-	 * @return
-	 */
-	public WebElement getWeekHotApps(int index) {
-		if(index<0||index>5) {
-			throw new RuntimeException("指定的下标不存在");
-		}
-		String express ="//*[@resource-id='com.tencent.southpole.appstore:id/recycle_view']/android.view.ViewGroup["+index+"]/android.widget.TextView[1]";
-		return helper.findByXpath(express);
-	}
-	/**
 	 * appium无法获取动态界面上的元素 所以需要将动态的顶部栏，滑动至不可见
 	 */
 	public void swipeHideTheBar() {
@@ -168,5 +156,5 @@ public class PageOfMain {
 	 */
 	public WebElement getHotSearchLabel() {
 		return helper.findById("com.tencent.southpole.appstore:id/search_hot_title");
-	}
+	}	
 }

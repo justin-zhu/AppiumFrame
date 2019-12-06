@@ -46,14 +46,26 @@ public class WeakNetwork{
 		weakNetworkService.homePageWelfare();
 	}
 	public void newGame() {
-		//首页新游标签
+		//新游标签
 		weakNetworkService.newGame();
 	}
 	public void reOpenAppStore() {
 		//非首次打开应用商店
 		weakNetworkService.reOpenAppStore();
-	}	
+	}
+	
 	public void installApp() {
+		//安装应用
 		weakNetworkService.installApp();
+	}
+	
+	public void downApp() {
+		//网络恢复后的下载
+		weakNetworkService.downApp();
+	}
+	
+	public void checkAllPage() {
+		//查看全部应用模块
+		weakNetworkService.checkAllPage();
 	}
 }

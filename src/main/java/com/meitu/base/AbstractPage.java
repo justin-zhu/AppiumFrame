@@ -10,23 +10,23 @@ import com.meitu.page.PageOfSoft;
 import com.meitu.utils.Helper;
 
 abstract public class AbstractPage {
-	public PageOfPublic pub;
-	public PageOfGame game;
-	public PageOfHotApps hotApps;
-	public PageOfMain main;
+	public PageOfPublic pubPage;
+	public PageOfGame gamePage;
+	public PageOfHotApps hotAppsPage;
+	public PageOfMain mainPage;
 	public PageOfNavigation navigation;
-	public PageOfSoft soft;
+	public PageOfSoft softPage;
 	public Helper helper;
-	public PageOfCenter center;
+	public PageOfCenter centerPage;
 	public AbstractPage(Helper helper) {
 		this.helper = helper;
-		game = new PageOfGame(helper);
-		hotApps = new PageOfHotApps(helper);
-		main = new PageOfMain(helper);
+		gamePage = new PageOfGame(helper);
+		hotAppsPage = new PageOfHotApps(helper);
+		mainPage = new PageOfMain(helper);
 		navigation = new PageOfNavigation(helper);
-		soft = new PageOfSoft(helper);		
-		pub = new PageOfPublic(helper);
-		center = new PageOfCenter(helper);
+		softPage = new PageOfSoft(helper);		
+		pubPage = new PageOfPublic(helper);
+		centerPage = new PageOfCenter(helper);
 	}
 	
 }

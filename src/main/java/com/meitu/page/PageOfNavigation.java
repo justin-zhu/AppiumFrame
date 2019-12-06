@@ -4,6 +4,8 @@ import org.openqa.selenium.WebElement;
 
 import com.meitu.utils.Helper;
 
+import cn.hutool.core.util.RuntimeUtil;
+
 public class PageOfNavigation {
 	Helper helper;
 
@@ -30,13 +32,33 @@ public class PageOfNavigation {
 			helper.back();
 		}
 	}
+	public boolean ping() {
+		String device = helper.getAndroidDriver().getCapabilities().getCapability("deviceName").toString();
+		String cmd = "adb -s "+device+" shell ping -c 1 www.qq.com";
+		for (int i = 0; i < 10; i++) {
+			helper.sleep(2000);
+			String str = RuntimeUtil.execForStr(cmd);
+			if(str.contains("unknown")) {
+				continue;
+			}else {
+				return true;
+			}
+		}
+		return false;
+	}
 	public void openWiFi() {
 		boolean state = helper.getAndroidDriver().getConnection().isWiFiEnabled();
 		if(!state) {
 			helper.getAndroidDriver().openNotifications();
-			helper.click(this.getWiFi(), "关闭WiFi");
-			helper.back();
+			helper.click(this.getWiFi(), "打开WiFi");
+			if(ping()) {
+				helper.back();
+			}else {
+				throw new RuntimeException("网络无法连接,请检查网络情况");
+			}
+			
 		}
+		helper.sleep(2000);
 	}
 	/**
 	 * 通知栏：数据按钮

@@ -15,11 +15,7 @@ public class PageOfGame {
 	public PageOfGame() {
 		super();		
 	}
-	public class InnerNewGmae{
-		public WebElement getWeb() {
-			return helper.findById("");
-		}
-	}
+	
 	/**
 	 * 游戏页
 	 * @return
@@ -115,15 +111,15 @@ public class PageOfGame {
 	/**
 	 * 全部游戏福利
 	 */
-	public WebElement getAllGameBoon() {
+	public WebElement getAllGameBoonBtn() {
 		return helper.findById("com.tencent.southpole.appstore:id/button_all_game");
 	}
 	/**
 	 * 全部游戏福利下的游戏列表
 	 * index 1 默认取第一个
 	 */
-	public WebElement getAllGameBoonList() {
-		return helper.findByXpath("//*[@resource-id='com.tencent.southpole.appstore:id/content_view']/android.widget.TextView[1]");
+	public WebElement getAllGameBoonList(int index) {
+		return helper.findByXpath("//*[@resource-id='com.tencent.southpole.appstore:id/recycler_view']/android.view.ViewGroup[+"+(index+1)+"]/android.view.ViewGroup/android.widget.TextView[1]");
 	}
 	/**
 	 * Gpass特权
@@ -157,4 +153,17 @@ public class PageOfGame {
 	public WebElement getErrorPage() {
 		return helper.findById("com.tencent.southpole.appstore:id/back_btn");
 	}
+	/**
+	 * 查看GPASS
+	 */
+	public WebElement getCheckGPASS() {
+		return helper.findByUiautomatorText("查看G-PASS");
+	}
+	/**
+	 * 启用我的GPASS特权
+	 */
+	public WebElement getEnableGpass() {
+		return helper.findById("com.tencent.southpole.appstore:id/textView19");
+	}
+	
 }

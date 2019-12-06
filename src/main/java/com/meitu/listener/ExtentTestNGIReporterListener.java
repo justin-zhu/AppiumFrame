@@ -108,7 +108,6 @@ public class ExtentTestNGIReporterListener  implements IReporter{
 //        for (String s : Reporter.getOutput()) {
 //            extent.setTestRunnerOutput(s);
 //        }
-
         extent.flush();
     }
 
@@ -133,7 +132,7 @@ public class ExtentTestNGIReporterListener  implements IReporter{
     }
 
     private void buildTestNodes(ExtentTest extenttest,IResultMap tests, Status status) {
-        //存在父节点时，获取父节点的标签
+        //存在父节点时 获取父节点的标签
         String[] categories=new String[0];
         if(extenttest != null ){
             List<TestAttribute> categoryList = extenttest.getModel().getCategoryContext().getAll();

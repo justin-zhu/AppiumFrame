@@ -157,5 +157,37 @@ public class PageOfPublic {
 		log.info(packageName+"未能在指定时间内安装完成");
 		throw new RuntimeException("应用未能在指定时间内安装完成");
 	}
+	/**
+	 * 查看全部标签
+	 */
+	public WebElement getCheckAllLabel() {
+		return helper.findBySlideId("com.tencent.southpole.appstore:id/more_info");
+	}
+	/**
+	 * 首页 点击全部应用显示:本周热门应用列表
+	 * 游戏页 点击全部应用显示：本周新游 
+	 * 软件页 点击全部应用显示：流行正当时
+	 */
+	public WebElement getWeekHotAppsOfSub(int index) {
+		if(index<0||index>9) {
+			throw new RuntimeException("指定的下标不存在");
+		}
+		String expression = "//*[@resource-id='com.tencent.southpole.appstore:id/recyview']/android.view.ViewGroup["+index+"]/android.widget.TextView[1]";
+		return helper.findByXpath(expression);
+	}
+	/**
+	 * 首页的本周热门应用
+	 * 游戏界面的本周新游 
+	 * 软件界面的流行正当时
+	 * @param index scope(1-5)
+	 * @return
+	 */
+	public WebElement getWeekHotApps(int index) {
+		if(index<0||index>5) {
+			throw new RuntimeException("指定的下标不存在");
+		}
+		String expression ="//*[@resource-id='com.tencent.southpole.appstore:id/recycle_view']/android.view.ViewGroup["+index+"]/android.widget.TextView[1]";
+		return helper.findByXpath(expression);
+	}
 	
 }
