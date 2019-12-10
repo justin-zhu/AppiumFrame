@@ -184,10 +184,11 @@ public class Helper {
 	 * @param y
 	 * @return boolean 操作结果
 	 */
-	public void tap(int x, int y) {		
+	public Helper tap(int x, int y) {		
 		new AndroidTouchAction(androidDriver).tap(PointOption.point(x, y)).release().perform();			
 		log.info("点击成功:tap");
-		snapshot("点击");		
+		snapshot("点击");	
+		return this;
 	}
 
 	/**
@@ -262,13 +263,14 @@ public class Helper {
 	 */
 	public WebElement findBySlideText(String text) {
 		WebElement element = null;
-		boolean b = isExist(text);
-		if (b) {
-			String uiautoExp = "new UiSelector().textContains(\"" + text + "\")";
+		String uiautoExp = "new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().text(\""
+				+ text + "\"))";
+		try {
 			element = androidDriver.findElementByAndroidUIAutomator(uiautoExp);			
 			return element;
+		} catch (Exception e) {			
+			return null;
 		}		
-		return null;
 
 	}
 	public WebElement findByaccessibilityid(String accessi) {
@@ -487,7 +489,7 @@ public class Helper {
 	 * @throws InterruptedException 截图失败时，抛出异常
 	 */
 	public void snapshot(String actionName) {
-		sleep(150);
+		sleep(100);
 		//当前时间+动作名称
 		String fileName = JustinUtil.getLocalTime() + actionName;
 		log.debug("fileName:"+fileName);
@@ -689,7 +691,7 @@ public class Helper {
 		}
 	}
 	/**
-	 * 检查元素是否存在，仅做判断
+	 * 检查元素是否存在
 	 * @param element
 	 * @param desc
 	 */
@@ -728,6 +730,9 @@ public class Helper {
 		log.info("隐藏键盘");	
 		this.sleep(2000);
 	}
+	/**
+	 * 移除白名单之外的所有第三方应用(不包含系统应用)
+	 */
 	public void removeApp() {
 		ConcurrentHashMap<String, String> map = new ConcurrentHashMap<String, String>();
 		map.put("io.appium.settings", "0");
@@ -744,6 +749,10 @@ public class Helper {
 			}
 		}
 	}
+	/**
+	 * 返回第三方应用列表
+	 * @return
+	 */
 	public List<String> getLocalAppList(){
 		List<String> list = new ArrayList<String>();
 		String cmd = "adb shell pm list packages -3";		
@@ -757,14 +766,5 @@ public class Helper {
 		log.info(list.toString());
 		return list;
 	}
-	public void checkDownloading() {
-		openNotifications();		
-		String str = "应用正在下载";
-		if(getPageSource().contains(str)) {
-			log.info("应用正在下载");
-			back();			
-		}else {
-			throw new RuntimeException("未能触发下载");
-		}
-	}
+	
 }

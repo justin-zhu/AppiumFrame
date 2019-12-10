@@ -6,7 +6,7 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.testng.Reporter;
 /**
  * 重写subAppend方法,将日志同时输出至Reporter
- * @author Justin-zhu *
+ * @author Justin-zhu
  */
 public class MyLog4jAppender extends ConsoleAppender{
 	

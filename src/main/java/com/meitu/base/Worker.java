@@ -33,7 +33,7 @@ public class Worker {
 	private List<Map<String, Object>> resultList;
 	private Object domainObject;
 	private AppiumDriverLocalService appiumDriver;
-	Logger log = Logger.getLogger(this.getClass());
+	private Logger log = Logger.getLogger(this.getClass());
 
 	public Worker(DriverEntity driverEntity, String sheetName) {
 		this.driverEntity = driverEntity;

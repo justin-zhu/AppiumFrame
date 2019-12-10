@@ -1,5 +1,7 @@
 package com.meitu.page;
 
+import java.io.File;
+
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebElement;
 
@@ -149,13 +151,14 @@ public class PageOfCenter {
 	/**
 	 * 固定删除新浪微博
 	 */
-	public void removeApp() {
+	public void uninstall(String packageName,String name) {
 		String installResult = getAppList();
-		if(installResult.contains("com.sina.weibo")) {
-			helper.click(helper.findBySlideText("微博"), "微博");
+		if(installResult.contains(packageName)) {
+			helper.click(helper.findBySlideText(name), name);
 			helper.click(getOneKeyUninstall(), "一键卸载");
 			helper.click(getConfirmBtn(), "确定");
 			logger.info("卸载成功");
+			helper.back();
 		}
 	}
 	/**
@@ -170,6 +173,24 @@ public class PageOfCenter {
 			String path = PageOfCenter.class.getResource("/weibo.apk").getPath();
 			RuntimeUtil.execForStr("adb -s "+deviceName+" install "+path);
 		}
+	}
+	/**
+	 * 安装抖音
+	 */
+	public void installDouYin(String deviceName) {
+		logger.info("安装至设备:"+deviceName);
+		String installResult = getAppList();
+		if(installResult.contains("com.ss.android.ugc.aweme")) {
+			return;
+		}else {
+			File file = new File("apk/douyin.apk");
+			logger.info(file.getAbsolutePath());
+			helper.getAndroidDriver().installApp(file.getAbsolutePath());
+			
+		}
+	}
+	public WebElement getAppUpdateListDouYin() {
+		return helper.findBySlideText("抖音短视频");
 	}
 	/**
 	 * 即将上线元素

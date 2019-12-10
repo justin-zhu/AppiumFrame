@@ -33,6 +33,7 @@ public enum AndroidDriverCtrl {
         capabilities.setCapability("platformName", "Android");
         capabilities.setCapability("autoGrantPermissions", true);
         capabilities.setCapability("automationName", "uiautomator2");
+        capabilities.setCapability("newCommandTimeout",150);
         capabilities.setCapability("noReset", true);
         capabilities.setCapability("appPackage",  "com.tencent.southpole.appstore");
         capabilities.setCapability("appActivity",  "com.tencent.southpole.appstore.activity.SplashActivity");

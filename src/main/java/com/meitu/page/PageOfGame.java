@@ -157,7 +157,7 @@ public class PageOfGame {
 	 * 查看GPASS
 	 */
 	public WebElement getCheckGPASS() {
-		return helper.findByUiautomatorText("查看G-PASS");
+		return helper.findBySlideText("查看G-PASS");
 	}
 	/**
 	 * 启用我的GPASS特权

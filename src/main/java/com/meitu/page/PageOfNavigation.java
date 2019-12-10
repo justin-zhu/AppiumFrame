@@ -16,20 +16,12 @@ public class PageOfNavigation {
 	public void getnetworkState() {		
 		System.out.println(helper.getAndroidDriver().getConnection().isWiFiEnabled());
 	}
-	/**
-	 * 通知栏：WiFi按钮
-	 * @return
-	 */
-	public WebElement getWiFi() {
-		this.getnetworkState();
-		return helper.findByXpath("//*[@resource-id='com.android.systemui:id/quick_qs_panel']/android.widget.LinearLayout/android.widget.Switch[2]");
-	}
+
 	public void closeWiFi() {
 		boolean state = helper.getAndroidDriver().getConnection().isWiFiEnabled();
+		String deviceName = helper.getAndroidDriver().getCapabilities().getCapability("deviceName").toString();
 		if(state) {
-			helper.getAndroidDriver().openNotifications();
-			helper.click(this.getWiFi(), "关闭WiFi");
-			helper.back();
+			RuntimeUtil.execForStr("adb -s "+deviceName+" shell  svc wifi disable");
 		}
 	}
 	public boolean ping() {
@@ -47,18 +39,14 @@ public class PageOfNavigation {
 		return false;
 	}
 	public void openWiFi() {
+		String device = helper.getAndroidDriver().getCapabilities().getCapability("deviceName").toString();
 		boolean state = helper.getAndroidDriver().getConnection().isWiFiEnabled();
 		if(!state) {
-			helper.getAndroidDriver().openNotifications();
-			helper.click(this.getWiFi(), "打开WiFi");
-			if(ping()) {
-				helper.back();
-			}else {
+			RuntimeUtil.execForStr("adb -s "+device+" shell  svc wifi enable");			
+			if(!ping()) {
 				throw new RuntimeException("网络无法连接,请检查网络情况");
-			}
-			
-		}
-		helper.sleep(2000);
+			}			
+		}		
 	}
 	/**
 	 * 通知栏：数据按钮

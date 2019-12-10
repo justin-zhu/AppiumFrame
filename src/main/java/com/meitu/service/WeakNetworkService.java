@@ -97,8 +97,7 @@ public class WeakNetworkService extends AbstractPage{
 		helper.click(gamePage.getTopGame(), "顶部推荐游戏").sleep(5000);
 		helper.checkElement(pubPage.getErrorOfGetDate(), "网络断开了,请检查网络设置");
 		navigation.openWiFi();
-		helper.swipeDirection("down");
-		
+		helper.swipeDirection("down");		
 	}
 	
 	//福利
@@ -311,15 +310,25 @@ public class WeakNetworkService extends AbstractPage{
 		helper.click(pubPage.getInstalBtn(), "安装").isExistToast("网络未连接");		
 		navigation.openWiFi();
 		helper.back();
+		//弱网下选择任意应用安装
 		this.setConnectionType(NETWORK_DELAY);
 		helper.click(pubPage.getWeekHotApps(2), "本周热门应用第2个").sleep(10000);
 		helper.click(pubPage.getInstalBtn(), "安装").back();
-		//因下载进度条为动态的，会造成appium停顿
-		helper.click(centerPage.getIndex(), "个人中心");
-		helper.click(centerPage.getDelBtn(), "删除应用");
-		helper.click(pubPage.getAuthor(), "确定");
+		this.checkDownResult();
+		//点击暂停 显示继续
 		helper.click(mainPage.getIndex(), "首页");
-		//模拟应用宝在弱网下安装 所以提前卸载应用宝
+		helper.click(mainPage.getSearchContext(), "搜索框").send(mainPage.getSearchContext(), "乱世王者");
+		helper.hideKeyBoard();	
+		helper.click(mainPage.getSearchBtn(), "开始搜索").sleep(20000);
+		helper.checkElement(mainPage.getSerachResultFirstApp(), "搜索结果第一个应用");
+		helper.click(mainPage.getSerachResultFirstApp(), "搜索结果第一个应用").sleep(10000);
+		helper.click(pubPage.getInstalBtn(), "安装").back().back();
+		//执行暂停 并检查是否处于下载状态
+		this.checkPauseToContinue();
+		//暂停后 恢复下载
+		this.checkContinueToDownload();			
+		helper.click(mainPage.getIndex(), "首页");
+		//模拟应用宝在弱网下安装 需要提前卸载应用宝
 		pubPage.removeApp("com.tencent.android.qqdownloader");
 		helper.click(mainPage.getSearchContext(), "搜索框").send(mainPage.getSearchContext(), "应用宝");
 		helper.hideKeyBoard();		
@@ -329,18 +338,43 @@ public class WeakNetworkService extends AbstractPage{
 		helper.click(pubPage.getInstalBtn(), "安装").back().back();
 		helper.click(centerPage.getIndex(), "个人中心");
 		pubPage.checkAppIsInstall("com.tencent.android.qqdownloader");
-		helper.click(mainPage.getIndex(), "首页");		
-		pubPage.removeApp("com.tencent.android.qqdownloader");
+		//卸载应用后 重新下载 		
+		helper.click(centerPage.getAppRemove(), "应用卸载");
+		centerPage.uninstall("com.tencent.android.qqdownloader", "应用宝");
+		helper.click(mainPage.getIndex(), "首页");
 		helper.click(mainPage.getSearchContext(), "搜索框").send(mainPage.getSearchContext(), "应用宝");
 		helper.hideKeyBoard();		
 		helper.click(mainPage.getSearchBtn(), "开始搜索").sleep(20000);
 		helper.checkElement(mainPage.getSerachResultFirstApp(), "搜索结果第一个应用");
 		helper.click(mainPage.getSerachResultFirstApp(), "搜索结果第一个应用").sleep(10000);
-		helper.click(pubPage.getInstalBtn(), "安装");		
-		navigation.closeWiFi();		
-		helper.isExistToast("网络未连接");
-		navigation.openWiFi();		
+		helper.click(pubPage.getInstalBtn(), "安装").back().back();
+		helper.click(centerPage.getIndex(), "个人中心");
+		//等待一百秒 检查应用是否安装成功
 		pubPage.checkAppIsInstall("com.tencent.android.qqdownloader");		
+		//更新界面点击应用更新 先安装低版本应用 抖音为例 先卸载	
+		pubPage.removeApp("com.ss.android.ugc.aweme");
+		//安装低版本
+		centerPage.installDouYin(helper.getAndroidDriver().getCapabilities().getCapability("deviceName").toString());
+		//校验是否已安装
+		pubPage.checkAppIsInstall("com.ss.android.ugc.aweme");	
+		//进入更新列表
+		helper.click(centerPage.getAppUpdate(), "应用更新").sleep(10000);
+		helper.click(centerPage.getAppUpdateListDouYin(), "抖音").sleep(10000);
+		helper.click(pubPage.getInstalBtn(), "更新").back().back();
+		this.setConnectionType(NETWORK_NORMAL);
+		helper.click(mainPage.getIndex(), "首页");		
+		pubPage.removeApp("com.tencent.tmgp.pubgmhd");
+		helper.click(mainPage.getSearchContext(), "搜索框").send(mainPage.getSearchContext(), "和平精英");
+		helper.hideKeyBoard();		
+		helper.click(mainPage.getSearchBtn(), "开始搜索").sleep(5000);
+		helper.checkElement(mainPage.getSerachResultFirstApp(), "搜索结果第一个应用");
+		helper.click(mainPage.getSerachResultFirstApp(), "搜索结果第一个应用");
+		//下载过程中断网
+		helper.click(pubPage.getInstalBtn(), "安装").back().back();		
+		navigation.closeWiFi();		
+		helper.isExistToast("网络");
+		navigation.openWiFi();
+		this.checkDownResult();		
 	}
 	
 	/**
@@ -357,8 +391,8 @@ public class WeakNetworkService extends AbstractPage{
 		this.setConnectionType(NETWORK_CLOSE);
 		helper.click(centerPage.getAppUpdate(), "应用更新").isExistClickElseSkip(centerPage.getUpdateHistory(), "更新历史");
 		helper.back().click(centerPage.getAppRemove(), "应用卸载");
-		centerPage.removeApp();
-		helper.back().click(centerPage.getMyOrder(), "我的预约").sleep(15000);
+		centerPage.uninstall("com.sina.weibo","微博");
+		helper.click(centerPage.getMyOrder(), "我的预约").sleep(15000);
 		helper.checkElement(pubPage.getErrorOfGetDate(), "没有获取到数据");
 		this.setConnectionType(NETWORK_NORMAL);
 		helper.click(pubPage.getErrorOfGetDate(), "没有获取到元素");
@@ -454,62 +488,46 @@ public class WeakNetworkService extends AbstractPage{
 		helper.checkElement(pubPage.getWeekHotAppsOfSub(3), "界面显示的第3个应用").back();		
 	}
 	/**
-	 * 网络恢复后的下载检查
+	 * 网络恢复后的下载检查(游戏界面、首页、软件页、福利、榜单、分类)
 	 */
 	public void downApp() {
 		//删除白名单之外的所有第三方应用
 		helper.removeApp();
 		this.clean().setConnectionType(NETWORK_NORMAL);
 		helper.sleep(6000).isExistClickElseSkip(pubPage.getAdFrame(), "广告");
-//		helper.click(centerPage.getIndex(), "个人中心");
-//		centerPage.login();
-//		helper.click(gamePage.getIndex(), "游戏页");
-//		//游戏界面 无网恢复到正常网络
-//		this.setConnectionType(NETWORK_CLOSE);
-//		helper.click(pubPage.getWeekHotApps(1), "本周新游").sleep(15000);
-//		helper.checkElement(pubPage.getErrorOfGetDate(), "没有获取到数据");		
-//		this.setConnectionType(NETWORK_NORMAL);
-//		helper.swipeDirection("up").sleep(3000);
-//		helper.click(pubPage.getInstalBtn(), "安装").back();
-//		helper.checkDownloading();
-//		navigation.closeWiFi();
-//		helper.click(centerPage.getIndex(), "个人中心");
-//		helper.click(centerPage.getDelBtn(), "删除").click(centerPage.getConfirmBtn(), "确定删除");
-//		navigation.openWiFi();
-//		this.setConnectionType(NETWORK_DELAY);
-//		helper.click(gamePage.getIndex(), "游戏").sleep(10000);		
-//		helper.click(pubPage.getWeekHotApps(1), "本周新游").sleep(10000);
-//		helper.checkElement(pubPage.getAppInfo(), "详情标签");
-//		helper.click(pubPage.getInstalBtn(), "安装").back();
-//		helper.checkDownloading();
-//		navigation.closeWiFi();
-//		helper.click(centerPage.getIndex(), "个人中心");
-//		helper.isExistClickElseSkip(centerPage.getDelBtn(), "删除").isExistClickElseSkip(centerPage.getConfirmBtn(), "确定删除");
-//		navigation.openWiFi();		
+		helper.click(centerPage.getIndex(), "个人中心");
+		centerPage.login();
+		helper.click(gamePage.getIndex(), "游戏页");
+		//游戏界面 无网恢复到正常网络
+		this.setConnectionType(NETWORK_CLOSE);
+		helper.click(pubPage.getWeekHotApps(1), "本周新游").sleep(15000);
+		helper.checkElement(pubPage.getErrorOfGetDate(), "没有获取到数据");		
+		this.setConnectionType(NETWORK_NORMAL);
+		helper.swipeDirection("up").sleep(3000);
+		helper.click(pubPage.getInstalBtn(), "安装").back();
+		this.checkDownResult();
+		this.setConnectionType(NETWORK_DELAY);
+		helper.click(gamePage.getIndex(), "游戏").sleep(10000);		
+		helper.click(pubPage.getWeekHotApps(1), "本周新游").sleep(10000);
+		helper.checkElement(pubPage.getAppInfo(), "详情标签");
+		helper.click(pubPage.getInstalBtn(), "安装").back();
+		this.checkDownResult();
 		//首页无网恢复至正常网络下载
-//		helper.click(mainPage.getIndex(), "首页");
-//		this.setConnectionType(NETWORK_CLOSE);
-//		helper.click(pubPage.getWeekHotApps(3), "本周热门应用第3个").sleep(15000);
-//		helper.checkElement(pubPage.getErrorOfGetDate(), "没有获取到数据");
-//		this.setConnectionType(NETWORK_NORMAL);
-//		helper.swipeDirection("up").sleep(2000);
-//		helper.click(pubPage.getInstalBtn(), "安装").back();
-//		helper.checkDownloading();
-//		navigation.closeWiFi();
-//		helper.click(centerPage.getIndex(), "个人中心");
-//		helper.isExistClickElseSkip(centerPage.getDelBtn(), "删除").isExistClickElseSkip(centerPage.getConfirmBtn(), "确定删除");
-//		navigation.openWiFi();
-//		//首页延迟网络下载
-//		helper.click(mainPage.getIndex(), "首页");
-//		this.setConnectionType(NETWORK_DELAY);
-//		helper.click(pubPage.getWeekHotApps(1), "本周热门应用第1个").sleep(10000);	
-//		helper.click(pubPage.getInstalBtn(), "安装").back();
-//		helper.checkDownloading();
-//		navigation.closeWiFi();
-//		helper.click(centerPage.getIndex(), "个人中心");
-//		helper.isExistClickElseSkip(centerPage.getDelBtn(), "删除").isExistClickElseSkip(centerPage.getConfirmBtn(), "确定删除");
-//		navigation.openWiFi();	
-//		this.setConnectionType(NETWORK_NORMAL);
+		helper.click(mainPage.getIndex(), "首页");
+		this.setConnectionType(NETWORK_CLOSE);
+		helper.click(pubPage.getWeekHotApps(3), "本周热门应用第3个").sleep(15000);
+		helper.checkElement(pubPage.getErrorOfGetDate(), "没有获取到数据");
+		this.setConnectionType(NETWORK_NORMAL);
+		helper.swipeDirection("up").sleep(2000);
+		helper.click(pubPage.getInstalBtn(), "安装").back();
+		this.checkDownResult();
+		//首页延迟网络下载
+		helper.click(mainPage.getIndex(), "首页");
+		this.setConnectionType(NETWORK_DELAY);
+		helper.click(pubPage.getWeekHotApps(1), "本周热门应用第1个").sleep(10000);	
+		helper.click(pubPage.getInstalBtn(), "安装").back();
+		this.checkDownResult();
+		this.setConnectionType(NETWORK_NORMAL);
 		//软件页无网恢复正常网络下载
 		helper.click(softPage.getIndex(), "软件页");
 		this.setConnectionType(NETWORK_CLOSE);
@@ -517,55 +535,37 @@ public class WeakNetworkService extends AbstractPage{
 		helper.checkElement(pubPage.getErrorOfGetDate(), "没有获取到数据");
 		this.setConnectionType(NETWORK_NORMAL);
 		helper.swipeDirection("up").sleep(2000);
-		helper.click(pubPage.getInstalBtn(), "安装").checkDownloading();
-		navigation.closeWiFi();
-		helper.back().click(centerPage.getIndex(), "个人中心");
-		helper.isExistClickElseSkip(centerPage.getDelBtn(), "删除").isExistClickElseSkip(centerPage.getConfirmBtn(), "确定删除");
-		navigation.openWiFi();	
+		helper.click(pubPage.getInstalBtn(), "安装").back();
 		//软件页 延迟网络下载
+		this.checkDownResult();
 		this.setConnectionType(NETWORK_DELAY);		
 		helper.click(pubPage.getWeekHotApps(1), "流行正当时第1个应用").sleep(10000);
 		helper.click(pubPage.getInstalBtn(), "安装").back();
-		helper.checkDownloading();
-		navigation.closeWiFi();
-		helper.click(centerPage.getIndex(), "个人中心");
-		helper.isExistClickElseSkip(centerPage.getDelBtn(), "删除").isExistClickElseSkip(centerPage.getConfirmBtn(), "确定删除");
-		navigation.openWiFi();	
+		this.checkDownResult();
 		this.setConnectionType(NETWORK_NORMAL);
 		//首页福利网络恢复下载
 		helper.click(mainPage.getIndex(), "首页").click(mainPage.getBoon(), "福利");
 		this.setConnectionType(NETWORK_DELAY);
 		helper.click(gamePage.getAllGameBoonBtn(), "全部游戏福利").sleep(10000);
-		helper.click(helper.findBySlideText("多多自走棋"), "多多自走棋");
-		helper.click(gamePage.getList_DownBtn(), "安装").back().back().back();
-		helper.checkDownloading();
-		navigation.closeWiFi();
-		helper.click(centerPage.getIndex(), "个人中心");
-		helper.isExistClickElseSkip(centerPage.getDelBtn(), "删除").isExistClickElseSkip(centerPage.getConfirmBtn(), "确定删除");
-		navigation.openWiFi();	
+		helper.click(helper.findBySlideText("多多自走棋"), "多多自走棋").sleep(10000);		
+		helper.click(gamePage.getList_DownBtn(), "安装");			
+		helper.back().back().back();
+		this.checkDownResult();
 		helper.click(mainPage.getIndex(), "首页").sleep(10000);
 		helper.click(mainPage.getBoon(), "福利").sleep(10000);
 		helper.click(gamePage.getGpassGame(), "GPASS特权界面").sleep(10000);
 		helper.click(gamePage.getCheckGPASS(), "查看GPASS").sleep(10000);
 		helper.click(gamePage.getEnableGpass(), "启用我的GPASS特权").back().back().back();
-		helper.checkDownloading();
-		navigation.closeWiFi();
-		helper.click(centerPage.getIndex(), "个人中心");
-		helper.isExistClickElseSkip(centerPage.getDelBtn(), "删除").isExistClickElseSkip(centerPage.getConfirmBtn(), "确定删除");
-		navigation.openWiFi();
+		this.checkDownResult();
 		this.setConnectionType(NETWORK_NORMAL);
-		//首页榜单弱网下载
+		//榜单弱网下载
 		helper.click(mainPage.getIndex(), "首页");
 		this.setConnectionType(NETWORK_DELAY);
 		helper.click(mainPage.getList(), "榜单").sleep(10000);
 		helper.click(mainPage.getListIndex1(), "第一名应用").sleep(10000);
 		helper.click(pubPage.getInstalBtn(), "安装").back().back();
-		helper.checkDownloading();
-		navigation.closeWiFi();
-		helper.click(centerPage.getIndex(), "个人中心");
-		helper.isExistClickElseSkip(centerPage.getDelBtn(), "删除").isExistClickElseSkip(centerPage.getConfirmBtn(), "确定删除");
-		navigation.openWiFi();
-		//首页榜单网络恢复后下载
+		this.checkDownResult();
+		//榜单网络恢复后下载
 		this.setConnectionType(NETWORK_NORMAL);
 		helper.click(mainPage.getIndex(), "首页").click(mainPage.getList(), "榜单");
 		this.setConnectionType(NETWORK_CLOSE);
@@ -574,18 +574,40 @@ public class WeakNetworkService extends AbstractPage{
 		this.setConnectionType(NETWORK_NORMAL);
 		helper.swipeDirection("up").sleep(2000);
 		helper.click(pubPage.getInstalBtn(), "安装").back().back();
-		helper.checkDownloading();
-		navigation.closeWiFi();
-		helper.click(centerPage.getIndex(), "个人中心");
-		helper.isExistClickElseSkip(centerPage.getDelBtn(), "删除").isExistClickElseSkip(centerPage.getConfirmBtn(), "确定删除");
-		navigation.openWiFi();
-		
-	}
-	
-	
-	
-	
-	
+		this.checkDownResult();
+		// 分类无网络进入后 恢复网络
+		helper.click(mainPage.getIndex(), "首页");
+		this.setConnectionType(NETWORK_CLOSE);
+		helper.click(mainPage.getClassify(), "分类").sleep(15000);
+		helper.checkElement(pubPage.getErrorOfGetDate(), "没有获取到数据");
+		this.setConnectionType(NETWORK_NORMAL);
+		helper.swipeDirection("up").sleep(2000);
+		helper.click(pubPage.getClassify_Game(), "游戏分类").click(pubPage.getClassifty_Game_Relax(), "休闲益智");
+		helper.click(pubPage.getClassify_SubClassApp(), "第一名应用");
+		helper.click(pubPage.getInstalBtn(), "安装").back().back().back();
+		this.checkDownResult();
+		helper.click(mainPage.getIndex(), "首页").click(mainPage.getClassify(), "分类");
+		//分类网络恢复后下载
+		this.setConnectionType(NETWORK_CLOSE);
+		helper.click(pubPage.getClassify_Soft_Life(), "软件-生活").sleep(15000);
+		helper.checkElement(pubPage.getErrorOfGetDate(), "没有获取到数据");
+		this.setConnectionType(NETWORK_NORMAL);
+		helper.swipeDirection("up").sleep(3000);
+		helper.checkElement(pubPage.getClassify_SubClassApp(), "第一个应用");
+		helper.swipeDirection("up");
+		helper.click(pubPage.getClassify_SubClassApp(), "第一个应用");
+		helper.click(pubPage.getInstalBtn(), "安装").back().back().back();
+		this.checkDownResult();
+		helper.click(mainPage.getIndex(), "首页");
+		//分类弱网下载
+		this.setConnectionType(NETWORK_DELAY);
+		helper.click(mainPage.getClassify(), "分类").sleep(10000);
+		helper.click(pubPage.getClassify_Soft_Video(), "视频类").sleep(10000);
+		helper.click(pubPage.getClassify_SubClassApp(), "第一位应用").sleep(10000);
+		helper.click(pubPage.getInstalBtn(), "安装").back().back().back();
+		this.checkDownResult();
+		helper.click(mainPage.getIndex(), "首页");		
+	}	
 	
 	
 	
@@ -593,7 +615,7 @@ public class WeakNetworkService extends AbstractPage{
 	/**
 	 * 清理环境
 	 */
-	public WeakNetworkService clean() {
+	private WeakNetworkService clean() {
 		helper.killAppStore();
 		helper.killQNET();
 		logger.info("结束QNET进程");	
@@ -604,7 +626,7 @@ public class WeakNetworkService extends AbstractPage{
 	 * 点击应用
 	 * @param appName App名称
 	 */
-	public WeakNetworkService clickDeskApp(String appName) {		
+	private WeakNetworkService clickDeskApp(String appName) {		
 		helper.click(helper.findBySlideTextHorizontal(appName), appName);
 		return this;
 	}	
@@ -613,11 +635,12 @@ public class WeakNetworkService extends AbstractPage{
 	 * 
 	 * @param netWorkValue
 	 */
-	public void setConnectionType(String netWorkValue) {		
+	private void setConnectionType(String netWorkValue) {		
 		helper.pressKeyCode(3);		
 		helper.getAndroidDriver().startActivity(getQnetActivity());
 		WebElement testButton = helper.findById("com.tencent.qnet:id/buttonTest");
-		if("正常网络".equals(netWorkValue)) {
+		String st = "00正常网络";
+		if(st.equals(netWorkValue)) {
 			if(testButton.getText().contains("结束")) {
 				helper.click(testButton, "结束QNET");						
 			}
@@ -635,16 +658,62 @@ public class WeakNetworkService extends AbstractPage{
 		helper.pressKeyCode(3);
 		clickDeskApp("应用市场");
 	}
-	public  Activity getQnetActivity() {
+	private  Activity getQnetActivity() {
 		Activity activity = new Activity("com.tencent.qnet", "com.tencent.qnet.ui.login.LoginActivity");
 		activity.setAppWaitActivity("com.tencent.qnet.ui.MainActivity");
 		activity.setAppWaitPackage("com.tencent.qnet");	
 		return activity;
 	}
 	// 清量应用商店数据
-	public WeakNetworkService clearAppSroreData() {			
+	private WeakNetworkService clearAppSroreData() {			
 		String cmd = "adb shell pm clear com.tencent.southpole.appstore";
 		RuntimeUtil.execForStr(cmd);
 		return this;
+	}
+	/**
+	 * 检查下载结果
+	 */
+	private void checkDownResult() {
+		helper.openNotifications();		
+		String str = "应用正在下载";
+		if(helper.getPageSource().contains(str)) {
+			helper.swipeDirection("up");
+			logger.info("应用正在下载");	
+			navigation.closeWiFi();
+			helper.click(centerPage.getIndex(), "个人中心");
+			helper.isExistClickElseSkip(centerPage.getDelBtn(), "删除").isExistClickElseSkip(centerPage.getConfirmBtn(), "确定删除");
+			navigation.openWiFi();			
+		}else {
+			throw new RuntimeException("未能触发下载") ;
+		}
+	}
+	/**
+	 * 检查完成 停留在个人中心界面
+	 */
+	private void checkPauseToContinue() {
+		helper.openNotifications();	
+		String str = "应用正在下载";
+		if(helper.getPageSource().contains(str)) {
+			helper.swipeDirection("up");
+			logger.info("应用正在下载");
+			helper.click(centerPage.getIndex(), "个人中心");
+			helper.tap(924, 852);			
+		}
+		helper.openNotifications();
+		if(helper.getPageSource().contains(str)) {
+			helper.swipeDirection("up");
+			throw new RuntimeException("应用没有处于继续状态");
+		}else {
+			helper.swipeDirection("up");
+			logger.info("应用处于继续下载状态");
+		}
+	}
+	/**
+	 * 检查完成 停留在个人中心界面
+	 */
+	private void checkContinueToDownload() {
+		helper.click(centerPage.getIndex(), "个人中心").tap(924, 852);
+		helper.click(mainPage.getIndex(), "首页");
+		checkDownResult();
 	}
 }

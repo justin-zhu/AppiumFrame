@@ -141,7 +141,7 @@ public class PageOfPublic {
 		return RuntimeUtil.execForStr("adb -s "+deviceName+" shell pm list packages -3");
 	}
 	/**
-	 * 检查应用是否已经安装在本机
+	 * 检查应用是否已经安装在本机100秒等待时间
 	 * @param packageName
 	 */
 	public void checkAppIsInstall(String packageName) {
