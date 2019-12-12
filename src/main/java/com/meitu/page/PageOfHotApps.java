@@ -50,4 +50,17 @@ public class PageOfHotApps {
 	public WebElement getInsatllBtn() {
 		return helper.findById("com.tencent.southpole.appstore:id/install");
 	}
+	/**
+	 * 推荐列表中的应用
+	 */
+	public WebElement getListOfFirst() {
+		String xpath = "//*[@resource-id='com.tencent.southpole.appstore:id/recyview']/android.widget.RelativeLayout[1]/android.widget.TextView[1]";
+		return helper.findByXpath(xpath);
+	}
+	/**
+	 * 复选框,默认选择第2个元素
+	 */
+	public WebElement getCheckBox(int index) {
+		return helper.getAndroidDriver().findElementsById("com.tencent.southpole.appstore:id/checkBox").get((index-1));
+	}
 }

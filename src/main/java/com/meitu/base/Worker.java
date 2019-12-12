@@ -11,7 +11,6 @@ import org.testng.Assert;
 import com.meitu.ctrl.AndroidDriverCtrl;
 import com.meitu.ctrl.AppiumServer;
 import com.meitu.entity.DriverEntity;
-import com.meitu.entity.TestCaseEntity;
 import com.meitu.utils.Helper;
 import com.meitu.utils.JustinUtil;
 import com.meitu.utils.LogcatUtil;
@@ -22,14 +21,13 @@ import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 
 public class Worker {
-	boolean operationResult = false;
+	private boolean operationResult = false;
 	private  LogcatUtil logcat;
 	private Helper helper;
-	public AndroidDriver<AndroidElement> androidDriver;
-	public DriverEntity driverEntity;
-	public List<TestCaseEntity> caseList;
-	public String sheetName;
-	public String path;
+	private AndroidDriver<AndroidElement> androidDriver;
+	public DriverEntity driverEntity;	
+	private String sheetName;
+	private String path;
 	private List<Map<String, Object>> resultList;
 	private Object domainObject;
 	private AppiumDriverLocalService appiumDriver;

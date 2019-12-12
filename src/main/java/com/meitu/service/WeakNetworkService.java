@@ -20,18 +20,29 @@ public class WeakNetworkService extends AbstractPage{
 		helper.click(pubPage.getAuthor(), "同意").isExistClickElseSkip(pubPage.getAuthorOfSystem(),"同意存储权限");
 		helper.sleep(15000).checkElement(pubPage.getErrorOfGetDate(), "没有获取到数据");
 		this.setConnectionType(NETWORK_NORMAL);
-		helper.swipeDirection("up");
+		helper.swipeDirection("up");		
+		helper.checkElement(hotAppsPage.getListOfFirst(), "第一位应用");
 		helper.click(hotAppsPage.getCheckAll(), "全选");
+		helper.checkSelectStatusIsTrue(hotAppsPage.getCheckBox(1));
 		helper.click(hotAppsPage.getQuitCheckAll(), "取消全选");
+		helper.checkSelectStatusIsFalse(hotAppsPage.getCheckBox(1));
 		helper.click(hotAppsPage.getCheckAll(), "全选");
-		this.setConnectionType(NETWORK_CLOSE);
-		helper.click(hotAppsPage.getInsatllBtn(), "安装").back();
-		helper.isExistToast("下载中");
-		helper.clearAppSroreData();
-		this.setConnectionType(NETWORK_NORMAL);		
+		navigation.closeWiFi();
+		helper.click(hotAppsPage.getInsatllBtn(), "安装");		
+		navigation.openWiFi();
+		helper.click(hotAppsPage.getClose(), "关闭");	
+		helper.checkElement(mainPage.getIndex(), "首页");
+		//弱网下打开应用市场
+		this.clearAppSroreData().setConnectionType(NETWORK_DELAY);
 		helper.click(pubPage.getAuthor(), "同意").isExistClickElseSkip(pubPage.getAuthorOfSystem(),"同意存储权限");
-		helper.click(hotAppsPage.getClose(), "关闭");
-		
+		helper.sleep(10000).checkElement(hotAppsPage.getListOfFirst(), "第一位应用");
+		helper.click(hotAppsPage.getCheckAll(), "全选");
+		helper.checkSelectStatusIsTrue(hotAppsPage.getCheckBox(1));
+		helper.click(hotAppsPage.getQuitCheckAll(), "取消全选");
+		helper.checkSelectStatusIsFalse(hotAppsPage.getCheckBox(1));
+		helper.click(hotAppsPage.getListOfFirst(), "第一位应用");
+		helper.click(hotAppsPage.getInsatllBtn(), "安装");
+		this.checkDownResult();		
 	}
 	
 	//非首次进入应用商店
@@ -41,12 +52,9 @@ public class WeakNetworkService extends AbstractPage{
 		this.setConnectionType(NETWORK_CLOSE);
 		helper.click(mainPage.getIndex(), "首页");
 		helper.swipeDirection("down").sleep(3000).isExistToast("没有获取到数据");	
-		helper.click(gamePage.getIndex(), "游戏页").sleep(3000);
-		helper.isExistToast("没有获取到数据");		
-		helper.swipeDirection("up").sleep(3000);
-		helper.isExistToast("没有获取到数据");		
-		helper.click(softPage.getIndex(), "软件页").sleep(3000);
-		helper.isExistToast("没有获取到数据");		
+		helper.click(gamePage.getIndex(), "游戏页").sleep(3000).isExistToast("没有获取到数据");		
+		helper.swipeDirection("up").sleep(3000).isExistToast("没有获取到数据");	
+		helper.click(softPage.getIndex(), "软件页").sleep(3000).isExistToast("没有获取到数据");		
 		helper.swipeDirection("up").sleep(3000).isExistToast("没有获取到数据");		
 		this.setConnectionType(NETWORK_NORMAL);
 		helper.click(mainPage.getIndex(), "首页").swipeDirection("down");	
@@ -61,8 +69,11 @@ public class WeakNetworkService extends AbstractPage{
 		helper.checkElement(softPage.getDownBtn(), "下载按钮");
 		this.setConnectionType(NETWORK_DELAY);
 		helper.click(mainPage.getIndex(), "首页").swipeDirection("down").sleep(10000);
+		helper.checkElement(pubPage.getWeekHotApps(1), "检查本周热门应用是否已在首页显示");
 		helper.click(gamePage.getIndex(), "游戏页").swipeDirection("down").sleep(10000);
+		helper.checkElement(gamePage.getTopBanner(), "游戏推荐位");
 		helper.click(softPage.getIndex(), "软件页").swipeDirection("down").sleep(10000);
+		helper.checkElement(pubPage.getWeekHotApps(1), "流行正当时第1个应用");
 		this.setConnectionType(NETWORK_NORMAL);
 		helper.click(mainPage.getIndex(), "首页").swipeDirection("up").sleep(3000);
 		helper.click(gamePage.getIndex(), "游戏页").swipeDirection("up").sleep(2000);
@@ -77,13 +88,13 @@ public class WeakNetworkService extends AbstractPage{
 		helper.sleep(3000).isExistToast("没有获取到数据");		
 	}	
 	
-	//新游
+	//新游 目前点击过的预约无法取消 会导致后续脚本失败
 	public void newGame() {
 		this.clean().setConnectionType(NETWORK_NORMAL);
 		helper.sleep(6000).isExistClickElseSkip(pubPage.getAdFrame(), "广告");	
 		helper.click(gamePage.getIndex(), "游戏页");
 		this.setConnectionType(NETWORK_CLOSE);
-		helper.click(gamePage.getNewGame(), "新游标签").isExistToast("没有获取到数据");			
+		helper.click(gamePage.getNewGame(), "新游标签").sleep(5000).isExistToast("没有获取到数据");			
 		this.setConnectionType(NETWORK_NORMAL);		
 		helper.swipeDirection("up");
 		helper.checkElement(gamePage.getTopGame(), "顶部推荐游戏").back();		
@@ -93,14 +104,14 @@ public class WeakNetworkService extends AbstractPage{
 		helper.click(gamePage.getTopGame(), "顶部推荐游戏").sleep(10000);
 		helper.checkElement(gamePage.getTopGameInfo(), "游戏详情").back();	
 		navigation.closeWiFi();	
-		helper.click(mainPage.getDownBtn(), "下载").isExistToast("网络未连接");
+		helper.click(mainPage.getDownBtn(), "下载").isExistToast("您还未连接网络");
 		helper.click(gamePage.getTopGame(), "顶部推荐游戏").sleep(5000);
 		helper.checkElement(pubPage.getErrorOfGetDate(), "网络断开了,请检查网络设置");
 		navigation.openWiFi();
 		helper.swipeDirection("down");		
 	}
 	
-	//福利
+	//福利 福利中心界面有变化 需要维护
 	public void homePageWelfare() {
 		this.clean().setConnectionType(NETWORK_NORMAL);
 		helper.sleep(6000).isExistClickElseSkip(pubPage.getAdFrame(), "广告");		
@@ -162,7 +173,8 @@ public class WeakNetworkService extends AbstractPage{
 		helper.checkElement(pubPage.getErrorOfGetDate(), "网络断开了");
 		navigation.openWiFi();
 		helper.swipeDirection("down").back();
-		helper.click(mainPage.getListIndex1(), "第一名应用");		
+		helper.click(mainPage.getListIndex1(), "第一名应用").sleep(10000);	
+		helper.checkElement(pubPage.getAppInfo(), "详情");
 	}
 
 	//分类
@@ -185,7 +197,9 @@ public class WeakNetworkService extends AbstractPage{
 		helper.click(mainPage.getDownBtn(), "下载").isExistToast("网络未连接");
 		navigation.openWiFi();
 		helper.back();
-		helper.click(pubPage.getClassify_Soft_Video(), "视频分类");		
+		helper.click(pubPage.getClassify_Soft_Video(), "视频分类");
+		helper.checkElement(pubPage.getClassify_SubClassApp(), "视频分类第一个应用");
+		
 	}
 
 	//首页分类-任意分类下的列表
@@ -239,10 +253,10 @@ public class WeakNetworkService extends AbstractPage{
 		helper.click(centerPage.getIndex(), "个人中心");
 		centerPage.logout();
 		helper.click(mainPage.getIndex(), "首页").click(mainPage.getBoon(), "福利").sleep(15000);
-		helper.click(mainPage.getBoonOnekeyGet(), "一键领取").sleep(5000);		
-		helper.click(centerPage.getSystemLogin(), "快捷登录").sleep(5000);			
+		helper.click(mainPage.getBoonOnekeyGet(), "一键领取").sleep(10000);		
+		helper.click(centerPage.getSystemLogin(), "快捷登录").sleep(10000);			
 		helper.click(helper.findBySlideText("王者荣耀"), "王者荣耀").sleep(15000);
-		helper.click(mainPage.getReceiveOfOne(), "单个领取").sleep(5000);
+		helper.click(mainPage.getReceiveOfOne(), "单个领取").sleep(10000);
 		helper.click(pubPage.getAuthor(), "确定领取").sleep(5000);
 		helper.checkElement(helper.findByUiautomatorText("领取失败"), "领取失败");				
 	}
@@ -260,7 +274,7 @@ public class WeakNetworkService extends AbstractPage{
 		this.setConnectionType(NETWORK_DELAY);
 		helper.click(mainPage.getSearchContext(), "搜索框").send(mainPage.getSearchContext(), "微信");
 		helper.hideKeyBoard();		
-		helper.click(mainPage.getSearchBtn(), "开始搜索").sleep(10000);
+		helper.click(mainPage.getSearchBtn(), "开始搜索").sleep(15000);
 		helper.checkElement(mainPage.getSerachResultFirstApp(), "搜索结果第一个应用");
 		helper.click(mainPage.getSerachResultFirstApp(), "搜索结果第一个应用").sleep(10000);
 		helper.checkElement(pubPage.getAppInfo(), "检查详情标签").back().back();		
@@ -354,21 +368,22 @@ public class WeakNetworkService extends AbstractPage{
 		//更新界面点击应用更新 先安装低版本应用 抖音为例 先卸载	
 		pubPage.removeApp("com.ss.android.ugc.aweme");
 		//安装低版本
-		centerPage.installDouYin(helper.getAndroidDriver().getCapabilities().getCapability("deviceName").toString());
+		centerPage.installDouYin();
 		//校验是否已安装
 		pubPage.checkAppIsInstall("com.ss.android.ugc.aweme");	
 		//进入更新列表
 		helper.click(centerPage.getAppUpdate(), "应用更新").sleep(10000);
 		helper.click(centerPage.getAppUpdateListDouYin(), "抖音").sleep(10000);
 		helper.click(pubPage.getInstalBtn(), "更新").back().back();
+		this.checkDownResult();
 		this.setConnectionType(NETWORK_NORMAL);
 		helper.click(mainPage.getIndex(), "首页");		
 		pubPage.removeApp("com.tencent.tmgp.pubgmhd");
 		helper.click(mainPage.getSearchContext(), "搜索框").send(mainPage.getSearchContext(), "和平精英");
 		helper.hideKeyBoard();		
-		helper.click(mainPage.getSearchBtn(), "开始搜索").sleep(5000);
+		helper.click(mainPage.getSearchBtn(), "开始搜索").sleep(10000);
 		helper.checkElement(mainPage.getSerachResultFirstApp(), "搜索结果第一个应用");
-		helper.click(mainPage.getSerachResultFirstApp(), "搜索结果第一个应用");
+		helper.click(mainPage.getSerachResultFirstApp(), "搜索结果第一个应用").sleep(5000);
 		//下载过程中断网
 		helper.click(pubPage.getInstalBtn(), "安装").back().back();		
 		navigation.closeWiFi();		
@@ -379,17 +394,17 @@ public class WeakNetworkService extends AbstractPage{
 	
 	/**
 	 * 我的
-	 * 11-20 pass
 	 */
-	public void center() {
-		//此用例需要卸载验证，确保手机中有此应用，这里以新浪微博为例子验证
-		centerPage.installWeiBo(helper.getAndroidDriver().getCapabilities().getCapability("deviceName").toString());
+	public void center() {		
 		this.clean().setConnectionType(NETWORK_NORMAL);
+		pubPage.removeApp("com.sina.weibo");
+		centerPage.installWeiBo();
 		helper.sleep(6000).isExistClickElseSkip(pubPage.getAdFrame(), "广告");
 		helper.click(centerPage.getIndex(), "个人中心");
 		centerPage.login();
-		this.setConnectionType(NETWORK_CLOSE);
-		helper.click(centerPage.getAppUpdate(), "应用更新").isExistClickElseSkip(centerPage.getUpdateHistory(), "更新历史");
+		helper.click(centerPage.getAppUpdate(), "应用更新").back();
+		this.setConnectionType(NETWORK_CLOSE);		
+		helper.click(centerPage.getAppUpdate(), "应用更新").checkElement(centerPage.getWaitUpdate(), "等待更新");
 		helper.back().click(centerPage.getAppRemove(), "应用卸载");
 		centerPage.uninstall("com.sina.weibo","微博");
 		helper.click(centerPage.getMyOrder(), "我的预约").sleep(15000);
@@ -403,9 +418,9 @@ public class WeakNetworkService extends AbstractPage{
 		this.setConnectionType(NETWORK_NORMAL);
 		helper.click(pubPage.getErrorOfGetDate(), "没有获取到元素").checkElement(centerPage.getGiftList(), "已领取礼包界面");
 		helper.swipeDirection("up").back();
+		centerPage.installWeiBo();
 		this.setConnectionType(NETWORK_DELAY);
-		helper.click(centerPage.getAppUpdate(), "应用更新");
-		helper.isExistClickElseSkip(centerPage.getUpdateHistory(), "更新历史").back();
+		helper.click(centerPage.getAppUpdate(), "应用更新").checkElement(centerPage.getWaitUpdate(), "等待更新").back();
 		helper.click(centerPage.getAppRemove(), "应用卸载");
 		helper.checkElement(centerPage.getAllAppList(), "全部应用标签").back();
 		helper.click(centerPage.getMyOrder(), "我的预约").sleep(10000);
@@ -453,7 +468,8 @@ public class WeakNetworkService extends AbstractPage{
 		helper.checkElement(pubPage.getWeekHotAppsOfSub(2), "界面显示的第2个应用");
 		helper.swipeDirection("up").sleep(3000);
 		helper.checkElement(pubPage.getWeekHotAppsOfSub(3), "界面显示的第3个应用");
-		this.clean().setConnectionType(NETWORK_NORMAL);
+		this.clean().setConnectionType(NETWORK_NORMAL);	
+		helper.click(gamePage.getIndex(), "游戏页");
 		helper.click(pubPage.getCheckAllLabel(), "查看全部");
 		navigation.closeWiFi();
 		helper.swipeDirection("up").isExistToast("网络未连接");
@@ -464,7 +480,7 @@ public class WeakNetworkService extends AbstractPage{
 		helper.swipeDirection("up").sleep(3000);
 		helper.checkElement(pubPage.getWeekHotAppsOfSub(3), "界面显示的第3个应用").back();
 		//软件界面的查看全部标签
-		helper.click(softPage.getIndex(), "游戏界面");
+		helper.click(softPage.getIndex(), "软件页");
 		this.setConnectionType(NETWORK_CLOSE);
 		helper.click(pubPage.getCheckAllLabel(), "查看全部").sleep(15000);
 		helper.checkElement(pubPage.getErrorOfGetDate(), "没有获取到数据");
@@ -477,6 +493,7 @@ public class WeakNetworkService extends AbstractPage{
 		helper.swipeDirection("up").sleep(3000);
 		helper.checkElement(pubPage.getWeekHotAppsOfSub(3), "界面显示的第3个应用");
 		this.clean().setConnectionType(NETWORK_NORMAL);
+		helper.click(softPage.getIndex(), "软件页");
 		helper.click(pubPage.getCheckAllLabel(), "查看全部");
 		navigation.closeWiFi();
 		helper.swipeDirection("up").isExistToast("网络未连接");
@@ -538,7 +555,8 @@ public class WeakNetworkService extends AbstractPage{
 		helper.click(pubPage.getInstalBtn(), "安装").back();
 		//软件页 延迟网络下载
 		this.checkDownResult();
-		this.setConnectionType(NETWORK_DELAY);		
+		this.setConnectionType(NETWORK_DELAY);	
+		helper.click(softPage.getIndex(), "软件页");
 		helper.click(pubPage.getWeekHotApps(1), "流行正当时第1个应用").sleep(10000);
 		helper.click(pubPage.getInstalBtn(), "安装").back();
 		this.checkDownResult();
@@ -705,8 +723,9 @@ public class WeakNetworkService extends AbstractPage{
 			throw new RuntimeException("应用没有处于继续状态");
 		}else {
 			helper.swipeDirection("up");
-			logger.info("应用处于继续下载状态");
+			logger.info("应用处于继续状态");
 		}
+		
 	}
 	/**
 	 * 检查完成 停留在个人中心界面

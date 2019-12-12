@@ -145,8 +145,10 @@ public class PageOfPublic {
 	 * @param packageName
 	 */
 	public void checkAppIsInstall(String packageName) {
+		
 		for (int i = 0; i < 20; i++) {
-			if(getAppList_3().contains(packageName)) {
+			boolean installed = helper.getAndroidDriver().isAppInstalled(packageName);
+			if(installed) {
 				log.info(packageName+"已安装完成");
 				return;
 			}else {

@@ -122,7 +122,7 @@ public class ExtentTestNGIReporterListener  implements IReporter{
         htmlReporter.config().setReportName("Appium测试报告");
         htmlReporter.config().setChartVisibilityOnOpen(true);
         htmlReporter.config().setTestViewChartLocation(ChartLocation.TOP);
-        htmlReporter.config().setEncoding("gbk");
+        htmlReporter.config().setEncoding("GBK");
         // htmlReporter.config().setTheme(Theme.STANDARD);
         htmlReporter.config().setResourceCDN(ResourceCDN.EXTENTREPORTS);
         htmlReporter.config().setCSS(".node.level-1  ul{ display:none;} .node.level-1.active ul{display:block;}");

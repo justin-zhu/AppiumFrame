@@ -38,11 +38,7 @@ public class Helper {
 	private AndroidTouchAction action;
 	private AndroidDriver<AndroidElement> androidDriver;		
 	private Logger log = Logger.getLogger(this.getClass());
-	/**
-	 * 构造函数
-	 * 
-	 * @param driver
-	 */
+
 	public Helper(AndroidDriver<AndroidElement> driver, String path) {
 		this.path = path;
 		this.androidDriver = driver;	
@@ -765,6 +761,23 @@ public class Helper {
 		}
 		log.info(list.toString());
 		return list;
+	}
+	public void checkSelectStatusIsTrue(WebElement element) {
+		String checked = element.getAttribute("checked");
+		boolean b = Boolean.parseBoolean(checked);
+		if(!b) {
+			log.info("元素校验失败");
+			throw new RuntimeException("指定的元素未处于选中状态");
+		}
+		log.info("元素校验成功");
+	}
+	public void checkSelectStatusIsFalse(WebElement element) {
+		String checked = element.getAttribute("checked");
+		boolean b = Boolean.parseBoolean(checked);
+		if(b) {
+			throw new RuntimeException("指定的元素处于选中状态");
+		}
+		log.info("元素校验成功");
 	}
 	
 }

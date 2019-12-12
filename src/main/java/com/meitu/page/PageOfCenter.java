@@ -139,6 +139,12 @@ public class PageOfCenter {
 		return helper.findById("com.tencent.southpole.appstore:id/update_history_recyclerview");
 	}
 	/**
+	 * 等待更新
+	 */
+	public WebElement getWaitUpdate() {
+		return helper.findByUiautomatorText("等待更新");
+	}
+	/**
 	 * 一键卸载按钮
 	 * @return
 	 */
@@ -149,11 +155,11 @@ public class PageOfCenter {
 		return RuntimeUtil.execForStr("adb shell pm list packages");
 	}
 	/**
-	 * 固定删除新浪微博
+	 *  个人中心卸载
 	 */
-	public void uninstall(String packageName,String name) {
-		String installResult = getAppList();
-		if(installResult.contains(packageName)) {
+	public void uninstall(String packageName,String name) {		
+		boolean installed = helper.getAndroidDriver().isAppInstalled(packageName);
+		if(installed) {
 			helper.click(helper.findBySlideText(name), name);
 			helper.click(getOneKeyUninstall(), "一键卸载");
 			helper.click(getConfirmBtn(), "确定");
@@ -164,21 +170,25 @@ public class PageOfCenter {
 	/**
 	 * 安装新浪微博
 	 */
-	public void installWeiBo(String deviceName) {
+	public void installWeiBo() {
+		String deviceName =helper.getAndroidDriver().getCapabilities().getCapability("deviceName").toString();
 		logger.info("安装至设备:"+deviceName);
 		String installResult = getAppList();
 		if(installResult.contains("com.sina.weibo")) {
 			return;
 		}else {
-			String path = PageOfCenter.class.getResource("/weibo.apk").getPath();
-			RuntimeUtil.execForStr("adb -s "+deviceName+" install "+path);
+			File file = new File("apk/weibo.apk");
+			logger.info(file.getAbsolutePath());
+			helper.getAndroidDriver().installApp(file.getAbsolutePath());
 		}
 	}
 	/**
 	 * 安装抖音
 	 */
-	public void installDouYin(String deviceName) {
-		logger.info("安装至设备:"+deviceName);
+	public void installDouYin() {
+		String deviceName1 =helper.getAndroidDriver().getCapabilities().getCapability("deviceName").toString();
+		
+		logger.info("安装至设备:"+deviceName1);
 		String installResult = getAppList();
 		if(installResult.contains("com.ss.android.ugc.aweme")) {
 			return;
