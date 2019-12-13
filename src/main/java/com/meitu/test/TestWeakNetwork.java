@@ -12,7 +12,6 @@ import com.meitu.utils.DeviceUtils;
 /**
  * Test类
  * @author p_xiaogzhu
- *
  */
 @Listeners()
 public class TestWeakNetwork {
@@ -46,8 +45,9 @@ public class TestWeakNetwork {
 		}	
 	}	
 	
-	@Test(priority = 1,enabled = false)
-	public void testFirstLogin() {			
+	@Test(priority = 1)
+	public void testFirstLogin() {
+		//pass 用例已对齐
 		logger.info("首次登陆应用商店");			
 		worker.execute("firstLogin");
 	}	
@@ -118,12 +118,14 @@ public class TestWeakNetwork {
 		worker.execute("installApp");
 	}
 	@Test(priority = 13)
-	public void testDownApp() {		
+	public void testDownApp() {	
+		//福利界面有改支 要维护
 		logger.info("网络恢复后的下载");			
 		worker.execute("downApp");
 	}
 	@Test(priority = 15,enabled = false)
 	public void techCheckAllPage() {
+		//有单子未解决 后续调式
 		logger.info("全部应用模块");
 		worker.execute("checkAllPage");
 	}

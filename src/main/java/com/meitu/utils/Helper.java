@@ -484,7 +484,7 @@ public class Helper {
 	 * @param actionName 图片名称
 	 * @throws InterruptedException 截图失败时，抛出异常
 	 */
-	public void snapshot(String actionName) {
+	public void snapshot(String actionName) {		
 		sleep(100);
 		//当前时间+动作名称
 		String fileName = JustinUtil.getLocalTime() + actionName;
@@ -504,8 +504,9 @@ public class Helper {
 			FileUtils.copyFile(scrFile, picture);
 			log.info("screenshot save path:" + picture.getPath());
 			if(actionName.contains("fail")) {
-				FileUtils.copyFile(scrFile, new File(saveLocal+"\\"+"failPic"+fileName+".png"));
-				log.debug("fail operation :"+saveLocal+"\\"+"failPic"+fileName+".png");
+				FileUtils.copyFile(scrFile, new File(saveLocal+"\\"+"failPic"+"\\"+fileName+".png"));
+				log.info("fail operation :"+saveLocal+"\\"+"failPic"+fileName+".png");
+				//return saveLocal+"\\"+"failPic"+fileName+".png";
 			}			
 		} catch (IOException e1) {
 			log.info("screenshot failed");
@@ -513,6 +514,7 @@ public class Helper {
 			saveLocal = null;
 			actionName = null;
 		}
+		//return picture.getPath();
 	}
 
 	/**
@@ -778,6 +780,37 @@ public class Helper {
 			throw new RuntimeException("指定的元素处于选中状态");
 		}
 		log.info("元素校验成功");
+	}
+	public void closeWiFi() {
+		boolean state = androidDriver.getConnection().isWiFiEnabled();
+		String deviceName = androidDriver.getCapabilities().getCapability("deviceName").toString();
+		if(state) {
+			RuntimeUtil.execForStr("adb -s "+deviceName+" shell  svc wifi disable");
+		}
+	}
+	public boolean ping() {
+		String device = androidDriver.getCapabilities().getCapability("deviceName").toString();
+		String cmd = "adb -s "+device+" shell ping -c 1 www.qq.com";
+		for (int i = 0; i < 10; i++) {
+			sleep(2000);
+			String str = RuntimeUtil.execForStr(cmd);
+			if(str.contains("unknown")) {
+				continue;
+			}else {
+				return true;
+			}
+		}
+		return false;
+	}
+	public void openWiFi() {
+		String device = androidDriver.getCapabilities().getCapability("deviceName").toString();
+		boolean state = androidDriver.getConnection().isWiFiEnabled();
+		if(!state) {
+			RuntimeUtil.execForStr("adb -s "+device+" shell  svc wifi enable");			
+			if(!ping()) {
+				throw new RuntimeException("网络无法连接,请检查网络情况");
+			}			
+		}		
 	}
 	
 }

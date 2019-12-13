@@ -125,7 +125,7 @@ public class PageOfGame {
 	 * Gpass特权
 	 */
 	public WebElement getGpassGame() {
-		return helper.findById("com.tencent.southpole.appstore:id/button2");
+		return helper.findByUiautomatorText("G-PASS特权");
 	}
 	/**
 	 * Gpass特权界面-用户信息
@@ -137,7 +137,7 @@ public class PageOfGame {
 	 * 购机福利
 	 */
 	public WebElement getBuyPhoneBoon() {
-		return helper.findById("com.tencent.southpole.appstore:id/button1");
+		return helper.findByUiautomatorText("购机福利");
 	}
 	/**
 	 * 福利界面banner

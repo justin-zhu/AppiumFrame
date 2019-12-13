@@ -14,27 +14,74 @@ public class WeakNetworkService extends AbstractPage{
 	public WeakNetworkService(Helper helper) {
 		super(helper);		
 	}
-	//首次启动应用商店
-	public void firstLogin() {
+	/**
+	 * 首次进入应用商店
+	 */
+	public void firstLogin() {	
+		/*
+		 * 子模块：手机无网络
+		 */
 		this.clearAppSroreData().setConnectionType(NETWORK_CLOSE);
 		helper.click(pubPage.getAuthor(), "同意").isExistClickElseSkip(pubPage.getAuthorOfSystem(),"同意存储权限");
-		helper.sleep(15000).checkElement(pubPage.getErrorOfGetDate(), "没有获取到数据");
+		/*
+		 * 打开应用商店
+		 * 装机必备页面出现无网络提示，点击可重新加载
+		 */
+		helper.sleep(5000).checkElement(pubPage.getErrorOfGetDate(), "没有获取到数据");			
+		helper.click(pubPage.getErrorOfGetDate(), "没有获取到数据").sleep(15000).checkElement(pubPage.getErrorOfGetDate(), "没有获取到数据");
+		/*
+		 * 10s后恢复网络，点击重新加载
+		 * 可正常加载出装机必备列表
+		 */
 		this.setConnectionType(NETWORK_NORMAL);
 		helper.swipeDirection("up");		
-		helper.checkElement(hotAppsPage.getListOfFirst(), "第一位应用");
+		/*
+		 * 10s后恢复网络，点击重新加载
+		 * 页面加载出来后可正常操作
+		 */
+		helper.checkElement(hotAppsPage.getListOfFirst(), "第一位应用");		
 		helper.click(hotAppsPage.getCheckAll(), "全选");
 		helper.checkSelectStatusIsTrue(hotAppsPage.getCheckBox(1));
 		helper.click(hotAppsPage.getQuitCheckAll(), "取消全选");
 		helper.checkSelectStatusIsFalse(hotAppsPage.getCheckBox(1));
 		helper.click(hotAppsPage.getCheckAll(), "全选");
-		navigation.closeWiFi();
-		helper.click(hotAppsPage.getInsatllBtn(), "安装");		
-		navigation.openWiFi();
+		/*
+		 * 子模块：进入装机必备页面后手机断网
+		 */
+		helper.closeWiFi();
+		/*
+		 * 手机断网后，在装机必备页面勾选任意应用,在装机必备页面点击“全选”/“取消全选”按钮
+		 * 可正常操作，安装按钮状态显示正确	
+		 */
+		helper.click(hotAppsPage.getQuitCheckAll(), "取消全选");
+		helper.checkSelectStatusIsFalse(hotAppsPage.getCheckBox(1));
+		/*
+		 * 已勾选应用，点击“安装”
+		 * 提示网络中断
+		 */
+		helper.click(hotAppsPage.getListOfFirst(), "第一位应用");
+		helper.checkSelectStatusIsTrue(hotAppsPage.getCheckBox(1));		
+		helper.click(hotAppsPage.getInsatllBtn(), "安装").checkElement(hotAppsPage.getInsatllBtn(), "安装");	
+		/*
+		 * 未勾选应用，点击关闭装机必备页面
+		 * 可正常进入首页
+		 */
+		helper.click(hotAppsPage.getCheckAll(), "全选");
+		helper.checkSelectStatusIsTrue(hotAppsPage.getCheckBox(1));
+		helper.click(hotAppsPage.getQuitCheckAll(), "取消全选");
+		helper.checkSelectStatusIsFalse(hotAppsPage.getCheckBox(1));		
 		helper.click(hotAppsPage.getClose(), "关闭");	
 		helper.checkElement(mainPage.getIndex(), "首页");
-		//弱网下打开应用市场
+		helper.openWiFi();
+		/*
+		 *子模块：手机处于弱网环境,上行/下行延迟分别设置为1000ms
+		 */
 		this.clearAppSroreData().setConnectionType(NETWORK_DELAY);
 		helper.click(pubPage.getAuthor(), "同意").isExistClickElseSkip(pubPage.getAuthorOfSystem(),"同意存储权限");
+		/**
+		 * 打开应用商店，进入装机必备
+		 * 加载成功,页面显示正常,可正常选择任意应用下载/继续下载
+		 */
 		helper.sleep(10000).checkElement(hotAppsPage.getListOfFirst(), "第一位应用");
 		helper.click(hotAppsPage.getCheckAll(), "全选");
 		helper.checkSelectStatusIsTrue(hotAppsPage.getCheckBox(1));
@@ -45,47 +92,115 @@ public class WeakNetworkService extends AbstractPage{
 		this.checkDownResult();		
 	}
 	
-	//非首次进入应用商店
+	/**
+	 * 非首次进入应用商店
+	 */
 	public void reOpenAppStore() {
-		this.clean().setConnectionType(NETWORK_NORMAL);
-		helper.sleep(6000).isExistClickElseSkip(pubPage.getAdFrame(), "广告");
+		/*
+		 * 子模块：手机无网络
+		 */
+		this.clean();
+		helper.closeWiFi();
 		this.setConnectionType(NETWORK_CLOSE);
-		helper.click(mainPage.getIndex(), "首页");
-		helper.swipeDirection("down").sleep(3000).isExistToast("没有获取到数据");	
-		helper.click(gamePage.getIndex(), "游戏页").sleep(3000).isExistToast("没有获取到数据");		
-		helper.swipeDirection("up").sleep(3000).isExistToast("没有获取到数据");	
-		helper.click(softPage.getIndex(), "软件页").sleep(3000).isExistToast("没有获取到数据");		
-		helper.swipeDirection("up").sleep(3000).isExistToast("没有获取到数据");		
+		helper.sleep(6000).isExistClickElseSkip(pubPage.getAdFrame(), "广告");
+		/*
+		 * 打开应用商店
+		 * 首页出现无网络提示，点击可重新加载
+		 */
+		helper.checkElement(pubPage.getErrorOfGetDate(), "网络断开了");	
+		helper.click(pubPage.getErrorOfGetDate(), "网络断开了").sleep(5000).checkElement(pubPage.getErrorOfGetDate(), "网络断开了");
+		/*
+		 * 切换到游戏tab
+		 * 页面显示loading图标出现无网络提示，点击可重新加载
+		 */
+		helper.click(gamePage.getIndex(), "游戏页").checkElement(pubPage.getErrorOfGetDate(), "网络断开了");
+		/*
+		 * 切换到应用tab
+		 * 页面显示loading图标出现无网络提示，点击可重新加载
+		 */
+		helper.click(softPage.getIndex(), "软件页").checkElement(pubPage.getErrorOfGetDate(), "网络断开了");	
+		/*
+		 * 10s后恢复网络，点击重新加载
+		 * 可正常加载出首页/游戏/软件页面
+		 */
 		this.setConnectionType(NETWORK_NORMAL);
 		helper.click(mainPage.getIndex(), "首页").swipeDirection("down");	
 		mainPage.swipeHideTheBar();		
 		helper.checkElement(pubPage.getWeekHotApps(1), "检查本周热门应用是否已在首页显示");		
-		helper.checkElement(mainPage.getDownBtn(), "下载按钮");
 		helper.click(gamePage.getIndex(), "游戏页").swipeDirection("down");
-		helper.checkElement(gamePage.getTopBanner(), "游戏推荐位");
-		helper.checkElement(gamePage.getDownBtn(), "下载按钮");
+		helper.checkElement(gamePage.getTopBanner(), "游戏推荐位");		
 		helper.click(softPage.getIndex(), "软件页").swipeDirection("down");
 		helper.checkElement(pubPage.getWeekHotApps(1), "流行正当时第1个应用");
-		helper.checkElement(softPage.getDownBtn(), "下载按钮");
-		this.setConnectionType(NETWORK_DELAY);
-		helper.click(mainPage.getIndex(), "首页").swipeDirection("down").sleep(10000);
-		helper.checkElement(pubPage.getWeekHotApps(1), "检查本周热门应用是否已在首页显示");
-		helper.click(gamePage.getIndex(), "游戏页").swipeDirection("down").sleep(10000);
-		helper.checkElement(gamePage.getTopBanner(), "游戏推荐位");
-		helper.click(softPage.getIndex(), "软件页").swipeDirection("down").sleep(10000);
+		/*
+		 * 10s后恢复网络，点击重新加载
+		 * 页面加载出来后可正常滑动页面、选择游戏下载
+		 */
+		helper.swipeDirection("down").sleep(3000);
 		helper.checkElement(pubPage.getWeekHotApps(1), "流行正当时第1个应用");
-		this.setConnectionType(NETWORK_NORMAL);
-		helper.click(mainPage.getIndex(), "首页").swipeDirection("up").sleep(3000);
-		helper.click(gamePage.getIndex(), "游戏页").swipeDirection("up").sleep(2000);
-		helper.click(softPage.getIndex(), "软件页").swipeDirection("up").sleep(2000);
-		this.setConnectionType(NETWORK_CLOSE);
-		helper.click(mainPage.getIndex(), "首页").swipeDirection("down");
-		helper.click(pubPage.getWeekHotApps(1), "本周热门应用：第1个").sleep(15000);
-		helper.checkElement(pubPage.getErrorOfGetDate(), "没有获取到数据").back();		
-		helper.click(gamePage.getIndex(), "游戏页").swipeDirection("down").swipeDirection("down");
-		helper.sleep(3000).isExistToast("没有获取到数据");		
-		helper.click(softPage.getIndex(), "软件页").swipeDirection("down").swipeDirection("down");
-		helper.sleep(3000).isExistToast("没有获取到数据");		
+		helper.click(pubPage.getWeekHotApps(2), "流行正当时第2个应用").click(pubPage.getInstalBtn(), "安装").back();
+		this.checkDownResult();
+		/*
+		 * 子模块：手机处于弱网环境,上行/下行延迟分别设置为1000ms
+		 */
+		this.clean().setConnectionType(NETWORK_DELAY);
+		helper.sleep(6000).isExistClickElseSkip(pubPage.getAdFrame(), "广告");
+		/*
+		 * 打开应用商店，进入首页
+		 */
+		helper.sleep(10000).checkElement(pubPage.getWeekHotApps(1), "检查本周热门应用是否已在首页显示");
+		helper.click(gamePage.getIndex(), "游戏页").sleep(10000).checkElement(gamePage.getTopBanner(), "游戏推荐位");
+		helper.click(softPage.getIndex(), "软件页").sleep(10000).checkElement(pubPage.getWeekHotApps(1), "流行正当时第1个应用");
+		helper.click(pubPage.getWeekHotApps(3), "流行正当时第3个应用").sleep(10000).click(pubPage.getInstalBtn(), "安装").back();
+		this.checkDownResult();
+		/*
+		 * 首页/游戏/软件tab页内容加载出来后手机断网
+		 */
+		this.clean().setConnectionType(NETWORK_NORMAL);
+		helper.sleep(6000).isExistClickElseSkip(pubPage.getAdFrame(), "广告");
+		helper.click(mainPage.getIndex(), "首页").sleep(3000);
+		helper.click(gamePage.getIndex(), "游戏页").sleep(3000);
+		helper.click(softPage.getIndex(), "软件页").sleep(3000);
+		helper.closeWiFi();
+		/*
+		 * 点击进入任意应用详情页
+		 * 详情页出现loading图标，超时后出现网络中断提示
+		 */
+		helper.click(mainPage.getIndex(), "首页").click(pubPage.getWeekHotApps(1), "本周热门应用：第1个").sleep(5000);
+		helper.checkElement(pubPage.getErrorOfGetDate(), "网络断开了").back();		
+		/*
+		 * 点击任意应用安装
+		 * 出现网络未连接提示
+		 */
+		helper.click(mainPage.getDownBtn(), "安装").isExistToast("网络未连接");	
+		/*
+		 * 上拉加载数据
+		 * 显示loading图标后提示加载失败
+		 */
+		helper.swipeDirection("up").isExistToast("没有获取到数据");
+		/*
+		 * 下拉刷新
+		 * 出现loading图标后提示网络网络中断
+		 */
+		helper.swipeDirection("down").swipeDirection("down").checkElement(pubPage.getErrorOfGetDate(), "网络断开了");
+		/*
+		 * 提示网络中断后，恢复手机网络，点击页面重新加载
+		 * 可正常加载出页面
+		 */
+		helper.openWiFi();
+		helper.click(pubPage.getErrorOfGetDate(), "网络断开了").checkElement(pubPage.getWeekHotApps(2), "本周热门应用第2个");
+		/*
+		 * 提示网络中断后，恢复手机网络，点击页面重新加载
+		 * 可正常上拉/下拉刷新页面
+		 */
+		helper.swipeDirection("down").sleep(3000).checkElement(pubPage.getWeekHotApps(1), "本周热门应用第1个");
+		helper.swipeDirection("up").swipeDirection("up").checkElement(pubPage.getCheckAllLabel(), "查看全部");
+		/*
+		 * 提示网络中断后，恢复手机网络，点击页面重新加载
+		 * 可正常选择任意应用下载/继续下载
+		 */
+		helper.swipeDirection("down").click(pubPage.getWeekHotApps(2), "本周热门应用第2个");
+		helper.click(pubPage.getInstalBtn(), "安装");
+		this.checkDownResult();
 	}	
 	
 	//新游 目前点击过的预约无法取消 会导致后续脚本失败
@@ -103,11 +218,11 @@ public class WeakNetworkService extends AbstractPage{
 		helper.checkElement(gamePage.getTopGame(), "顶部推荐游戏").swipeDirection("end").swipeDirection("top");
 		helper.click(gamePage.getTopGame(), "顶部推荐游戏").sleep(10000);
 		helper.checkElement(gamePage.getTopGameInfo(), "游戏详情").back();	
-		navigation.closeWiFi();	
+		helper.closeWiFi();	
 		helper.click(mainPage.getDownBtn(), "下载").isExistToast("您还未连接网络");
 		helper.click(gamePage.getTopGame(), "顶部推荐游戏").sleep(5000);
 		helper.checkElement(pubPage.getErrorOfGetDate(), "网络断开了,请检查网络设置");
-		navigation.openWiFi();
+		helper.openWiFi();
 		helper.swipeDirection("down");		
 	}
 	
@@ -139,10 +254,10 @@ public class WeakNetworkService extends AbstractPage{
 		helper.click(mainPage.getBoon(), "福利");
 		helper.click(gamePage.getAllGameBoonBtn(), "全部游戏福利").sleep(5000);	
 		helper.checkElement(gamePage.getAllGameBoonList(1), "游戏福利列表第一个游戏").back();
-		navigation.closeWiFi();
+		helper.closeWiFi();
 		helper.click(gamePage.getBanner(), "Banner").sleep(5000);
 		helper.checkElement(gamePage.getErrorPage(), "网页无法打开");
-		navigation.openWiFi();
+		helper.openWiFi();
 		helper.swipeDirection("down");
 		helper.checkElement(gamePage.getErrorPage(), "游戏标题");
 	}
@@ -167,11 +282,11 @@ public class WeakNetworkService extends AbstractPage{
 		helper.click(mainPage.getList_NewProduct(), "榜单中的新品榜").sleep(15000);
 		helper.click(mainPage.getListIndex1(), "第一名应用").sleep(10000).back();
 		helper.click(mainPage.getList_FashionList(), "榜单中的流行榜").sleep(10000);
-		navigation.closeWiFi();
+		helper.closeWiFi();
 		helper.click(mainPage.getListIndex1(), "第一名应用").sleep(5000);
 		helper.checkElement(pubPage.getErrorOfGetDate(), "网络断开了").swipeDirection("down").sleep(5000);
 		helper.checkElement(pubPage.getErrorOfGetDate(), "网络断开了");
-		navigation.openWiFi();
+		helper.openWiFi();
 		helper.swipeDirection("down").back();
 		helper.click(mainPage.getListIndex1(), "第一名应用").sleep(10000);	
 		helper.checkElement(pubPage.getAppInfo(), "详情");
@@ -193,9 +308,9 @@ public class WeakNetworkService extends AbstractPage{
 		helper.checkElement(pubPage.getClassify_SubClassApp(), "视频分类第一个应用").swipeDirection("end").swipeDirection("top");
 		helper.click(pubPage.getClassify_SubClassApp(), "视频分类第一个应用");
 		helper.checkElement(pubPage.getAppInfo(), "详情标签").back();	
-		navigation.closeWiFi();
+		helper.closeWiFi();
 		helper.click(mainPage.getDownBtn(), "下载").isExistToast("网络未连接");
-		navigation.openWiFi();
+		helper.openWiFi();
 		helper.back();
 		helper.click(pubPage.getClassify_Soft_Video(), "视频分类");
 		helper.checkElement(pubPage.getClassify_SubClassApp(), "视频分类第一个应用");
@@ -320,9 +435,9 @@ public class WeakNetworkService extends AbstractPage{
 		this.clean().setConnectionType(NETWORK_NORMAL);
 		helper.sleep(6000).isExistClickElseSkip(pubPage.getAdFrame(), "广告");
 		helper.click(pubPage.getWeekHotApps(1), "本周热门应用第1个");
-		navigation.closeWiFi();
+		helper.closeWiFi();
 		helper.click(pubPage.getInstalBtn(), "安装").isExistToast("网络未连接");		
-		navigation.openWiFi();
+		helper.openWiFi();
 		helper.back();
 		//弱网下选择任意应用安装
 		this.setConnectionType(NETWORK_DELAY);
@@ -386,9 +501,9 @@ public class WeakNetworkService extends AbstractPage{
 		helper.click(mainPage.getSerachResultFirstApp(), "搜索结果第一个应用").sleep(5000);
 		//下载过程中断网
 		helper.click(pubPage.getInstalBtn(), "安装").back().back();		
-		navigation.closeWiFi();		
+		helper.closeWiFi();		
 		helper.isExistToast("网络");
-		navigation.openWiFi();
+		helper.openWiFi();
 		this.checkDownResult();		
 	}
 	
@@ -447,12 +562,12 @@ public class WeakNetworkService extends AbstractPage{
 		helper.checkElement(pubPage.getWeekHotAppsOfSub(3), "界面显示的第3个应用");
 		this.clean().setConnectionType(NETWORK_NORMAL);
 		helper.click(pubPage.getCheckAllLabel(), "查看全部");
-		navigation.closeWiFi();
+		helper.closeWiFi();
 		helper.swipeDirection("up").isExistToast("网络未连接");
 		helper.click(pubPage.getWeekHotAppsOfSub(1), "界面显示的第1个应用").sleep(5000);
 		helper.checkElement(pubPage.getErrorOfGetDate(), "网络断开了").back();
 		helper.click(mainPage.getDownBtn(), "安装").isExistToast("网络未连接");
-		navigation.openWiFi();
+		helper.openWiFi();
 		helper.swipeDirection("up").sleep(3000);
 		helper.checkElement(pubPage.getWeekHotAppsOfSub(3), "界面显示的第3个应用").back();
 		//游戏界面的查看全部标签
@@ -471,12 +586,12 @@ public class WeakNetworkService extends AbstractPage{
 		this.clean().setConnectionType(NETWORK_NORMAL);	
 		helper.click(gamePage.getIndex(), "游戏页");
 		helper.click(pubPage.getCheckAllLabel(), "查看全部");
-		navigation.closeWiFi();
+		helper.closeWiFi();
 		helper.swipeDirection("up").isExistToast("网络未连接");
 		helper.click(pubPage.getWeekHotAppsOfSub(1), "界面显示的第1个应用").sleep(5000);
 		helper.checkElement(pubPage.getErrorOfGetDate(), "网络断开了").back();
 		helper.click(mainPage.getDownBtn(), "安装").isExistToast("网络未连接");
-		navigation.openWiFi();
+		helper.openWiFi();
 		helper.swipeDirection("up").sleep(3000);
 		helper.checkElement(pubPage.getWeekHotAppsOfSub(3), "界面显示的第3个应用").back();
 		//软件界面的查看全部标签
@@ -495,12 +610,12 @@ public class WeakNetworkService extends AbstractPage{
 		this.clean().setConnectionType(NETWORK_NORMAL);
 		helper.click(softPage.getIndex(), "软件页");
 		helper.click(pubPage.getCheckAllLabel(), "查看全部");
-		navigation.closeWiFi();
+		helper.closeWiFi();
 		helper.swipeDirection("up").isExistToast("网络未连接");
 		helper.click(pubPage.getWeekHotAppsOfSub(1), "界面显示的第1个应用").sleep(5000);
 		helper.checkElement(pubPage.getErrorOfGetDate(), "网络断开了").back();
 		helper.click(mainPage.getDownBtn(), "安装").isExistToast("网络未连接");
-		navigation.openWiFi();
+		helper.openWiFi();
 		helper.swipeDirection("up").sleep(3000);
 		helper.checkElement(pubPage.getWeekHotAppsOfSub(3), "界面显示的第3个应用").back();		
 	}
@@ -697,10 +812,10 @@ public class WeakNetworkService extends AbstractPage{
 		if(helper.getPageSource().contains(str)) {
 			helper.swipeDirection("up");
 			logger.info("应用正在下载");	
-			navigation.closeWiFi();
+			helper.closeWiFi();
 			helper.click(centerPage.getIndex(), "个人中心");
 			helper.isExistClickElseSkip(centerPage.getDelBtn(), "删除").isExistClickElseSkip(centerPage.getConfirmBtn(), "确定删除");
-			navigation.openWiFi();			
+			helper.openWiFi();			
 		}else {
 			throw new RuntimeException("未能触发下载") ;
 		}

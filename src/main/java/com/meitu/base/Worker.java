@@ -31,7 +31,7 @@ public class Worker {
 	private List<Map<String, Object>> resultList;
 	private Object domainObject;
 	private AppiumDriverLocalService appiumDriver;
-	private Logger log = Logger.getLogger(this.getClass());
+	private final Logger log = Logger.getLogger(this.getClass());
 
 	public Worker(DriverEntity driverEntity, String sheetName) {
 		this.driverEntity = driverEntity;
@@ -141,7 +141,7 @@ public class Worker {
 		try {
 			Assert.assertEquals(operationResult, true, userCase + "--------->>Failure");
 		} catch (AssertionError e) {
-			helper.snapshot(userCase);
+			helper.snapshot("fail"+userCase);
 			log.info("Actual result:" + operationResult + ",Expected results:" + true);
 			throw e;
 		}
