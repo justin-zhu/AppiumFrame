@@ -29,10 +29,7 @@ public class WeakNetwork{
 		//福利礼包
 		weakNetworkService.welfareGift();
 	}
-	public void homeClassifyList() {
-		//分类列表下的子类
-		weakNetworkService.homeClassifyList();
-	}
+	
 	public void homeClassify() {
 		//分类
 		weakNetworkService.homeClassify();
@@ -57,15 +54,5 @@ public class WeakNetwork{
 	public void installApp() {
 		//安装应用
 		weakNetworkService.installApp();
-	}
-	
-	public void downApp() {
-		//网络恢复后的下载
-		weakNetworkService.downApp();
-	}
-	
-	public void checkAllPage() {
-		//查看全部应用模块
-		weakNetworkService.checkAllPage();
-	}
+	}	
 }

@@ -19,10 +19,9 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import cn.hutool.core.util.RuntimeUtil;
@@ -38,11 +37,13 @@ public class Helper {
 	private AndroidTouchAction action;
 	private AndroidDriver<AndroidElement> androidDriver;		
 	private Logger log = Logger.getLogger(this.getClass());
-
+	private WebDriverWait driverWait ;
+	private File saveLocal;
 	public Helper(AndroidDriver<AndroidElement> driver, String path) {
 		this.path = path;
 		this.androidDriver = driver;	
 		this.action = new AndroidTouchAction(androidDriver);
+		driverWait= new WebDriverWait(androidDriver, 15,100); 
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);		
 		log.info("Active Stack info:"+action);		
 		width = androidDriver.manage().window().getSize().width;
@@ -186,6 +187,11 @@ public class Helper {
 		snapshot("点击");	
 		return this;
 	}
+	public Helper tapByCommand(int x, int y) {
+		String deviceName = getDeviceName();	
+		RuntimeUtil.execForStr("adb -s  "+deviceName+"  shell input tap "+x+" "+y);	
+		return this;
+	}
 
 	/**
 	 * 返回当前页的activity信息	 * 
@@ -220,7 +226,7 @@ public class Helper {
 	 * @param text    输入的内容
 	 * @return boolean 操作结果
 	 */
-	public void send(WebElement element, String text) {
+	public Helper send(WebElement element, String text) {
 		if (element == null) {
 			log.info("输入内容失败,元素未找到");
 			snapshot("输入失败");	
@@ -231,6 +237,7 @@ public class Helper {
 			log.info("输入内容成功:" + text);
 			snapshot("输入"+text+"成功");			
 		}
+		return this;
 	}
 
 	/**
@@ -419,30 +426,30 @@ public class Helper {
 		log.info("滑动方向:"+direction);
 		if (direction.equals("right")) {
 			new AndroidTouchAction(androidDriver).press(PointOption.point(width / 4, height / 2))
-			.waitAction(WaitOptions.waitOptions(Duration.ofSeconds(1)))
+			.waitAction(WaitOptions.waitOptions(Duration.ofMillis(1000)))
 			.moveTo(PointOption.point(width * 3 / 4, height / 2)).release().perform();			
-			snapshot("右滑" + direction);
+			//snapshot("右滑" + direction);
 			log.info("右滑成功");
 			
 		} else if (direction.equals("left")) {
 			new AndroidTouchAction(androidDriver).press(PointOption.point(width * 3 / 4, height / 2))
-			.waitAction(WaitOptions.waitOptions(Duration.ofSeconds(1)))
+			.waitAction(WaitOptions.waitOptions(Duration.ofMillis(1000)))
 			.moveTo(PointOption.point(width / 4, height / 2)).release().perform();			
-			snapshot("左滑" + direction);
+			//snapshot("左滑" + direction);
 			log.info("左滑成功");
 			
 		} else if (direction.equals("down")) {
 			new AndroidTouchAction(androidDriver).press(PointOption.point(width / 2, height / 4))
-			.waitAction(WaitOptions.waitOptions(Duration.ofSeconds(1)))
+			.waitAction(WaitOptions.waitOptions(Duration.ofMillis(1000)))
 			.moveTo(PointOption.point( width / 2, height * 3 / 4)).release().perform();			
-			snapshot("下滑" + direction);
+			//snapshot("下滑" + direction);
 			log.info("下滑成功");
 			
 		} else if (direction.equals("up")) {
 			new AndroidTouchAction(androidDriver).press(PointOption.point(width / 2, height * 3 / 4))
-			.waitAction(WaitOptions.waitOptions(Duration.ofSeconds(1)))
+			.waitAction(WaitOptions.waitOptions(Duration.ofMillis(1000)))
 			.moveTo(PointOption.point(width / 2, height / 4)).release().perform();			
-			snapshot("上滑" + direction);
+			//snapshot("上滑" + direction);
 			log.info("上滑成功");
 			
 		} else if (direction.equals("end")) {
@@ -452,14 +459,14 @@ public class Helper {
 			do {
 				page1 = androidDriver.getPageSource();
 				new AndroidTouchAction(androidDriver).press(PointOption.point(width / 2, height * 3 / 4))
-				.waitAction(WaitOptions.waitOptions(Duration.ofSeconds(1))).moveTo(PointOption.point(width / 2, height / 4))
+				.waitAction(WaitOptions.waitOptions(Duration.ofMillis(1000))).moveTo(PointOption.point(width / 2, height / 4))
 				.release().perform();
 				sleep(3000);
-				snapshot("滑动至底部");
+				//snapshot("滑动至底部");
 				page2 = androidDriver.getPageSource();
 				count++;
-			} while (!page1.equals(page2)&&count < 15);
-			snapshot("滑动" + direction);
+			} while (!page1.equals(page2)|count < 15);
+			//snapshot("滑动" + direction);
 			
 		} else if (direction.equals("top")) {
 			String page1;
@@ -468,15 +475,38 @@ public class Helper {
 			do {
 				page1 = androidDriver.getPageSource();
 				new AndroidTouchAction(androidDriver).press(PointOption.point(width / 2, height / 4))
-				.waitAction(WaitOptions.waitOptions(Duration.ofSeconds(1)))
+				.waitAction(WaitOptions.waitOptions(Duration.ofMillis(1000)))
 				.moveTo(PointOption.point(width / 2, height * 3 / 4)).release().perform();				
 				sleep(3000);
 				snapshot("滑动至顶部");
 				page2 = androidDriver.getPageSource();
 				count++;
-			} while (!page1.equals(page2)&&count < 15);
-			snapshot("滑动" + direction);			
+			} while (!page1.equals(page2)|count < 15);
+			//snapshot("滑动" + direction);			
 		} 
+		snapshot(direction);
+		return this;
+	}
+	/*
+	 * 异步滑动
+	 */
+	public Helper swipeDirectionByCommand(String direction,int count) {
+		String deviceName = getDeviceName();
+		log.info("滑动方向:"+direction);			
+		if (direction.equals("down")) {
+			for (int i = 0; i < count; i++) {
+				RuntimeUtil.execForStr("adb -s  "+deviceName+"  shell input swipe 600 500 600 1950");
+				sleep(3000);
+			}
+			
+		} else if (direction.equals("up")) {
+			for (int i = 0; i < count; i++) {
+				RuntimeUtil.execForStr("adb -s "+deviceName+"  shell input swipe 600 2100 600 700");
+				sleep(3000);
+			}
+			RuntimeUtil.execForStr("adb -s "+deviceName+"  shell input swipe 600 2100 600 700");
+		} 
+		snapshot(direction);
 		return this;
 	}
 
@@ -487,18 +517,12 @@ public class Helper {
 	public void snapshot(String actionName) {		
 		sleep(100);
 		//当前时间+动作名称
-		String fileName = JustinUtil.getLocalTime() + actionName;
-		log.debug("fileName:"+fileName);
-		File scrFile = androidDriver.getScreenshotAs(OutputType.FILE);
-		log.debug("Screenshot:"+scrFile.getPath());
-		File saveLocal = new File(path,getMethodName());
-		log.debug("saveLocal:"+saveLocal.getPath());
+		String fileName = JustinUtil.getLocalTime() + actionName;		
+		File scrFile = androidDriver.getScreenshotAs(OutputType.FILE);		
+		saveLocal = new File(path,getMethodName());		
 		if(!saveLocal.exists()) {			
-			saveLocal.mkdirs();
-			log.debug("文件夹不存在,已创建:"+saveLocal.getPath());
-		}else {
-			log.debug("Folder already exists");
-		}		
+			saveLocal.mkdirs();			
+		}
 		File picture = new File(saveLocal + "\\" + fileName +".png");		
 		try {
 			FileUtils.copyFile(scrFile, picture);
@@ -680,12 +704,21 @@ public class Helper {
 	}
 	
 	public void isExistToast(String key) {
-		log.info("准备捕获toast:"+key);
+		log.info("Toast提示:"+key);		
 		String result = getToast(key);
 		if("no".equals(result)) {
-			throw new RuntimeException("未找到Toast控件");
+			throw new RuntimeException("未找到Toast信息:"+key);
 		}else {
 			log.info("成功获取到Toast信息:"+result);
+		}
+	}
+	public void isNoExistToast(String key) {
+		log.info("验证不存在的Toast:"+key);		
+		String result = getToast(key);
+		if(!"no".equals(result)) {
+			throw new RuntimeException("Toast存在:"+key+",请检查");
+		}else {
+			log.info("验证通过,此Toast不存在");
 		}
 	}
 	/**
@@ -703,30 +736,24 @@ public class Helper {
 		return this;
 	}
 	
-	public String getToast(String key) {
-		WebDriverWait driverWait = new WebDriverWait(androidDriver, 20); 		
-		return driverWait.until(new ExpectedCondition<String>() {
-			@Override
-			public String apply(WebDriver arg0) {
-				try {					
-					WebElement element =androidDriver.findElement(By.xpath("//*[contains(@text,'"+key+"')]"));
-					snapshot("toast成功");
-					return element.getText();
-				} catch (Exception e) {	
-					snapshot("toast失败");
-					return "no";
-				}
-				
-			}
-		});		
+	public String getToast(String key) {				
+		try {
+			
+			WebElement target = driverWait.until(
+				     ExpectedConditions.presenceOfElementLocated(By.xpath("//*[contains(@text,'"+key+"')]")));
+			return target.getText();
+		} catch (Exception e) {
+			return "no";
+		}
 	}
 	/**
 	 * 隐藏键盘
 	 */
-	public void hideKeyBoard() {
+	public Helper hideKeyBoard() {
 		androidDriver.hideKeyboard();
 		log.info("隐藏键盘");	
-		this.sleep(2000);
+		sleep(2000);
+		return this;
 	}
 	/**
 	 * 移除白名单之外的所有第三方应用(不包含系统应用)
@@ -781,15 +808,23 @@ public class Helper {
 		}
 		log.info("元素校验成功");
 	}
-	public void closeWiFi() {
+	public Helper closeWiFi() {
 		boolean state = androidDriver.getConnection().isWiFiEnabled();
-		String deviceName = androidDriver.getCapabilities().getCapability("deviceName").toString();
+		String deviceName = getDeviceName();
 		if(state) {
 			RuntimeUtil.execForStr("adb -s "+deviceName+" shell  svc wifi disable");
 		}
+		return this;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getDeviceName() {
+		return androidDriver.getCapabilities().getCapability("deviceName").toString();
 	}
 	public boolean ping() {
-		String device = androidDriver.getCapabilities().getCapability("deviceName").toString();
+		String device = getDeviceName();
 		String cmd = "adb -s "+device+" shell ping -c 1 www.qq.com";
 		for (int i = 0; i < 10; i++) {
 			sleep(2000);
@@ -802,15 +837,27 @@ public class Helper {
 		}
 		return false;
 	}
-	public void openWiFi() {
-		String device = androidDriver.getCapabilities().getCapability("deviceName").toString();
+	public Helper openWiFi() {
+		String device = getDeviceName();
 		boolean state = androidDriver.getConnection().isWiFiEnabled();
 		if(!state) {
 			RuntimeUtil.execForStr("adb -s "+device+" shell  svc wifi enable");			
 			if(!ping()) {
 				throw new RuntimeException("网络无法连接,请检查网络情况");
 			}			
-		}		
+		}
+		return this;
+	}
+	public void checkActivity() {
+		String sourcePackage=androidDriver.getCapabilities().getCapability("appPackage").toString();
+		String package1 = androidDriver.getCurrentPackage();
+		if (sourcePackage.equals(package1)) {
+			throw new RuntimeException("未能打开程序");
+		}else {
+			pressKeyCode(3);
+			pressKeyCode(3);
+			click(findByUiautomatorText("应用市场"), "应用市场");
+		}
 	}
 	
 }

@@ -44,7 +44,12 @@ public class PageOfPublic {
 	public WebElement getErrorOfGetDateOfSearch() {
 		return helper.findById("com.tencent.southpole.appstore:id/tv_nothing_tip");
 	}
-	
+	/**
+	 * Loading icon
+	 */
+	public WebElement getLoadingIcon() {
+		return helper.findById("com.tencent.southpole.appstore:id/loading_anim");
+	}
 	/**
 	 * 首页广告弹窗口，关闭按钮
 	 * @return
@@ -93,6 +98,12 @@ public class PageOfPublic {
 		return helper.findById("com.tencent.southpole.appstore:id/score");
 	}
 	/**
+	 * 搜索结果中的下载按钮
+	 */
+	public WebElement getSearchResulInstallBtn() {
+		return helper.findById("com.tencent.southpole.appstore:id/search_result_downloadbtn");
+	}
+	/**
 	 * 应用介绍
 	 */
 	public WebElement getAppState() {
@@ -120,12 +131,27 @@ public class PageOfPublic {
 		return helper.findByUiautomatorText("视频");
 	}
 	/**
-	 * 安装按钮
+	 * 社交类
+	 */
+	public WebElement getClassify_Soft_Social() {
+		return helper.findByUiautomatorText("社交");
+	}
+	/**
+	 * 详情界面的安装按钮
 	 * @return
 	 */
 	public WebElement getInstalBtn() {
 		return helper.findById("com.tencent.southpole.appstore:id/app_detail_download");
 	}
+	/**
+	 * 游戏界面下的：下载按钮
+	 * 分类列表下的：下载按钮
+	 * @return
+	 */
+	public WebElement getInstall() {
+		return helper.findById("com.tencent.southpole.appstore:id/download");
+	}
+	
 	/**
 	 * 卸载指定的包
 	 * @param packageName
@@ -190,6 +216,19 @@ public class PageOfPublic {
 		}
 		String expression ="//*[@resource-id='com.tencent.southpole.appstore:id/recycle_view']/android.view.ViewGroup["+index+"]/android.widget.TextView[1]";
 		return helper.findByXpath(expression);
+	}
+	/**
+	 * 福利界面-一键领取按钮
+	 */
+	public WebElement getBoonOnekeyGet() {		
+		return helper.findById("com.tencent.southpole.appstore:id/button_receive_all");
+	}
+	/**
+	 * 领取按钮
+	 * @return
+	 */
+	public WebElement getReceiveOfOne() {
+		return helper.findById("com.tencent.southpole.appstore:id/receive_button");
 	}
 	
 }

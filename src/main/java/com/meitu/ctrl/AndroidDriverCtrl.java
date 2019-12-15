@@ -39,10 +39,9 @@ public enum AndroidDriverCtrl {
         capabilities.setCapability("appActivity",  "com.tencent.southpole.appstore.activity.SplashActivity");
         capabilities.setCapability("unicodeKeyboard", false);// 控制系统键盘
         capabilities.setCapability("resetKeyboard", false);       
-		try {
+		try {			
 			driver = new AndroidDriver<AndroidElement>(url, capabilities);
-			logger.info("driver init successed");
-			driver.unlockDevice();			
+			logger.info("driver init successed");					
 		} catch (Exception e) {
 			logger.info("driver init failure");
 			e.printStackTrace();

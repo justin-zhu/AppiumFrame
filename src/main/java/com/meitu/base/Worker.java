@@ -49,10 +49,13 @@ public class Worker {
 	}
 
 	/**
-	 * 实例化androidDriver logcat
+	 * 实例化androidDriver&Logcat
 	 */	
-	public void startAndroidDriver() {
-		androidDriver = AndroidDriverCtrl.Instance.creatDriver(driverEntity,appiumDriver.getUrl()).getDriver(appiumDriver.getUrl().getPort());
+	public void startAndroidDriver() {	
+		
+		AndroidDriverCtrl.Instance.creatDriver(driverEntity,appiumDriver.getUrl());
+		int port = appiumDriver.getUrl().getPort();		
+		androidDriver = AndroidDriverCtrl.Instance.getDriver(port);
 		path = JustinUtil.getRootPath(driverEntity.getUdid() + "_" + sheetName + JustinUtil.getLocalTime());
 		helper = new Helper(androidDriver, path);
 		initDaomainObject();		
@@ -63,7 +66,8 @@ public class Worker {
 	/**
 	 * 执行测试
 	 */	
-	public void execute(String methodName) {			
+	public void execute(String methodName) {
+		helper.openWiFi();
 		this.method(methodName);	
 	}
 

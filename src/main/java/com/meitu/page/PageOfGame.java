@@ -1,5 +1,6 @@
 package com.meitu.page;
 
+import org.openqa.selenium.NotFoundException;
 import org.openqa.selenium.WebElement;
 
 import com.meitu.utils.Helper;
@@ -95,11 +96,11 @@ public class PageOfGame {
 		return helper.findById("com.tencent.southpole.appstore:id/download");
 	}
 	/**
-	 * 新游顶部
+	 * 新游列表，目前默认取显示在当前界面的第1个
 	 * @return
 	 */
-	public WebElement getTopGame() {
-		return helper.findByXpath("//*[@resource-id='com.tencent.southpole.appstore:id/item']/android.widget.TextView[1]");
+	public WebElement getNewGameListOfOne() {
+		return helper.findById("com.tencent.southpole.appstore:id/name");
 	}
 	/**
 	 * 顶部新游推荐位详情界面 判断是否存在元素
@@ -119,7 +120,19 @@ public class PageOfGame {
 	 * index 1 默认取第一个
 	 */
 	public WebElement getAllGameBoonList(int index) {
-		return helper.findByXpath("//*[@resource-id='com.tencent.southpole.appstore:id/recycler_view']/android.view.ViewGroup[+"+(index+1)+"]/android.view.ViewGroup/android.widget.TextView[1]");
+		return helper.findByXpath("//*[@resource-id='com.tencent.southpole.appstore:id/recycler_view']/android.view.ViewGroup["+(index+1)+"]/android.view.ViewGroup/android.widget.TextView[1]");
+	}
+	/**
+	 * 需要安装游戏后，才能领取礼包窗口
+	 */
+	public WebElement getFrame() {
+		return helper.findByUiautomatorText("需要安装游戏后才能领取礼包");
+	}
+	/*
+	 * 进行GPASS专区（GPASS游戏右上角的标签）
+	 */
+	public WebElement getEnterGpassArea() {
+		return helper.findById("com.tencent.southpole.appstore:id/gpass_entrance");
 	}
 	/**
 	 * Gpass特权
@@ -150,9 +163,15 @@ public class PageOfGame {
 	 * 无网状态，点击福利banner界面 提示网页找不到
 	 * @return
 	 */
-	public WebElement getErrorPage() {
-		return helper.findById("com.tencent.southpole.appstore:id/back_btn");
+	public void  checkWebViewPage(String title) {
+		WebElement element = helper.findById("com.tencent.southpole.appstore:id/back_btn");
+		if(!title.equals("网页无法打开")) {	
+			if(element.getText().contains("网页无法")) {
+				throw new NotFoundException("网页未成功加载");
+			}
+		}
 	}
+
 	/**
 	 * 查看GPASS
 	 */

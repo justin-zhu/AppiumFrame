@@ -47,19 +47,7 @@ public class PageOfMain {
 	public WebElement getBoon() {
 		return helper.findById("com.tencent.southpole.appstore:id/tag_layout_2");
 	}
-	/**
-	 * 福利界面-一键领取按钮
-	 */
-	public WebElement getBoonOnekeyGet() {		
-		return helper.findById("com.tencent.southpole.appstore:id/button_receive_all");
-	}
-	/**
-	 * 领取按钮
-	 * @return
-	 */
-	public WebElement getReceiveOfOne() {
-		return helper.findById("com.tencent.southpole.appstore:id/receive_button");
-	}
+
 	/**
 	 * 首页顶部:榜单
 	 * @return
@@ -72,6 +60,12 @@ public class PageOfMain {
 	 */
 	public WebElement getListIndex1() {
 		return helper.findById("com.tencent.southpole.appstore:id/app_1_icon");
+	}
+	/*
+	 * 榜单列表，不包含前三名的元素列表，仅取在当前界面中显示的第1位应用
+	 */
+	public WebElement getListCurrentIndex() {
+		return helper.findByXpath("//*[@resource-id='com.tencent.southpole.appstore:id/app_list']/android.widget.RelativeLayout[1]/android.widget.TextView[2]");
 	}
 	/**
 	 * 榜单界面下的：流行榜

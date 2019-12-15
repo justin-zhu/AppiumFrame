@@ -51,9 +51,9 @@ public class TestWeakNetwork {
 		logger.info("首次登陆应用商店");			
 		worker.execute("firstLogin");
 	}	
-	@Test(priority = 2,enabled = false)
+	@Test(priority = 2)
 	public void testReOpenAppStore() {
-		//pass
+		//pass 用命已对齐
 		logger.info("非首次登陆应用商店");			
 		worker.execute("reOpenAppStore");
 	}
