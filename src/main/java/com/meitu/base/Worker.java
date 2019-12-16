@@ -10,8 +10,8 @@ import org.apache.log4j.Logger;
 import org.testng.Assert;
 
 import com.meitu.entity.DriverEntity;
-import com.meitu.supplier.AndroidDriverCtrl;
-import com.meitu.supplier.AppiumServer;
+import com.meitu.supplier.AndroidDriverSupplier;
+import com.meitu.supplier.AppiumServerSupplier;
 import com.meitu.utils.Helper;
 import com.meitu.utils.JustinUtil;
 import com.meitu.utils.LogcatUtil;
@@ -44,7 +44,7 @@ public class Worker {
 	 */	
 	public void startAppiumServer() {
 		log.info("current device:" + driverEntity.getUdid());
-		appiumDriver = AppiumServer.getAppiumDriver();
+		appiumDriver = AppiumServerSupplier.getAppiumDriver();
 		appiumDriver.start();
 		log.info("appium server running");
 	}
@@ -54,9 +54,9 @@ public class Worker {
 	 */	
 	public void startAndroidDriver() {	
 		
-		AndroidDriverCtrl.Instance.creatDriver(driverEntity,appiumDriver.getUrl());
+		AndroidDriverSupplier.Instance.creatDriver(driverEntity,appiumDriver.getUrl());
 		int port = appiumDriver.getUrl().getPort();		
-		androidDriver = AndroidDriverCtrl.Instance.getDriver(port);
+		androidDriver = AndroidDriverSupplier.Instance.getDriver(port);
 		path = JustinUtil.getRootPath(driverEntity.getUdid() + "_" + sheetName + JustinUtil.getLocalTime());
 		helper = new Helper(androidDriver, path);
 		initDaomainObject();		
@@ -83,7 +83,7 @@ public class Worker {
 	 * 停止Driver logcat
 	 */
 	public void stopAndroidDriver() {
-		AndroidDriverCtrl.Instance.stopDriver(appiumDriver.getUrl().getPort());
+		AndroidDriverSupplier.Instance.stopDriver(appiumDriver.getUrl().getPort());
 		logcat.interrupt();
 	}
 

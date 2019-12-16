@@ -15,7 +15,7 @@ import java.util.HashMap;
  * @author Administrator
  *
  */
-public enum AndroidDriverCtrl {
+public enum AndroidDriverSupplier {
     Instance;
     private static HashMap<String,AndroidDriver<AndroidElement>> hashMap = new HashMap<>();
     private Logger logger =Logger.getLogger(this.getClass());
@@ -25,7 +25,7 @@ public enum AndroidDriverCtrl {
      * @param driverEntity
      * @throws MalformedURLException
      */
-    public synchronized AndroidDriverCtrl  creatDriver(DriverEntity driverEntity,URL url)  {    	
+    public synchronized AndroidDriverSupplier  creatDriver(DriverEntity driverEntity,URL url)  {    	
         DesiredCapabilities capabilities = new DesiredCapabilities();//设置各项参数
         capabilities.setCapability("deviceName", driverEntity.getUdid());        
         capabilities.setCapability("udid",  driverEntity.getUdid());
