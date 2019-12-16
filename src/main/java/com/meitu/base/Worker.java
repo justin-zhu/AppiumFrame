@@ -8,9 +8,10 @@ import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
-import com.meitu.ctrl.AndroidDriverCtrl;
-import com.meitu.ctrl.AppiumServer;
+
 import com.meitu.entity.DriverEntity;
+import com.meitu.supplier.AndroidDriverCtrl;
+import com.meitu.supplier.AppiumServer;
 import com.meitu.utils.Helper;
 import com.meitu.utils.JustinUtil;
 import com.meitu.utils.LogcatUtil;

@@ -1,4 +1,4 @@
-package com.meitu.domain;
+package com.meitu.controller;
 
 import com.meitu.service.WeakNetworkService;
 import com.meitu.utils.Helper;

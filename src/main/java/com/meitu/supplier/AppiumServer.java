@@ -1,4 +1,4 @@
-package com.meitu.ctrl;
+package com.meitu.supplier;
 
 import java.io.File;
 
