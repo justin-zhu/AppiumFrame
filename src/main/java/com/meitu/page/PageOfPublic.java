@@ -133,8 +133,8 @@ public class PageOfPublic {
 	/**
 	 * 社交类
 	 */
-	public WebElement getClassify_Soft_Social() {
-		return helper.findByUiautomatorText("社交");
+	public WebElement getClassify_Soft_System() {
+		return helper.findByUiautomatorText("系统");
 	}
 	/**
 	 * 详情界面的安装按钮
@@ -150,41 +150,9 @@ public class PageOfPublic {
 	 */
 	public WebElement getInstall() {
 		return helper.findById("com.tencent.southpole.appstore:id/download");
-	}
+	}	
 	
-	/**
-	 * 卸载指定的包
-	 * @param packageName
-	 */
-	public void removeApp(String packageName) {
-		helper.getAndroidDriver().removeApp(packageName);
-	}
-	/**
-	 * 获取第三方包名
-	 */
-	public String getAppList_3() {
-		String deviceName = helper.getAndroidDriver().getCapabilities().getCapability("deviceName").toString();
-		return RuntimeUtil.execForStr("adb -s "+deviceName+" shell pm list packages -3");
-	}
-	/**
-	 * 检查应用是否已经安装在本机100秒等待时间
-	 * @param packageName
-	 */
-	public void checkAppIsInstall(String packageName) {
-		
-		for (int i = 0; i < 20; i++) {
-			boolean installed = helper.getAndroidDriver().isAppInstalled(packageName);
-			if(installed) {
-				log.info(packageName+"已安装完成");
-				return;
-			}else {
-				log.info("等待应用安装完成");
-				helper.sleep(5000);				
-			}
-		}
-		log.info(packageName+"未能在指定时间内安装完成");
-		throw new RuntimeException("应用未能在指定时间内安装完成");
-	}
+	
 	/**
 	 * 查看全部标签
 	 */
@@ -198,7 +166,7 @@ public class PageOfPublic {
 	 */
 	public WebElement getWeekHotAppsOfSub(int index) {
 		if(index<0||index>9) {
-			throw new RuntimeException("指定的下标不存在");
+			throw new IndexOutOfBoundsException("指定的下标不存在");
 		}
 		String expression = "//*[@resource-id='com.tencent.southpole.appstore:id/recyview']/android.view.ViewGroup["+index+"]/android.widget.TextView[1]";
 		return helper.findByXpath(expression);
@@ -212,7 +180,7 @@ public class PageOfPublic {
 	 */
 	public WebElement getWeekHotApps(int index) {
 		if(index<0||index>5) {
-			throw new RuntimeException("指定的下标不存在");
+			throw new IndexOutOfBoundsException("指定的下标不存在");
 		}
 		String expression ="//*[@resource-id='com.tencent.southpole.appstore:id/recycle_view']/android.view.ViewGroup["+index+"]/android.widget.TextView[1]";
 		return helper.findByXpath(expression);

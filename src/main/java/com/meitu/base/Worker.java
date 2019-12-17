@@ -110,11 +110,12 @@ public class Worker {
 		resultList = new ArrayList<Map<String, Object>>();
 		try {
 			// 获取表格中对应的域对象
-			Class<?> class1 = Class.forName("com.meitu.domain." + sheetName);
+			Class<?> class1 = Class.forName("com.meitu.controller." + sheetName);
 			Constructor<?> con = class1.getConstructor(Helper.class);
 			domainObject = con.newInstance(helper);
 		} catch (Exception e) {
-			log.info("Get domain failure!! arg:" + sheetName);
+			log.info("get domain failure arg:" + sheetName);
+			e.printStackTrace();
 		}
 	}
 
@@ -146,8 +147,8 @@ public class Worker {
 		try {
 			Assert.assertEquals(operationResult, true, userCase + "--------->>Failure");
 		} catch (AssertionError e) {
-			helper.snapshot("fail"+userCase);
-			log.info("Actual result:" + operationResult + ",Expected results:" + true);
+			String path = helper.snapshot("fail"+userCase);
+			log.info("操作失败,截图保存路径:+\r\n"+path);
 			throw e;
 		}
 	}

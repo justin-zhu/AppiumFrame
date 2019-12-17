@@ -213,8 +213,8 @@ public class Helper {
 			log.info("点击成功:"+elementName);
 			snapshot(elementName);			
 		} else {
-			log.info("点击失败:"+elementName);
-			snapshot("fail"+elementName);
+			log.info("点击失败,元素名称:"+elementName);
+			snapshot("点击失败的元素名称:"+elementName);
 			throw new RuntimeException("元素点击失败:"+elementName);			
 		}
 		System.gc();
@@ -495,14 +495,16 @@ public class Helper {
 		log.info("滑动方向:"+direction);			
 		if (direction.equals("down")) {
 			for (int i = 0; i < count; i++) {
-				RuntimeUtil.execForStr("adb -s  "+deviceName+"  shell input swipe 600 500 600 1950");
 				sleep(3000);
+				RuntimeUtil.execForStr("adb -s  "+deviceName+"  shell input swipe 600 500 600 1950");
+				
 			}
 			
 		} else if (direction.equals("up")) {
 			for (int i = 0; i < count; i++) {
-				RuntimeUtil.execForStr("adb -s "+deviceName+"  shell input swipe 600 2100 600 700");
 				sleep(3000);
+				RuntimeUtil.execForStr("adb -s "+deviceName+"  shell input swipe 600 2100 600 700");
+				
 			}
 			RuntimeUtil.execForStr("adb -s "+deviceName+"  shell input swipe 600 2100 600 700");
 		} 
@@ -514,7 +516,7 @@ public class Helper {
 	 * @param actionName 图片名称
 	 * @throws InterruptedException 截图失败时，抛出异常
 	 */
-	public void snapshot(String actionName) {		
+	public String snapshot(String actionName) {		
 		sleep(100);
 		//当前时间+动作名称
 		String fileName = JustinUtil.getLocalTime() + actionName;		
@@ -525,12 +527,13 @@ public class Helper {
 		}
 		File picture = new File(saveLocal + "\\" + fileName +".png");		
 		try {
-			FileUtils.copyFile(scrFile, picture);
-			log.info("screenshot save path:" + picture.getPath());
+			
 			if(actionName.contains("fail")) {
-				FileUtils.copyFile(scrFile, new File(saveLocal+"\\"+"failPic"+"\\"+fileName+".png"));
-				log.info("fail operation :"+saveLocal+"\\"+"failPic"+fileName+".png");
-				//return saveLocal+"\\"+"failPic"+fileName+".png";
+				FileUtils.copyFile(scrFile, new File(saveLocal+"\\"+"failPic"+"\\"+fileName+".png"));				
+				return saveLocal+"\\"+"failPic"+"\\"+fileName+".png";
+			}else {
+				FileUtils.copyFile(scrFile, picture);
+				log.info("screenshot save path:" + picture.getPath());
 			}			
 		} catch (IOException e1) {
 			log.info("screenshot failed");
@@ -538,7 +541,7 @@ public class Helper {
 			saveLocal = null;
 			actionName = null;
 		}
-		//return picture.getPath();
+		return picture.getPath();
 	}
 
 	/**
@@ -703,7 +706,7 @@ public class Helper {
 		return this;
 	}
 	
-	public void isExistToast(String key) {
+	public Helper isExistToast(String key) {
 		log.info("Toast提示:"+key);		
 		String result = getToast(key);
 		if("no".equals(result)) {
@@ -711,6 +714,7 @@ public class Helper {
 		}else {
 			log.info("成功获取到Toast信息:"+result);
 		}
+		return this;
 	}
 	public void isNoExistToast(String key) {
 		log.info("验证不存在的Toast:"+key);		
@@ -859,5 +863,37 @@ public class Helper {
 			click(findByUiautomatorText("应用市场"), "应用市场");
 		}
 	}
-	
+	/**
+	 * 卸载指定的包
+	 * @param packageName
+	 */
+	public void uninstall(String packageName) {
+		getAndroidDriver().removeApp(packageName);
+	}
+	/**
+	 * 获取第三方包名
+	 */
+	public String getAppList_3() {
+		String deviceName = getAndroidDriver().getCapabilities().getCapability("deviceName").toString();
+		return RuntimeUtil.execForStr("adb -s "+deviceName+" shell pm list packages -3");
+	}
+	/**
+	 * 检查应用是否已经安装在本机,100秒等待时间
+	 * @param packageName
+	 */
+	public void checkAppIsInstall(String packageName) {
+		
+		for (int i = 0; i < 20; i++) {
+			boolean installed = getAndroidDriver().isAppInstalled(packageName);
+			if(installed) {
+				log.info(packageName+"已安装完成");
+				return;
+			}else {
+				log.info("等待应用安装完成");
+				sleep(5000);				
+			}
+		}
+		log.info(packageName+"未能在指定时间内安装完成");
+		throw new RuntimeException("应用未能在指定时间内安装完成");
+	}
 }

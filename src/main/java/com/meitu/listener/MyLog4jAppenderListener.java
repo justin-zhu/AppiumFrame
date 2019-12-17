@@ -16,7 +16,7 @@ public class MyLog4jAppenderListener extends ConsoleAppender{
 		//将结果写入报告中
 		String message = this.layout.format(event);
 		//过滤掉截图相关的日志
-		if(!message.contains("screenshot")) {
+		if(!message.contains("screenshot")&&!message.contains("sleep 100ms")) {
 			Reporter.log(message);
 		}
 		

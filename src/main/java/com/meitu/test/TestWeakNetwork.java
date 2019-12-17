@@ -24,7 +24,7 @@ public class TestWeakNetwork {
 		driverEntity.setUdid(DeviceUtils.getDeviceInfo().trim());		
 		driverEntity.setVersion("9.0");
 		logger.info(driverEntity);
-		worker =new Worker(driverEntity,"WeakNetwork");	
+		worker =new Worker(driverEntity,"WeakNetworkController");	
 		worker.startAppiumServer();			
     }    
 	@BeforeClass
@@ -47,31 +47,31 @@ public class TestWeakNetwork {
 	
 	@Test(priority = 1)
 	public void testFirstLogin() {
-		//pass 用例已对齐
+		//用例已对齐 调试通过
 		logger.info("首次登陆应用商店");			
 		worker.execute("firstLogin");
 	}	
 	@Test(priority = 2)
 	public void testReOpenAppStore() {
-		//pass 用命已对齐
+		//用例已对齐 调试通过
 		logger.info("非首次登陆应用商店");			
 		worker.execute("reOpenAppStore");
 	}
-	@Test(priority = 3,enabled = false)
-	public void testNewGame() {
-		//pass
-		logger.info("新游");			
-		worker.execute("newGame");
+	@Test(priority = 3)
+	public void testTabPage() {	
+		//用例已对齐 调试通过
+		logger.info("Tab主页（首页/游戏/软件）");			
+		worker.execute("tabPage");
 	}
 	@Test(priority = 4)
 	public void testHomePageWelfare() {	
-		//福利界面有变化 需要维护
+		//用例已对齐 调试通过
 		logger.info("福利");			
 		worker.execute("homePageWelfare");
 	}
 	@Test(priority = 5)
 	public void testHomePageList() {
-		//pass
+		//用例已对齐 调试已通过
 		logger.info("榜单");			
 		worker.execute("homePageList");
 	}
@@ -82,17 +82,17 @@ public class TestWeakNetwork {
 		worker.execute("homeClassify");
 	}
 	@Test(priority = 7)
-	public void testHomeClassifyList() {
+	public void testListOfCheckAll() {
 		//pass
-		logger.info("分类列表");			
-		worker.execute("homeClassifyList");
-	}
+		logger.info("列表（首页、游戏、软件、新游）");			
+		worker.execute("listOfCheckAll");
+	}	
 	@Test(priority = 8)
-	public void testWelfareGift() {
-		//pass
-		logger.info("福利礼包");			
-		worker.execute("welfareGift");
-	}
+	public void testNewGame() {
+		//用例已对齐 调试已通过
+		logger.info("新游");			
+		worker.execute("newGame");
+	}	
 	@Test(priority = 9)
 	public void testSearch() {	
 		//pass
@@ -106,28 +106,16 @@ public class TestWeakNetwork {
 		worker.execute("appInformation");
 	}
 	@Test(priority = 11)
-	public void testCenter() {
-		//pass
-		logger.info("个人中心");			
-		worker.execute("center");
-	}
-	@Test(priority = 12)
 	public void testInstall() {	
 		//pass
 		logger.info("安装");			
 		worker.execute("installApp");
 	}
-	@Test(priority = 13)
-	public void testDownApp() {	
-		//福利界面有改支 要维护
-		logger.info("网络恢复后的下载");			
-		worker.execute("downApp");
-	}
-	@Test(priority = 15,enabled = false)
-	public void techCheckAllPage() {
-		//有单子未解决 后续调式
-		logger.info("全部应用模块");
-		worker.execute("checkAllPage");
+	@Test(priority = 12)
+	public void testCenter() {
+		//pass
+		logger.info("个人中心");			
+		worker.execute("center");
 	}
 	
 }
