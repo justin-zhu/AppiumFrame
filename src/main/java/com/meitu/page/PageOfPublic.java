@@ -1,15 +1,11 @@
 package com.meitu.page;
 
-import org.apache.log4j.Logger;
 import org.openqa.selenium.WebElement;
 
 import com.meitu.utils.Helper;
 
-import cn.hutool.core.util.RuntimeUtil;
-
 public class PageOfPublic {
-	Helper helper;
-	private Logger log = Logger.getLogger(this.getClass());
+	Helper helper;	
 	public PageOfPublic(Helper helper) {		
 		this.helper = helper;
 	}

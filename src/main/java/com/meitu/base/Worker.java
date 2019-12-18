@@ -127,7 +127,7 @@ public class Worker {
 			operationResult = true;
 		} catch (Exception e) {			
 			operationResult = false;
-			log.info(e.getMessage());
+			//log.info(e.getMessage());
 			e.printStackTrace();
 		} finally {
 			// 写入单个模块的执行结果
@@ -148,7 +148,7 @@ public class Worker {
 			Assert.assertEquals(operationResult, true, userCase + "--------->>Failure");
 		} catch (AssertionError e) {
 			String path = helper.snapshot("fail"+userCase);
-			log.info("操作失败,截图保存路径:+\r\n"+path);
+			log.info("操作失败,截图保存路径:\r\n"+path);
 			throw e;
 		}
 	}

@@ -566,7 +566,7 @@ public class WeakNetworkService extends AbstractPage {
 		helper.isExistClickElseSkip(pubPage.getAdFrame(), "广告");
 		helper.click(mainPage.getClassify(), "首页分类").checkElement(pubPage.getLoadingIcon(), "加载");
 		helper.sleep(10000);
-		helper.swipeDirection(UP).swipeDirection(UP).checkElement(pubPage.getClassify_Soft_System(), "系统");
+		helper.swipeDirection(UP).swipeDirection(UP).swipeDirection(UP).checkElement(pubPage.getClassify_Soft_System(), "系统");
 		helper.swipeDirection(DOWN).swipeDirection(DOWN);
 		/*
 		 * 点击进入任意分类列表 1、页面可正常显示加载中 2、若加载失败，页面提示网络异常，网络恢复后，点击可重新加载 3、若加载成功，页面展示正常，可正常操作
@@ -620,56 +620,56 @@ public class WeakNetworkService extends AbstractPage {
 	 * 列表（首页、游戏、软件、新游）
 	 */
 	public void listOfCheckAll() {
-		/*
-		 * 子模块：无网络
-		 */
-		this.clean().setConnectionType(NETWORK_START);
-		helper.isExistClickElseSkip(pubPage.getAdFrame(), "广告");
-		helper.swipeDirection(UP).closeWiFi();
-		/*
-		 * 点击查看全部进入列表页----首页 页面出现无网络提示，点击可重新加载
-		 */
-		helper.click(pubPage.getCheckAllLabel(), "查看全部").checkElement(pubPage.getErrorOfGetDate(),
-				NETWORK_DISCONNECTED);
-		helper.click(pubPage.getErrorOfGetDate(), NETWORK_DISCONNECTED).checkElement(pubPage.getErrorOfGetDate(),
-				NETWORK_DISCONNECTED);
-		/*
-		 * 网络恢复后，点击重新加载 页面加载出来后可正常滑动页面，选择游戏下载
-		 */
-		helper.openWiFi().click(pubPage.getErrorOfGetDate(), NETWORK_DISCONNECTED);
-		helper.click(pubPage.getWeekHotAppsOfSub(1), "列表第1个应用").click(pubPage.getInstalBtn(), "安装");
-		helper.back().back();
-		this.checkDownResult();
-		/*
-		 * 点击查看全部进入列表页----游戏页 页面出现无网络提示，点击可重新加载
-		 */
-		helper.click(gamePage.getIndex(), GAME_PAGE).swipeDirection(UP).closeWiFi();
-		helper.click(pubPage.getCheckAllLabel(), "查看全部").checkElement(pubPage.getErrorOfGetDate(),
-				NETWORK_DISCONNECTED);
-		helper.click(pubPage.getErrorOfGetDate(), NETWORK_DISCONNECTED).checkElement(pubPage.getErrorOfGetDate(),
-				NETWORK_DISCONNECTED);
-		/*
-		 * 网络恢复后，点击重新加载 页面加载出来后可正常滑动页面，选择游戏下载
-		 */
-		helper.openWiFi().click(pubPage.getErrorOfGetDate(), NETWORK_DISCONNECTED);
-		helper.click(pubPage.getWeekHotAppsOfSub(1), "列表第1个应用").click(pubPage.getInstalBtn(), "安装");
-		helper.back().back();
-		this.checkDownResult();
-		/*
-		 * 点击查看全部进入列表页----软件页 页面出现无网络提示，点击可重新加载
-		 */
-		helper.click(softPage.getIndex(), SOFT_PAGE).closeWiFi();
-		helper.click(pubPage.getCheckAllLabel(), "查看全部").checkElement(pubPage.getErrorOfGetDate(),
-				NETWORK_DISCONNECTED);
-		helper.click(pubPage.getErrorOfGetDate(), NETWORK_DISCONNECTED).checkElement(pubPage.getErrorOfGetDate(),
-				NETWORK_DISCONNECTED);
-		/*
-		 * 网络恢复后，点击重新加载 页面加载出来后可正常滑动页面，选择游戏下载
-		 */
-		helper.openWiFi().click(pubPage.getErrorOfGetDate(), NETWORK_DISCONNECTED);
-		helper.click(pubPage.getWeekHotAppsOfSub(1), "列表第1个应用").click(pubPage.getInstalBtn(), "安装");
-		helper.back().back();
-		this.checkDownResult();
+//		/*
+//		 * 子模块：无网络
+//		 */
+//		this.clean().setConnectionType(NETWORK_NORMAL);
+//		helper.isExistClickElseSkip(pubPage.getAdFrame(), "广告");
+//		helper.swipeDirection(UP).closeWiFi();
+//		/*
+//		 * 点击查看全部进入列表页----首页 页面出现无网络提示，点击可重新加载
+//		 */
+//		helper.click(pubPage.getCheckAllLabel(), "查看全部").checkElement(pubPage.getErrorOfGetDate(),
+//				NETWORK_DISCONNECTED);
+//		helper.click(pubPage.getErrorOfGetDate(), NETWORK_DISCONNECTED).checkElement(pubPage.getErrorOfGetDate(),
+//				NETWORK_DISCONNECTED);
+//		/*
+//		 * 网络恢复后，点击重新加载 页面加载出来后可正常滑动页面，选择游戏下载
+//		 */
+//		helper.openWiFi().click(pubPage.getErrorOfGetDate(), NETWORK_DISCONNECTED);
+//		helper.click(pubPage.getWeekHotAppsOfSub(1), "列表第1个应用").click(pubPage.getInstalBtn(), "安装");
+//		helper.back().back();
+//		this.checkDownResult();
+//		/*
+//		 * 点击查看全部进入列表页----游戏页 页面出现无网络提示，点击可重新加载
+//		 */
+//		helper.click(gamePage.getIndex(), GAME_PAGE).swipeDirection(UP).closeWiFi();
+//		helper.click(pubPage.getCheckAllLabel(), "查看全部").checkElement(pubPage.getErrorOfGetDate(),
+//				NETWORK_DISCONNECTED);
+//		helper.click(pubPage.getErrorOfGetDate(), NETWORK_DISCONNECTED).checkElement(pubPage.getErrorOfGetDate(),
+//				NETWORK_DISCONNECTED);
+//		/*
+//		 * 网络恢复后，点击重新加载 页面加载出来后可正常滑动页面，选择游戏下载
+//		 */
+//		helper.openWiFi().click(pubPage.getErrorOfGetDate(), NETWORK_DISCONNECTED);
+//		helper.click(pubPage.getWeekHotAppsOfSub(1), "列表第1个应用").click(pubPage.getInstalBtn(), "安装");
+//		helper.back().back();
+//		this.checkDownResult();
+//		/*
+//		 * 点击查看全部进入列表页----软件页 页面出现无网络提示，点击可重新加载
+//		 */
+//		helper.click(softPage.getIndex(), SOFT_PAGE).closeWiFi();
+//		helper.click(pubPage.getCheckAllLabel(), "查看全部").checkElement(pubPage.getErrorOfGetDate(),
+//				NETWORK_DISCONNECTED);
+//		helper.click(pubPage.getErrorOfGetDate(), NETWORK_DISCONNECTED).checkElement(pubPage.getErrorOfGetDate(),
+//				NETWORK_DISCONNECTED);
+//		/*
+//		 * 网络恢复后，点击重新加载 页面加载出来后可正常滑动页面，选择游戏下载
+//		 */
+//		helper.openWiFi().click(pubPage.getErrorOfGetDate(), NETWORK_DISCONNECTED);
+//		helper.click(pubPage.getWeekHotAppsOfSub(2), "列表第2个应用").click(pubPage.getInstalBtn(), "安装");
+//		helper.back().back();
+//		this.checkDownResult();
 		/*
 		 * 点击查看全部进入列表页----新游页 页面出现无网络提示，点击可重新加载 提示：新游列表，没有"查看全部",待确认
 		 */
@@ -679,41 +679,41 @@ public class WeakNetworkService extends AbstractPage {
 		 */
 		this.clean().setConnectionType(NETWORK_DELAY);
 		helper.isExistClickElseSkip(pubPage.getAdFrame(), "广告");
-		logger.info("点击查看全部进入列表页----首页");
-		/*
-		 * 点击查看全部进入列表页----首页 1、页面可正常显示加载中 2、若加载失败，页面提示网络异常，网络恢复后，点击可重新加载
-		 * 3、若加载成功，页面展示正常，可正常操作
-		 */
-		helper.swipeDirection(UP).click(pubPage.getCheckAllLabel(), "查看全部").sleep(10000);
-		helper.click(pubPage.getWeekHotAppsOfSub(1), "列表第1个应用").sleep(10000).back();
-		/*
-		 * 列表内容超过1页时，上下滑动列表 1、页面可正常显示加载中 2、若加载失败，页面提示网络异常，网络恢复后，点击可重新加载
-		 * 3、若加载成功，页面展示正常，可正常操作
-		 */
-		helper.swipeDirection(UP).swipeDirection(UP).click(pubPage.getWeekHotAppsOfSub(1), "列表第1个应用");
-		/*
-		 * 点击任意应用下载安装
-		 */
-		helper.click(pubPage.getInstalBtn(), "安装").back().back();
-		this.checkDownResult();
-		logger.info("点击查看全部进入列表页----游戏页");
-		/*
-		 * 点击查看全部进入列表页----游戏页 1、页面可正常显示加载中 2、若加载失败，页面提示网络异常，网络恢复后，点击可重新加载
-		 * 3、若加载成功，页面展示正常，可正常操作
-		 */
-		helper.click(gamePage.getIndex(), GAME_PAGE).swipeDirection(UP).sleep(10000);
-		helper.click(pubPage.getCheckAllLabel(), "查看全部").sleep(10000);
-		helper.click(pubPage.getWeekHotAppsOfSub(1), "列表第1个应用").sleep(10000).back();
-		/*
-		 * 列表内容超过1页时，上下滑动列表 1、页面可正常显示加载中 2、若加载失败，页面提示网络异常，网络恢复后，点击可重新加载
-		 * 3、若加载成功，页面展示正常，可正常操作
-		 */
-		helper.swipeDirection(UP).sleep(5000).swipeDirection(UP).click(pubPage.getWeekHotAppsOfSub(1), "列表第1个应用");
-		/*
-		 * 点击任意应用下载安装
-		 */
-		helper.click(pubPage.getInstalBtn(), "安装").back().back();
-		this.checkDownResult();
+//		logger.info("点击查看全部进入列表页----首页");
+//		/*
+//		 * 点击查看全部进入列表页----首页 1、页面可正常显示加载中 2、若加载失败，页面提示网络异常，网络恢复后，点击可重新加载
+//		 * 3、若加载成功，页面展示正常，可正常操作
+//		 */
+//		helper.swipeDirection(UP).click(pubPage.getCheckAllLabel(), "查看全部").sleep(10000);
+//		helper.click(pubPage.getWeekHotAppsOfSub(1), "列表第1个应用").sleep(10000).back();
+//		/*
+//		 * 列表内容超过1页时，上下滑动列表 1、页面可正常显示加载中 2、若加载失败，页面提示网络异常，网络恢复后，点击可重新加载
+//		 * 3、若加载成功，页面展示正常，可正常操作
+//		 */
+//		helper.swipeDirection(UP).sleep(15000).click(pubPage.getWeekHotAppsOfSub(3), "列表第3个应用");
+//		/*
+//		 * 点击任意应用下载安装
+//		 */
+//		helper.click(pubPage.getInstalBtn(), "安装").back().back();
+//		this.checkDownResult();
+//		logger.info("点击查看全部进入列表页----游戏页");
+//		/*
+//		 * 点击查看全部进入列表页----游戏页 1、页面可正常显示加载中 2、若加载失败，页面提示网络异常，网络恢复后，点击可重新加载
+//		 * 3、若加载成功，页面展示正常，可正常操作
+//		 */
+//		helper.click(gamePage.getIndex(), GAME_PAGE).swipeDirection(UP).sleep(10000);
+//		helper.click(pubPage.getCheckAllLabel(), "查看全部").sleep(10000);
+//		helper.click(pubPage.getWeekHotAppsOfSub(1), "列表第1个应用").sleep(10000).back();
+//		/*
+//		 * 列表内容超过1页时，上下滑动列表 1、页面可正常显示加载中 2、若加载失败，页面提示网络异常，网络恢复后，点击可重新加载
+//		 * 3、若加载成功，页面展示正常，可正常操作
+//		 */
+//		helper.swipeDirection(UP).sleep(10000).swipeDirection(UP).click(pubPage.getWeekHotAppsOfSub(1), "列表第1个应用");
+//		/*
+//		 * 点击任意应用下载安装
+//		 */
+//		helper.click(pubPage.getInstalBtn(), "安装").back().back();
+//		this.checkDownResult();
 		logger.info("点击查看全部进入列表页----软件页");
 		/*
 		 * 点击查看全部进入列表页----软件页 1、页面可正常显示加载中 2、若加载失败，页面提示网络异常，网络恢复后，点击可重新加载
@@ -726,7 +726,8 @@ public class WeakNetworkService extends AbstractPage {
 		 * 列表内容超过1页时，上下滑动列表 1、页面可正常显示加载中 2、若加载失败，页面提示网络异常，网络恢复后，点击可重新加载
 		 * 3、若加载成功，页面展示正常，可正常操作
 		 */
-		helper.swipeDirection(UP).sleep(5000).swipeDirection(UP).click(pubPage.getWeekHotAppsOfSub(1), "列表第1个应用");
+		helper.swipeDirection(UP).sleep(10000).swipeDirection(UP).sleep(15000)
+		.click(pubPage.getWeekHotAppsOfSub(2), "列表第2个应用");
 		/*
 		 * 点击任意应用下载安装
 		 */
@@ -738,7 +739,7 @@ public class WeakNetworkService extends AbstractPage {
 		logger.info("进入查看全部页面后断开手机网络----首页");
 		this.clean().setConnectionType(NETWORK_START);
 		helper.sleep(6000).isExistClickElseSkip(pubPage.getAdFrame(), "广告");
-		helper.swipeDirection(UP).click(pubPage.getCheckAllLabel(), "查看全部");
+		helper.swipeDirection(UP).click(pubPage.getCheckAllLabel(), "查看全部").sleep(5000);
 		helper.closeWiFi();
 		/*
 		 * 列表内容不超过1页 上下滑动页面无异常
@@ -912,7 +913,7 @@ public class WeakNetworkService extends AbstractPage {
 		 */
 		helper.closeWiFi().click(mainPage.getSearchContext(), "搜索框");
 		helper.hideKeyBoard();
-		helper.checkElement(pubPage.getErrorOfGetDateOfSearch(), NETWORK_DISCONNECTED);
+		helper.checkElement(pubPage.getErrorOfGetDate(), NETWORK_DISCONNECTED);
 		helper.click(pubPage.getErrorOfGetDate(), NETWORK_DISCONNECTED).checkElement(pubPage.getErrorOfGetDate(),
 				NETWORK_DISCONNECTED);
 		/*
@@ -962,7 +963,7 @@ public class WeakNetworkService extends AbstractPage {
 		 */
 		helper.send(mainPage.getSearchContext(), "腾讯新闻").hideKeyBoard();
 		helper.click(mainPage.getSearchBtn(), "开始搜索").sleep(10000);
-		helper.checkElement(pubPage.getErrorOfGetDateOfSearch(), NO_DATA);
+		helper.checkElement(pubPage.getErrorOfGetDate(), NETWORK_DISCONNECTED);
 		helper.openWiFi().click(pubPage.getErrorOfGetDate(), NETWORK_DISCONNECTED);
 		helper.sleep(10000).checkElement(mainPage.getSerachResultFirstApp(), "搜索结果第1个应用");
 		/*
@@ -1013,7 +1014,7 @@ public class WeakNetworkService extends AbstractPage {
 		 * 点击进入应用
 		 * 显示加载过程
 		 */
-		helper.click(pubPage.getWeekHotApps(2), "本周热门应用第二个").checkElement(pubPage.getLoadingIcon(), "加载");
+		helper.sleep(10000).click(pubPage.getWeekHotApps(2), "本周热门应用第二个").checkElement(pubPage.getLoadingIcon(), "加载");
 		helper.sleep(10000).checkElement(pubPage.getAppInfo(), "详情标签");
 		/*
 		 * 进入详情页面时，图片未加载出

@@ -698,7 +698,7 @@ public class Helper {
 	 * @param elementName
 	 */
 	public Helper isExistClickElseSkip(WebElement element,String elementName) {
-		if (element != null) {
+		if (element != null) {			
 			click(element, elementName);
 		}else {
 			log.info(elementName+",未找到,已跳过");
@@ -710,6 +710,7 @@ public class Helper {
 		log.info("Toast提示:"+key);		
 		String result = getToast(key);
 		if("no".equals(result)) {
+			log.info("未找到Toast信息:"+key);
 			throw new RuntimeException("未找到Toast信息:"+key);
 		}else {
 			log.info("成功获取到Toast信息:"+result);
@@ -720,6 +721,7 @@ public class Helper {
 		log.info("验证不存在的Toast:"+key);		
 		String result = getToast(key);
 		if(!"no".equals(result)) {
+			log.info("验证失败,此Toast存在");
 			throw new RuntimeException("Toast存在:"+key+",请检查");
 		}else {
 			log.info("验证通过,此Toast不存在");
@@ -732,10 +734,10 @@ public class Helper {
 	 */
 	public Helper checkElement(WebElement element,String desc) {
 		if(element==null) {
-			throw new RuntimeException("检查的元素不存在:"+desc);
+			log.info("预期的元素不存在:"+desc);
+			throw new RuntimeException("预期的元素不存在:"+desc);
 		}else {
-			log.info("检查元素成功!"+desc+"元素存在");
-			log.info("界面提示文本:"+element.getText());
+			log.info("当前界面包含预期元素:"+desc+",元素文本值:"+element.getText());			
 		}
 		return this;
 	}
@@ -817,6 +819,7 @@ public class Helper {
 		String deviceName = getDeviceName();
 		if(state) {
 			RuntimeUtil.execForStr("adb -s "+deviceName+" shell  svc wifi disable");
+			log.info("Wi-Fi已关闭");
 		}
 		return this;
 	}
@@ -850,6 +853,7 @@ public class Helper {
 				throw new RuntimeException("网络无法连接,请检查网络情况");
 			}			
 		}
+		log.info("Wi-Fi已恢复连接");
 		return this;
 	}
 	public void checkActivity() {

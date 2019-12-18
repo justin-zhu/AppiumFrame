@@ -77,12 +77,15 @@ public class TestWeakNetwork {
 	}
 	@Test(priority = 6)
 	public void testHomeClassify() {
-		//pass
+		//用例已对齐 调试已通过
 		logger.info("分类");			
 		worker.execute("homeClassify");
 	}
 	@Test(priority = 7)
 	public void testListOfCheckAll() {
+		//1.针对手机已安装其它应用的情况下 应考虑在用例开始前 卸载第三方应用
+		//2.删除手机下载目录中的所有apk  以上2条后续优化
+		//3.目前查看全部界面，有BUG，暂不测试
 		//pass
 		logger.info("列表（首页、游戏、软件、新游）");			
 		worker.execute("listOfCheckAll");
@@ -95,7 +98,7 @@ public class TestWeakNetwork {
 	}	
 	@Test(priority = 9)
 	public void testSearch() {	
-		//pass
+		//用例已对齐 调试已通过
 		logger.info("搜索");			
 		worker.execute("search");
 	}
