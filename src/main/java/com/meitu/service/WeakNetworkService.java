@@ -988,6 +988,7 @@ public class WeakNetworkService extends AbstractPage {
 	public void appInformation() {
 		this.clean().setConnectionType(NETWORK_START);
 		helper.isExistClickElseSkip(pubPage.getAdFrame(), "广告");
+		helper.swipeDirection(UP).swipeDirection(UP);
 		helper.closeWiFi();
 		/*
 		 * 进入应用详情
@@ -1268,29 +1269,67 @@ public class WeakNetworkService extends AbstractPage {
 	 * 我的
 	 */
 	public void center() {
-		this.clean().setConnectionType(NETWORK_NORMAL);
-		helper.uninstall("com.sina.weibo");
-		centerPage.installWeiBo();
-		helper.sleep(6000).isExistClickElseSkip(pubPage.getAdFrame(), "广告");
+		/*
+		 * 子模块：无网络
+		 */		
+		helper.uninstall("com.tencent.news");
+		centerPage.installQQnews();
+		helper.isExistClickElseSkip(pubPage.getAdFrame(), "广告");
 		helper.click(centerPage.getIndex(), "个人中心");
 		centerPage.login();
-		helper.click(centerPage.getAppUpdate(), "应用更新").back();
-		this.setConnectionType(NETWORK_CLOSE);
-		helper.click(centerPage.getAppUpdate(), "应用更新").checkElement(centerPage.getWaitUpdate(), "等待更新");
-		helper.back().click(centerPage.getAppRemove(), "应用卸载");
-		centerPage.uninstall("com.sina.weibo", "微博");
+		/*
+		 * 进入应用更新界面
+		 * 可正常显示更新历史
+		 */
+		helper.click(centerPage.getAppUpdate(), "应用更新").sleep(3000);
+		helper.click(helper.findBySlideText("腾讯新闻"), "腾讯新闻").click(pubPage.getInstalBtn(), "更新").sleep(10000);
+		helper.back().back().closeWiFi();		
+		helper.click(centerPage.getAppUpdate(), "应用更新").checkElement(centerPage.getUpdateHistory(), "更新历史").back();
+		/*
+		 * 进入应用卸载界面
+		 * 可正常显示可卸载应用
+		 */
+		helper.click(centerPage.getAppRemove(), "应用卸载").sleep(5000).checkElement(helper.findBySlideText("腾讯新闻"), "腾讯新闻");
+		/*
+		 * 点击任意应用卸载
+		 * 可正常卸载应用		
+		 */
+		centerPage.uninstall("com.tencent.news", "腾讯新闻");
+		/*
+		 * 进入我的预约界面
+		 * 页面出现无网络提示，点击可重新加载
+		 */
 		helper.click(centerPage.getMyOrder(), "我的预约").sleep(15000);
-		helper.checkElement(pubPage.getErrorOfGetDate(), NO_DATA);
-		this.setConnectionType(NETWORK_NORMAL);
-		helper.click(pubPage.getErrorOfGetDate(), "没有获取到元素");
-		helper.checkElement(centerPage.getComingsoon(), "即将上线").back();
-		this.setConnectionType(NETWORK_CLOSE);
-		helper.click(centerPage.getMyGiftBag(), "我的礼包").sleep(15000);
-		helper.checkElement(pubPage.getErrorOfGetDate(), NO_DATA);
-		this.setConnectionType(NETWORK_NORMAL);
-		helper.click(pubPage.getErrorOfGetDate(), "没有获取到元素").checkElement(centerPage.getGiftList(), "已领取礼包界面");
-		helper.swipeDirection("up").back();
-		centerPage.installWeiBo();
+		helper.checkElement(pubPage.getErrorOfGetDate(), NETWORK_DISCONNECTED);
+		helper.click(pubPage.getErrorOfGetDate(), NETWORK_DISCONNECTED).checkElement(pubPage.getErrorOfGetDate(), NETWORK_DISCONNECTED);
+		/*
+		 * 网络恢复后，点击重新加载，可正常加载出页面
+		 */
+		helper.openWiFi().click(pubPage.getErrorOfGetDate(), NETWORK_DISCONNECTED);		
+		helper.checkElement(centerPage.getComingsoon(), "即将上线");
+		/*
+		 * 页面加载出来后可正常操作
+		 */
+		helper.swipeDirection(UP).checkElement(centerPage.getNewGameOrderListOfOne(), "其它新游预约列表显示的第1个应用名称").back();
+		/*
+		 * 进入我的礼包界面
+		 * 页面出现无网络提示，点击可重新加载
+		 */
+		helper.closeWiFi().click(centerPage.getMyGiftBag(), "我的礼包").checkElement(pubPage.getErrorOfGetDate(), NETWORK_DISCONNECTED);
+		helper.click(pubPage.getErrorOfGetDate(), NETWORK_DISCONNECTED).checkElement(pubPage.getErrorOfGetDate(), NETWORK_DISCONNECTED);
+		/*
+		 * 网络恢复后，点击重新加载可正常加载出页面
+		 */
+		helper.openWiFi();
+		helper.click(pubPage.getErrorOfGetDate(), NETWORK_DISCONNECTED).checkElement(helper.findBySlideText("王者荣耀"),"王者荣耀礼包");
+		/*
+		 * 页面加载出来后可正常操作
+		 */
+		helper.swipeDirection(UP).checkElement(centerPage.getHaveToGiftList(), "可领取礼包列表游戏").back();
+		/*
+		 * 后面的用例，后续对齐
+		 */
+		centerPage.installQQnews();
 		this.setConnectionType(NETWORK_DELAY);
 		helper.click(centerPage.getAppUpdate(), "应用更新").checkElement(centerPage.getWaitUpdate(), "等待更新").back();
 		helper.click(centerPage.getAppRemove(), "应用卸载");

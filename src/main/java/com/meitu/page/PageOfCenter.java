@@ -3,6 +3,7 @@ package com.meitu.page;
 import java.io.File;
 
 import org.apache.log4j.Logger;
+import org.openqa.selenium.NotFoundException;
 import org.openqa.selenium.WebElement;
 
 import com.meitu.utils.Helper;
@@ -151,9 +152,7 @@ public class PageOfCenter {
 	public WebElement getOneKeyUninstall() {
 		return helper.findById("com.tencent.southpole.appstore:id/uninstall_btn");
 	}
-	public String getAppList() {
-		return RuntimeUtil.execForStr("adb shell pm list packages");
-	}
+	
 	/**
 	 *  个人中心卸载
 	 */
@@ -165,19 +164,21 @@ public class PageOfCenter {
 			helper.click(getConfirmBtn(), "确定");
 			logger.info("卸载成功");
 			helper.back();
+		}else {
+			throw new NotFoundException("未安装此应用,包名:"+packageName);
 		}
 	}
 	/**
-	 * 安装新浪微博
+	 * 安装腾讯新闻
 	 */
-	public void installWeiBo() {
-		String deviceName =helper.getAndroidDriver().getCapabilities().getCapability("deviceName").toString();
+	public void installQQnews() {
+		String deviceName =getDeviceName();
 		logger.info("安装至设备:"+deviceName);
-		String installResult = getAppList();
-		if(installResult.contains("com.sina.weibo")) {
+		boolean installed = helper.getAndroidDriver().isAppInstalled("com.tencent.news");
+		if(installed) {
 			return;
 		}else {
-			File file = new File("apk/weibo.apk");
+			File file = new File("apk/qqnews.apk");
 			logger.info(file.getAbsolutePath());
 			helper.getAndroidDriver().installApp(file.getAbsolutePath());
 		}
@@ -186,11 +187,11 @@ public class PageOfCenter {
 	 * 安装抖音
 	 */
 	public void installDouYin() {
-		String deviceName1 =helper.getAndroidDriver().getCapabilities().getCapability("deviceName").toString();
+		String deviceName1 =getDeviceName();
 		
 		logger.info("安装至设备:"+deviceName1);
-		String installResult = getAppList();
-		if(installResult.contains("com.ss.android.ugc.aweme")) {
+		boolean installed = helper.getAndroidDriver().isAppInstalled("com.ss.android.ugc.aweme");
+		if(installed) {
 			return;
 		}else {
 			File file = new File("apk/douyin.apk");
@@ -199,8 +200,21 @@ public class PageOfCenter {
 			
 		}
 	}
+	/*
+	 * 获取设备UDID
+	 */
+	public String getDeviceName() {
+		return helper.getAndroidDriver().getCapabilities().getCapability("deviceName").toString();
+	}
 	public WebElement getAppUpdateListDouYin() {
 		return helper.findBySlideText("抖音短视频");
+	}
+	/**
+	 * 新游预约列表,其它新游预约列表,目前默认取显示在当前界面的第1个
+	 * @return
+	 */
+	public WebElement getNewGameOrderListOfOne() {
+		return helper.findById("com.tencent.southpole.appstore:id/name");
 	}
 	/**
 	 * 即将上线元素
@@ -214,6 +228,12 @@ public class PageOfCenter {
 	 */
 	public WebElement getGiftList() {
 		return helper.findById("com.tencent.southpole.appstore:id/content");
+	}
+	/*
+	 * 已领取礼包面板中，应用列表
+	 */
+	public WebElement getHaveToGiftList() {
+		return helper.findById("com.tencent.southpole.appstore:id/game_name");
 	}
 	/**
 	 * 全部应用标签
