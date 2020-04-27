@@ -10,7 +10,7 @@
 
 ## 二.如何使用
 * domain包下的文件,均为业务执行的逻辑
-* 项目中有二个java文件,其中一个是:WeakNetwork.java,这个文件是我所对应项目的弱网功能测试脚本,脚本中所调用的方法,均由com.meitu.service包下的WeakNetworkService.java来实现的,分层是为了维护方便
+* 项目中有二个java文件,其中一个是:WeakNetwork.java,这个文件是我所对应项目的弱网功能测试脚本,脚本中所调用的方法,均由com.meitu.service包下的WeakNetworkService.java来实现的
 * WeakNetworkService.java中持用Helper的引用,而Helper中 集成了常用的元素查找,滑动,截图等一些用常功能(可以简单理解为helper是为了和androidDriver打交道的),具体请自己查看 
 * 整个脚本的实现流程:domain层(业务流程的拼接执行)----调用----service(业务的实现)----调用----Helper,如果Helper中默认提供的方法不不满足你的需要,你可以自己实现方法
 
